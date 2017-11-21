@@ -49,6 +49,17 @@
         android:textStyle="bold" />
 
     <EditText
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/password"
+        android:layout_alignStart="@+id/password"
+        android:layout_marginBottom="43dp"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="textPersonName" />
+
+    <EditText
         android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,16 +71,6 @@
         android:layout_below="@+id/textView6"
         android:layout_centerHorizontal="true" />
 
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/password"
-        android:layout_alignStart="@+id/password"
-        android:layout_marginBottom="43dp"
-        android:ems="10"
-        android:hint="Username"
-        android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/sign"

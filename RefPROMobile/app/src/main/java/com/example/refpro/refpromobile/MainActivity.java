@@ -1,12 +1,7 @@
 package com.example.refpro.refpromobile;
 
-import android.app.Fragment;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -25,22 +21,13 @@ import static com.example.refpro.refpromobile.R.attr.logo;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    private TextView getName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        TextView getName = (TextView) findViewById(R.id.refereeName);
-
-        SharedPreferences prefs = getSharedPreferences("RefPRO", MODE_PRIVATE);
-        String refName = prefs.getString("username", null);
-
-        /*if (refName != null) {
-
-            getName.setText(refName);
-        }
-        else
-            getName.setText("Anonymous user");*/
 
         //Start MENU fragment
         com.example.refpro.refpromobile.Menu menu = new com.example.refpro.refpromobile.Menu();
@@ -63,6 +50,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View navView = navigationView.getHeaderView(0);
+        getName = (TextView) navView.findViewById(R.id.refereeName);
+
+        String refName= getIntent().getExtras().getString("Username");
+
+        getName.setText(refName);
     }
 
     @Override
@@ -114,7 +108,6 @@ public class MainActivity extends AppCompatActivity
             Create create = new com.example.refpro.refpromobile.Create();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, create).commit();
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

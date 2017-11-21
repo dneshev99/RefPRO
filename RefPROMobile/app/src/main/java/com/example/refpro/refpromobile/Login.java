@@ -40,11 +40,8 @@ public class Login extends AppCompatActivity {
                 }
                 else if (userString.equals("bfu") && passString.equals("bfu")) {
 
-                    SharedPreferences.Editor editor = getSharedPreferences("RefPRO", MODE_PRIVATE).edit();
-                    editor.putString("username", userString);
-                    editor.apply();
-
-                    Intent app = new Intent(Login.this, MainActivity.class);
+                    Intent app = new Intent(getApplicationContext(), MainActivity.class);
+                    app.putExtra("Username", userString);
                     startActivity(app);
                 }
                 else {
