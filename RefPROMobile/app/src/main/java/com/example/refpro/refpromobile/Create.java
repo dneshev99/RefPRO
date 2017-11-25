@@ -26,8 +26,6 @@ public class Create extends Fragment implements View.OnClickListener{
     View createView;
     int match_id;
     String key;
-    //final Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-
     boolean canCreate = true;
     EditText competition, venue, players, subs, lenght, home, away, homeabbr, awayabbr, time, date;
     Button create;
@@ -37,8 +35,9 @@ public class Create extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-
         createView = inflater.inflate(R.layout.create, container, false);
+
+        // region INITIALIZE
         SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
         match_id = mPrefs.getInt("ID", 0);
         key = Integer.toString(match_id) + "_match";
@@ -56,8 +55,9 @@ public class Create extends Fragment implements View.OnClickListener{
         date = (EditText) createView.findViewById(R.id.date);
 
         create = (Button) createView.findViewById(R.id.createMatch);
-
         create.setOnClickListener(this);
+
+        //endregion
 
         return createView;
     }
@@ -67,43 +67,12 @@ public class Create extends Fragment implements View.OnClickListener{
 
         int subsInt = 0, playersInt = 0, lenghtInt = 0;
 
-        if (competition.getText().toString().length() < 1 || competition.getText().toString().length() > 100) {
-
-            competition.setError("Competition name must be between 1 and 100 characters");
-            canCreate = false;
-        }
-
-// date napravi
-
-        if (venue.getText().toString().length() < 1 || venue.getText().toString().length() > 50) {
-
-            venue.setError("Venue must be between 1 and 50 characters");
-            canCreate = false;
-        }
-
-        if (home.getText().toString().length() < 1 || home.getText().toString().length() > 30) {
-
-            home.setError("Home team name must be between 1 and 30 characters");
-            canCreate = false;
-        }
-
-        if (away.getText().toString().length() < 1 || away.getText().toString().length() > 30) {
-
-            away.setError("Away team name must be between 1 and 30 characters");
-            canCreate = false;
-        }
-
-        if (homeabbr.getText().toString().length() < 1 || homeabbr.getText().toString().length() > 5) {
-
-            homeabbr.setError("Home team abbreviation must be between 1 and 5 characters");
-            canCreate = false;
-        }
-
-        if (awayabbr.getText().toString().length() < 1 || awayabbr.getText().toString().length() > 5) {
-
-            awayabbr.setError("Away team abbreviation must be between 1 and 30 characters");
-            canCreate = false;
-        }
+        CheckStringParameters(competition, 100, "Competition");
+        CheckStringParameters(venue, 50, "Venue");
+        CheckStringParameters(home, 30, "Home team");
+        CheckStringParameters(away, 30, "Away team");
+        CheckStringParameters(awayabbr, 5, "Away team abbreviation");
+        CheckStringParameters(homeabbr, 5, "Home team abbreviation");
 
         if (time.getText().toString().isEmpty()) {
 
@@ -115,51 +84,9 @@ public class Create extends Fragment implements View.OnClickListener{
             canCreate = false;
         }
 
-
-        String toInt = players.getText().toString().trim();
-
-        if (toInt.length() != 0) {
-
-            playersInt = Integer.parseInt(toInt);
-
-            if (playersInt < 8 || playersInt > 15) {
-
-                players.setError("Players must be between 8 and 15");
-                canCreate = false;
-            }
-        }
-        else
-            players.setError("Players must be between 8 and 15");
-
-        toInt = subs.getText().toString().trim();
-
-        if (toInt.length() != 0) {
-
-            subsInt = Integer.parseInt(toInt);
-
-            if (subsInt < 3 || subsInt > 12) {
-
-                subs.setError("Substitutes must be between 3 and 12");
-                canCreate = false;
-            }
-        }
-        else
-            subs.setError("Substitutes must be between 3 and 12");
-
-        toInt = lenght.getText().toString().trim();
-
-        if (toInt.length() != 0) {
-
-            lenghtInt = Integer.parseInt(toInt);
-
-            if (lenghtInt < 30 || lenghtInt > 55) {
-
-                lenght.setError("Half lenght must be between 30 and 55 minutes");
-                canCreate = false;
-            }
-        }
-        else
-            lenght.setError("Half lenght must be between 30 and 55 minutes");
+        playersInt = CheckIntParameters(players, 8, 15, "Players");
+        subsInt = CheckIntParameters(subs, 3, 12, "Substitutes");
+        lenghtInt = CheckIntParameters(lenght, 30, 55, "Half lenght");
 
         if (!canCreate) {
 
@@ -180,21 +107,21 @@ public class Create extends Fragment implements View.OnClickListener{
                     lenghtInt,
                     date.getText().toString() );
 
+            //Put match information Object(MatchInfo.java) in SharedPreferences with unique key ({id_num}_match)
             SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
-
             SharedPreferences.Editor prefsEditor = mPrefs.edit();
             Gson gson = new Gson();
             String json = gson.toJson(match);
             prefsEditor.putString(key, json);
             prefsEditor.commit();
 
+            //Increase match_id with 1 and save to SharedPreferences
             match_id++;
-            //SharedPreferences id = this.getActivity().getSharedPreferences(MODE_PRIVATE);
-            //SharedPreferences.Editor editor = id.edit();
             prefsEditor = mPrefs.edit();
             prefsEditor.putInt("ID", match_id);
             prefsEditor.commit();
 
+            //Create match and go to MENU Fragment
             Toast.makeText(getActivity(), "New match created successfully!!!",
                     Toast.LENGTH_LONG).show();
 
@@ -202,5 +129,37 @@ public class Create extends Fragment implements View.OnClickListener{
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
         }
+    }
+
+    public void CheckStringParameters(EditText field, int length, String text) {
+
+        if (field.getText().toString().length() < 1 || field.getText().toString().length() > length) {
+
+            field.setError(text + " name must be between 1 and " + length +  " characters");
+            canCreate = false;
+        }
+    }
+
+    public int CheckIntParameters(EditText field, int min, int max, String text) {
+
+        String toInt = field.getText().toString().trim();
+        int value = 0;
+
+        if (toInt.length() != 0) {
+
+            value = Integer.parseInt(toInt);
+
+            if (value < min || value > max) {
+
+                field.setError(text + " must be between " + min + " and " + max);
+                canCreate = false;
+            }
+        }
+        else {
+            field.setError(text + " must be between " + min + " and " + max);
+            canCreate = false;
+        }
+
+        return value;
     }
 }

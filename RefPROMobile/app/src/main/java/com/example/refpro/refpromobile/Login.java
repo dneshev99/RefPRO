@@ -12,12 +12,12 @@ import android.widget.EditText;
 
 public class Login extends AppCompatActivity {
 
-    EditText username;
-    EditText password;
+    EditText username, password;
     Button sign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 

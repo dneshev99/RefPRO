@@ -52,10 +52,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View navView = navigationView.getHeaderView(0);
+
+        //GET Username and SET in NAVDrawer
         getName = (TextView) navView.findViewById(R.id.refereeName);
-
         String refName= getIntent().getExtras().getString("Username");
-
         getName.setText(refName);
     }
 
@@ -65,7 +65,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+            com.example.refpro.refpromobile.Menu menu = new com.example.refpro.refpromobile.Menu();
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
+            //super.onBackPressed();
         }
     }
 
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
         }
 

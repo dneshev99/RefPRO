@@ -1,6 +1,8 @@
 package com.example.refpro.refpromobile;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by user on 19.11.2017 г..
@@ -11,6 +13,10 @@ public class MatchInfo {
     private String competition, venue, home, away, homeabbr, awayabbr, time;
     private int players, subs, lenght;
     private String date;
+    private List<String> home_players = new ArrayList<String>();
+    public ArrayList<String> away_players = new ArrayList<String>();
+    public ArrayList<String> home_subs = new ArrayList<String>();
+    public ArrayList<String> away_subs = new ArrayList<String>();
 
     public MatchInfo(String competition, String venue, String home, String away, String homeabbr, String awayabbr, String time, int players, int subs, int lenght, String date) {
 
@@ -27,6 +33,7 @@ public class MatchInfo {
         this.date = date;
     }
 
+    // region GETTERS AND SETTERS
 
     public String getCompetition() {
         return competition;
@@ -114,6 +121,55 @@ public class MatchInfo {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public List<String> getHome_players() {
+        return home_players;
+    }
+
+    public void setHome_players(ArrayList<String> home_players) {
+        this.home_players = home_players;
+    }
+
+    public ArrayList<String> getAway_players() {
+        return away_players;
+    }
+
+    public void setAway_players(ArrayList<String> away_players) {
+        this.away_players = away_players;
+    }
+
+    public ArrayList<String> getHome_subs() {
+        return home_subs;
+    }
+
+    public void setHome_subs(ArrayList<String> home_subs) {
+        this.home_subs = home_subs;
+    }
+
+    public ArrayList<String> getAway_subs() {
+        return away_subs;
+    }
+
+    public void setAway_subs(ArrayList<String> away_subs) {
+        this.away_subs = away_subs;
+    }
+
+    public String getTeamsAbbr() {
+
+        return homeabbr + " vs. " + awayabbr;
+    }
+
+    public String getTeams() {
+
+        return home + " vs. " + away;
+    }
+
+//endregion
+
+    public void add(String name) {
+
+        home_players.add(name);
     }
 
 }

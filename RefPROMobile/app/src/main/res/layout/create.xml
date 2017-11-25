@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="Add new match"
+        android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#000000"
         android:textSize="18sp"
@@ -16,57 +19,56 @@
 
     <EditText
         android:id="@+id/competition"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="25dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Competition"
-        />
+        android:inputType="textPersonName"
+        android:selectAllOnFocus="false"
+        android:singleLine="false" />
 
     <EditText
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/competition"
-        android:layout_below="@+id/competition"
         android:ems="10"
-        android:inputType="time"
         android:hint="Time"
-        />
+        android:inputType="time"
+        android:layout_below="@+id/venue"
+        android:layout_toEndOf="@+id/date" />
 
     <EditText
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/time"
-        android:layout_below="@+id/time"
         android:ems="10"
+        android:hint="Date"
         android:inputType="date"
-        android:hint="Date" />
+        android:layout_below="@+id/venue"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/venue"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/date"
-        android:layout_below="@+id/date"
         android:ems="10"
+        android:hint="Venue"
         android:inputType="textPersonName"
-        android:hint="Venue" />
+        android:layout_below="@+id/competition"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Home"
-        android:layout_below="@+id/venue"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="42dp" />
+        android:inputType="textPersonName"
+        android:layout_above="@+id/away"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/homeabbr"
@@ -85,9 +87,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Away"
-        android:layout_below="@+id/home"
+        android:inputType="textPersonName"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
     <EditText
@@ -104,7 +106,7 @@
 
     <Button
         android:id="@+id/createMatch"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
@@ -112,41 +114,34 @@
 
     <EditText
         android:id="@+id/players"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/away"
-        android:layout_marginTop="29dp"
-        android:layout_toStartOf="@+id/createMatch"
         android:ems="10"
+        android:hint="№ players"
         android:inputType="number"
-        android:hint="№ players" />
+        android:layout_above="@+id/subs"
+        android:layout_alignEnd="@+id/time" />
 
     <EditText
         android:id="@+id/subs"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/players"
-        android:layout_alignBottom="@+id/players"
-        android:layout_alignEnd="@+id/venue"
-        android:layout_marginEnd="12dp"
-        android:layout_toEndOf="@+id/players"
         android:ems="10"
         android:hint="Subs"
         android:inputType="number"
-        android:textAlignment="viewStart" />
+        android:textAlignment="viewStart"
+        android:layout_above="@+id/lenght"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/lenght"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/subs"
-        android:layout_alignBottom="@+id/subs"
-        android:layout_marginStart="30dp"
-        android:layout_toEndOf="@+id/textView2"
         android:ems="10"
         android:hint="Half len."
         android:inputType="number"
-        android:textAlignment="viewStart" />
+        android:textAlignment="viewStart"
+        android:layout_above="@+id/createMatch"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
