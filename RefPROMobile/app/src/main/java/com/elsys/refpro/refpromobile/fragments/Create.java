@@ -1,12 +1,10 @@
-package com.example.refpro.refpromobile;
+package com.elsys.refpro.refpromobile.fragments;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +12,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.elsys.refpro.refpromobile.database.DataBase;
+import com.elsys.refpro.refpromobile.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import static android.content.Context.MODE_PRIVATE;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class Create extends Fragment implements View.OnClickListener{
 
     View createView;
-    int match_id;
-    String key;
     boolean canCreate = true;
     EditText competition, venue, players, subs, lenght, home, away, homeabbr, awayabbr, time, date;
     Button create;
+    DataBase db;
 
 
     @Nullable
@@ -38,10 +35,6 @@ public class Create extends Fragment implements View.OnClickListener{
         createView = inflater.inflate(R.layout.create, container, false);
 
         // region INITIALIZE
-        SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
-        match_id = mPrefs.getInt("ID", 0);
-        key = Integer.toString(match_id) + "_match";
-
         competition = (EditText) createView.findViewById(R.id.competition);
         venue = (EditText) createView.findViewById(R.id.venue);
         players = (EditText) createView.findViewById(R.id.players);
@@ -57,7 +50,8 @@ public class Create extends Fragment implements View.OnClickListener{
         create = (Button) createView.findViewById(R.id.createMatch);
         create.setOnClickListener(this);
 
-        //endregion
+        //endregiond
+        db = new DataBase(this.getActivity());
 
         return createView;
     }
@@ -76,12 +70,43 @@ public class Create extends Fragment implements View.OnClickListener{
 
         if (time.getText().toString().isEmpty()) {
 
+            time.setError("Wrong time format (HH:MM)");
             canCreate = false;
+        }
+        else {
+
+            String check = time.getText().toString();
+
+            char [] elements = check.toCharArray();
+
+            if (Integer.parseInt(String.valueOf(elements[0])) > 2 || Integer.parseInt(String.valueOf(elements[1])) > 3
+                    || Integer.parseInt(String.valueOf(elements[3])) > 5 || elements.length != 5)
+
+                time.setError("Wrong time format (HH:MM)");
+                canCreate = false;
         }
 
         if (date.getText().toString().isEmpty()) {
 
+            date.setError("Wrong date format (YYYY-MM-DD)");
             canCreate = false;
+        }
+        else {
+
+            final String DATE_FORMAT = "yyyy-MM-dd";
+            String check = date.getText().toString();
+
+            try {
+
+                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+                df.setLenient(false);
+                df.parse(check);
+
+            } catch (ParseException e) {
+
+                date.setError("Wrong date format (YYYY-MM-DD)");
+                canCreate = false;
+            }
         }
 
         playersInt = CheckIntParameters(players, 8, 15, "Players");
@@ -94,42 +119,32 @@ public class Create extends Fragment implements View.OnClickListener{
         }
         else {
 
-            MatchInfo match = new MatchInfo(
-                    competition.getText().toString(),
-                    venue.getText().toString(),
-                    home.getText().toString(),
-                    away.getText().toString(),
-                    homeabbr.getText().toString(),
-                    awayabbr.getText().toString(),
-                    time.getText().toString(),
-                    playersInt,
-                    subsInt,
-                    lenghtInt,
-                    date.getText().toString() );
+            boolean insertData = db.addData(competition.getText().toString(), venue.getText().toString(),
+                    home.getText().toString(), away.getText().toString(), homeabbr.getText().toString()
+            , awayabbr.getText().toString(), date.getText().toString(), time.getText().toString(),
+                    playersInt, subsInt, lenghtInt);
 
-            //Put match information Object(MatchInfo.java) in SharedPreferences with unique key ({id_num}_match)
-            SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
-            SharedPreferences.Editor prefsEditor = mPrefs.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(match);
-            prefsEditor.putString(key, json);
-            prefsEditor.commit();
+            if (insertData)
+                Toast.makeText(getActivity(), "New match created successfully!!!",
+                        Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(getActivity(), "Something went wrong!!!",
+                        Toast.LENGTH_LONG).show();
 
-            //Increase match_id with 1 and save to SharedPreferences
-            match_id++;
-            prefsEditor = mPrefs.edit();
-            prefsEditor.putInt("ID", match_id);
-            prefsEditor.commit();
+            CreateNotification();
 
-            //Create match and go to MENU Fragment
-            Toast.makeText(getActivity(), "New match created successfully!!!",
-                    Toast.LENGTH_LONG).show();
-
-            com.example.refpro.refpromobile.Menu menu = new com.example.refpro.refpromobile.Menu();
+            Menu menu = new Menu();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
         }
     }
+
+    private void CreateNotification() {
+
+
+
+    }
+
 
     public void CheckStringParameters(EditText field, int length, String text) {
 

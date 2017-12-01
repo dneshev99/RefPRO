@@ -1,6 +1,4 @@
-package com.example.refpro.refpromobile;
-
-import retrofit2.http.GET;
+package com.elsys.refpro.refpromobile.login;
 
 /**
  * Created by user on 19.11.2017 г..

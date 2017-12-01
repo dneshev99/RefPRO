@@ -1,4 +1,4 @@
-package com.example.refpro.refpromobile;
+package com.elsys.refpro.refpromobile;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package com.example.refpro.refprowatch;
+package com.elsys.refpro.refprowatch;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -143,7 +143,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                         if (isStarted) { // STARTS if CurrentMatch is started
 
                             BigMinutes = TimerFormat(BigSeconds, BigMinutes);
-                            if (BigMinutes == IntInfo.get(2) && vibrator == false) {  //VIBRATES if BigMinutes == HalfLength
+                            if (BigMinutes == IntInfo.get(2) && !vibrator) {  //VIBRATES if BigMinutes == HalfLength
 
                                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                                 v.vibrate(1000);

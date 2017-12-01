@@ -1,4 +1,4 @@
-package com.example.refpro.refpromobile;
+package com.elsys.refpro.refpromobile;
 
 import org.junit.Test;
 

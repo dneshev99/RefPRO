@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Time"
+        android:hint="Time (HH:MM)"
         android:inputType="time"
         android:layout_below="@+id/venue"
         android:layout_toEndOf="@+id/date" />
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Date"
+        android:hint="Date (YYYY-MM-DD)"
         android:inputType="date"
         android:layout_below="@+id/venue"
         android:layout_alignParentStart="true" />

@@ -1,8 +1,8 @@
-package com.example.refpro.refpromobile;
+package com.elsys.refpro.refpromobile.fragments;
 
-import android.app.DownloadManager;
 import android.app.Fragment;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -15,9 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.elsys.refpro.refpromobile.database.DataBase;
+import com.elsys.refpro.refpromobile.R;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -30,16 +30,16 @@ public class Info extends Fragment {
     View createView;
     TextView competition, date, time, teams;
     int match_id;
-    String key;
     boolean canCreate = true;
-    MatchInfo match;
-    Button create;
+    DataBase db;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         createView = inflater.inflate(R.layout.match_info, container, false);
+
+        db = new DataBase(this.getActivity());
 
 
         //region INITIALIZE
@@ -51,13 +51,11 @@ public class Info extends Fragment {
         //GET current match ID and GET the information about match with it's unique key
         SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
         match_id = mPrefs.getInt("match_id", 0);
-        key = Integer.toString(match_id) + "_match";
 
-        Gson gson = new Gson();
-        String json;
+        final Cursor data = db.getRow(match_id);
 
-        json = mPrefs.getString(key, "");
-        match = gson.fromJson(json, MatchInfo.class);
+        data.moveToFirst();
+
 
         //GET information about current match and SET as Text
         competition = (TextView) createView.findViewById(R.id.info_name);
@@ -65,23 +63,27 @@ public class Info extends Fragment {
         time = (TextView) createView.findViewById(R.id.info_time);
         teams = (TextView) createView.findViewById(R.id.info_teams);
 
-        competition.setText(match.getCompetition());
-        date.setText(match.getDate());
-        time.setText(match.getTime());
-        teams.setText(match.getTeams());
+
+        data.moveToFirst();
+
+        competition.setText(data.getString(1));
+        date.setText(data.getString(7));
+        time.setText(data.getString(8));
+        teams.setText("" + data.getString(3) + " vs. " + data.getString(4));
+
         //endregion
 
         //Create form for every player
-        CreateForms(match.getPlayers(), layout, "Home player", 100);
+        CreateForms(Integer.parseInt(data.getString(9)), layout, "Home player", 100);
 
         SetTitle(layout, params, "Home substitutions");
-        CreateForms(match.getSubs(), layout, "Home substitute", 200);
+        CreateForms(Integer.parseInt(data.getString(10)), layout, "Home substitute", 200);
 
         SetTitle(layout, params, "Away players");
-        CreateForms(match.getPlayers(), layout, "Away player", 300);
+        CreateForms(Integer.parseInt(data.getString(9)), layout, "Away player", 300);
 
         SetTitle(layout, params, "Away substitutes");
-        CreateForms(match.getSubs(), layout, "Away player", 400);
+        CreateForms(Integer.parseInt(data.getString(10)), layout, "Away player", 400);
 
         /////
 
@@ -90,7 +92,7 @@ public class Info extends Fragment {
             @Override
             public void onClick(View v) {
 
-                for (int counter = 0; counter < match.getPlayers(); counter++) {
+                for (int counter = 0; counter < Integer.parseInt(data.getString(9)); counter++) {
 
                     EditText check;
                     check = (EditText) createView.findViewById(counter + 100);

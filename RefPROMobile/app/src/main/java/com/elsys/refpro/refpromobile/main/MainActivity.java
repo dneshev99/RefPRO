@@ -1,4 +1,4 @@
-package com.example.refpro.refpromobile;
+package com.elsys.refpro.refpromobile.main;
 
 
 import android.os.Bundle;
@@ -13,10 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import static android.R.color.black;
-import static com.example.refpro.refpromobile.R.attr.logo;
+import com.elsys.refpro.refpromobile.R;
+import com.elsys.refpro.refpromobile.fragments.Create;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,7 +28,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         //Start MENU fragment
-        com.example.refpro.refpromobile.Menu menu = new com.example.refpro.refpromobile.Menu();
+        com.elsys.refpro.refpromobile.fragments.Menu menu = new com.elsys.refpro.refpromobile.fragments.Menu();
         android.app.FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
 
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
 
-            com.example.refpro.refpromobile.Menu menu = new com.example.refpro.refpromobile.Menu();
+            com.elsys.refpro.refpromobile.fragments.Menu menu = new com.elsys.refpro.refpromobile.fragments.Menu();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
             //super.onBackPressed();
@@ -104,13 +102,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_menu) {
 
-            com.example.refpro.refpromobile.Menu menu = new com.example.refpro.refpromobile.Menu();
+            com.elsys.refpro.refpromobile.fragments.Menu menu = new com.elsys.refpro.refpromobile.fragments.Menu();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
             // Handle the camera action
         } else if (id == R.id.nav_create) {
 
-            Create create = new com.example.refpro.refpromobile.Create();
+            Create create = new Create();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, create).commit();
         }
