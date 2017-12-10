@@ -10,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Add new match"
+        android:text="@string/add_match"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="22dp"
         android:textStyle="bold" />
 
     <EditText
@@ -25,7 +25,7 @@
         android:layout_below="@+id/textView2"
         android:layout_marginTop="25dp"
         android:ems="10"
-        android:hint="Competition"
+        android:hint="@string/competition"
         android:inputType="textPersonName"
         android:selectAllOnFocus="false"
         android:singleLine="false" />
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Time (HH:MM)"
+        android:hint="@string/time"
         android:inputType="time"
         android:layout_below="@+id/venue"
         android:layout_toEndOf="@+id/date" />
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Date (YYYY-MM-DD)"
+        android:hint="@string/date"
         android:inputType="date"
         android:layout_below="@+id/venue"
         android:layout_alignParentStart="true" />
@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Venue"
+        android:hint="@string/venue"
         android:inputType="textPersonName"
         android:layout_below="@+id/competition"
         android:layout_alignParentStart="true" />
@@ -65,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Home"
+        android:hint="@string/home"
         android:inputType="textPersonName"
         android:layout_above="@+id/away"
         android:layout_alignParentStart="true" />
@@ -78,7 +78,7 @@
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/home"
         android:ems="10"
-        android:hint="Home abbr"
+        android:hint="@string/homeabbr"
         android:inputType="textPersonName"
         android:textAlignment="viewStart" />
 
@@ -87,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Away"
+        android:hint="@string/away"
         android:inputType="textPersonName"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
@@ -100,7 +100,7 @@
         android:layout_alignBottom="@+id/away"
         android:layout_toEndOf="@+id/away"
         android:ems="10"
-        android:hint="Away abbr."
+        android:hint="@string/awayabbr"
         android:inputType="textPersonName"
         android:textAlignment="viewStart" />
 
@@ -110,14 +110,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="CREATE" />
+        android:text="@string/create_match" />
 
     <EditText
         android:id="@+id/players"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="№ players"
+        android:hint="@string/players"
         android:inputType="number"
         android:layout_above="@+id/subs"
         android:layout_alignEnd="@+id/time" />
@@ -127,7 +127,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Subs"
+        android:hint="@string/subs"
         android:inputType="number"
         android:textAlignment="viewStart"
         android:layout_above="@+id/lenght"
@@ -138,7 +138,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Half len."
+        android:hint="@string/length"
         android:inputType="number"
         android:textAlignment="viewStart"
         android:layout_above="@+id/createMatch"

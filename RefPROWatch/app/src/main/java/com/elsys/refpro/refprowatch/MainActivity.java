@@ -1,6 +1,8 @@
 package com.elsys.refpro.refprowatch;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -39,15 +41,17 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     ArrayList<Integer> IntInfo = new ArrayList<Integer>();          // MatchInformation - REPLACE WITH STRING FROM MOBILE
 
     String subName, PlayerToSub;
+    String lastClickedPlayer;
 
     TextView HomeAbbr, AwayAbbr, BigTimer, SmallTimer, Abbr, Log, Half, HalfTeam, HomeResult, AwayResult;
     int homeResult = 0, awayResult = 0;
 
     int BigSeconds = 0, SmallSeconds = 0, BigMinutes = 0, SmallMinutes = 0;
     int type = 0; // 0 GOAL, 1 SUB, 2 YELLOW, 3 RED
-    String setTime = "", log = "";
+    int undoType = 0; // 1 GOAL, 2 SUB. 3 YELLOW, 4 RED, 5 HALF
+    String setTime = "", log = "", logUndo = "";
 
-    Button startButton, teamBackButton, settingsBackButton, goalButton, yellowCardButton, redCardButton, logButton, logBack, endHalf, subButton;
+    Button startButton, teamBackButton, settingsBackButton, goalButton, yellowCardButton, redCardButton, logButton, logBack, endHalf, subButton, undoButton;
     ArrayList<Button> playerButtons = new ArrayList<Button>();
     ArrayList<Button> subsButtons = new ArrayList<Button>();
     boolean isStarted = false, smallT = false, isHome = true, vibrator = false;
@@ -122,6 +126,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
         log += info.get(0) + "\n" + info.get(1) + "\n" + info.get(6) + "\n" + info.get(7) + "\n"
         + info.get(2) + " vs. " + info.get(3) + "\n\n"; // PUTS Competition, Venue, Date and Time into LogString
+        logUndo = log;
 
         ListPlayers(); // CREATES Buttons for all players
         ListSubs();    // CREATES Buttons for all substitutes
@@ -200,6 +205,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     subsLayout.setEnabled(false);
                     MainLayout.setEnabled(true);
 
+                    logUndo = log;
                     log += BigMinutes + ":" + BigSeconds + "   SUBSTITUTION - " + team + "  - " + PlayerToSub + " with " + playerName + "\n\n";
 
                     subsLayout.setVisibility(View.INVISIBLE);
@@ -229,6 +235,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     SharedPreferences.Editor editor = pref.edit();
 
                     String playerName = newPlayer.getText().toString();
+                    lastClickedPlayer = playerName;
                     int yellowCard = pref.getInt(playerName, 0);
                     int redCard = pref.getInt(playerName + "R", 0); // GETS yellow and red cards of ClickedPlayer
                     String team;
@@ -249,8 +256,11 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                     if (type == 0) {    // IF GOAL Button is clicked
 
-                        log += BigMinutes + ":" + BigSeconds + "   GOAL - " + team + "  - " + playerName + "\n\n";
+                        logUndo = log;
+                        log += setTime + "   GOAL - " + team + "  - " + playerName + "\n\n";
                         changeResult();
+
+                        undoType = 1;
                     }
                     else if (type == 1) { // IF SUBSTITUTE Button is clicked
 
@@ -258,29 +268,37 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                         subsLayout.setVisibility(View.VISIBLE);
                         setSubsNames();
                         PlayerToSub = playerName;
+
+                        undoType = 2;
                     }
                     else if (type == 2){ // IF YELLOW CARD Button is clicked
 
-                        log += BigMinutes + ":" + BigSeconds + "   YELLOW CARD - " + team + "  - " + playerName + "\n\n";
+                        logUndo = log;
+                        log += setTime + "   YELLOW CARD - " + team + "  - " + playerName + "\n\n";
                         yellowCard++;
                         editor.putInt(playerName, yellowCard);
                         editor.commit(); // SAVE new YellowCard to player
 
+                        undoType = 3;
+
                         if (yellowCard == 2 || redCard == 1) { // IF player has 2 Yellow or 1 Red Card => Disable his button
 
-                            log += BigMinutes + ":" + BigSeconds + "   RED CARD - " + team + "  - " + playerName + "\n\n";
+                            log += setTime + "   RED CARD - " + team + "  - " + playerName + "\n\n";
                             newPlayer.setEnabled(false);
                         }
 
                     }
                     else { // IF RED CARD Button is clicked
 
-                        log += BigMinutes + ":" + BigSeconds + "   RED CARD - " + team + "  - " + playerName + "\n\n";
+                        logUndo = log;
+                        log += setTime + "   RED CARD - " + team + "  - " + playerName + "\n\n";
                         redCard++;
 
                         editor.putInt(playerName + "R", redCard);
                         editor.commit();
                         newPlayer.setEnabled(false); // SAVE RedCard to player and Disable his button
+
+                        undoType = 4;
                     }
 
                     if (type != 1) { // IF GOAL, YELLOW or RED CARD is clicked => RETURN to MainLayout
@@ -344,6 +362,8 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         logBack.setOnClickListener(this);
         endHalf = (Button) findViewById(R.id.endHalf);                  // END HALF, START SECOND HALF and FULL TIME
         endHalf.setOnClickListener(this);
+        undoButton = (Button) findViewById(R.id.undo);
+        undoButton.setOnClickListener(this);
     } // Initialization of all TextView, Button, Layout variables
 
     public void Replace(String playerNameString, String subNameString) {
@@ -458,7 +478,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 SettingsLayout.setVisibility(View.INVISIBLE);
                 MainLayout.setVisibility(View.VISIBLE);
-                changeHalf(Half);
+                changeHalfString(Half);
                 break;
 
             case R.id.goal:
@@ -503,52 +523,138 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             case R.id.logBack:
 
                 logLayout.setVisibility(View.INVISIBLE);
-                MainLayout.setVisibility(View.VISIBLE);
+                SettingsLayout.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.undo:
+
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+
+                if (undoType == 1) {
+
+                    if (homePlayers.contains(lastClickedPlayer)) {
+                        homeResult--;
+                        HomeResult.setText(Integer.toString(homeResult));
+                    }
+                    else {
+                        awayResult--;
+                        AwayResult.setText(Integer.toString(awayResult));
+                    }
+                }
+                else if (undoType == 2){
+
+                    Replace(subName, PlayerToSub);
+                }
+                else if (undoType == 3) {
+
+                    int yellowCard = pref.getInt(lastClickedPlayer, 0);
+                    yellowCard--;
+                    editor.putInt(lastClickedPlayer, yellowCard);
+                    editor.commit(); // SAVE new YellowCard to player
+                }
+                else if (undoType == 4) {
+
+                    int red = pref.getInt(lastClickedPlayer + "R", 0);
+                    red--;
+                    editor.putInt(lastClickedPlayer + "R", red);
+                    editor.commit(); // SAVE new RedCard to player
+                }
+
+                if (undoType == 0)
+                    Toast.makeText(this, "YOU CAN'T REMOVE LAST OPERATION",
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "YOU REMOVED LAST OPERATION",
+                            Toast.LENGTH_SHORT).show();
+
+                undoType = 0;
+                log = logUndo;
                 break;
 
             case R.id.endHalf:
 
-                if (half < 5)
-                    half++;
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setMessage("Are you sure?").setCancelable(true)
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                if (half == 1) { // IF it's FIRST HALF
 
-                    endHalf.setText("START SECOND HALF");
+                                changeHalf();
+                            }
+                        })
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                    isStarted = false;
-                    log += BigMinutes + ":" + BigSeconds + "   END OF FIRST HALF\n\n";
-                    Toast.makeText(this, "END OF FIRST HALF",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else if (half == 2) { // IF it's HALF TIME
 
-                    endHalf.setText("FULL TIME");
+                            }
 
-                    isStarted = true;
-                    BigMinutes = IntInfo.get(2);
-                    BigSeconds = 0;
-                    SmallMinutes = 0;
-                    SmallSeconds = 0;
+                        })
+                        .setNeutralButton("Terminate", new DialogInterface.OnClickListener() {
 
-                    log += BigMinutes + ":" + "00" + "   SECOND HALF\n\n";
-                    Toast.makeText(this, "SECOND HALF",
-                            Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                    vibrator = false;
-                }
-                else if (half == 3){ // IF it's SECOND HALF
+                        half = 3;
+                        isStarted = false;
+                        logUndo = log;
+                        log += setTime + "   MATCH TERMINATED\n\n";
+                        Toast.makeText(SettingsLayout.getContext(), "MATCH TERMINATED",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }) ;
 
-                    isStarted = false;
-                    log += BigMinutes + ":" + BigSeconds + "   FULL TIME\n\n";
-                    Toast.makeText(this, "FULL TIME",
-                            Toast.LENGTH_SHORT).show();
-
-                    // >>>>>>>>>>>>>>>>>>>>>>> SEND STRING AND CLOSE APP <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                }
+                AlertDialog al = alert.create();
+                al.setTitle("Are you sure?");
+                alert.show();
 
                 break;
         }
     } // CHECKS which button was pressed
+
+    private void changeHalf() {
+
+        if (half < 5)
+            half++;
+
+        if (half == 1 && isStarted) { // IF it's FIRST HALF
+
+            endHalf.setText("START SECOND HALF");
+
+            isStarted = false;
+            logUndo = log;
+            log += setTime + "   END OF FIRST HALF\n\n";
+            Toast.makeText(SettingsLayout.getContext(), "END OF FIRST HALF",
+                    Toast.LENGTH_SHORT).show();
+        } else if (half == 2) { // IF it's HALF TIME
+
+            endHalf.setText("FULL TIME");
+
+            isStarted = true;
+            BigMinutes = IntInfo.get(2);
+            BigSeconds = 0;
+            SmallMinutes = 0;
+            SmallSeconds = 0;
+
+            logUndo = log;
+            log += BigMinutes + ":" + "00" + "   SECOND HALF\n\n";
+            Toast.makeText(SettingsLayout.getContext(), "SECOND HALF",
+                    Toast.LENGTH_SHORT).show();
+
+            vibrator = false;
+        } else if (half == 3 && isStarted) { // IF it's SECOND HALF
+
+            isStarted = false;
+            logUndo = log;
+            log += setTime + "   FULL TIME\n\n";
+            Toast.makeText(SettingsLayout.getContext(), "FULL TIME",
+                    Toast.LENGTH_SHORT).show();
+
+            // >>>>>>>>>>>>>>>>>>>>>>> SEND STRING AND CLOSE APP <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        }
+    }
 
     public void changeResult(){
 
@@ -564,7 +670,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         }
     } // CHANGES Home or Away Team result
 
-    public void changeHalf(TextView halfText) {
+    public void changeHalfString(TextView halfText) {
 
         if (half == 0)
             halfText.setText("FH");
@@ -597,14 +703,14 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 Abbr.setText(info.get(4));  // CHECKS if it's Home or Away Team menu and GETS TeamName
                 TeamLayout.setVisibility(View.VISIBLE);
                 MainLayout.setVisibility(View.INVISIBLE);
-                changeHalf(HalfTeam);   // CHECKS which Half is and SETS HalfText
+                changeHalfString(HalfTeam);   // CHECKS which Half is and SETS HalfText
             } else if (tag.equals("awayLayout")) {
 
                 isHome = false;
                 Abbr.setText(info.get(5)); // CHECKS if it's Home or Away Team menu and GETS TeamName
                 TeamLayout.setVisibility(View.VISIBLE);
                 MainLayout.setVisibility(View.INVISIBLE);
-                changeHalf(HalfTeam);   // CHECKS which Half is and SETS HalfText
+                changeHalfString(HalfTeam);   // CHECKS which Half is and SETS HalfText
             }
         }
     } // STARTS TeamLayout for Home or Away team

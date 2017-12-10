@@ -1,6 +1,10 @@
 package com.elsys.refpro.refpromobile.main;
 
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,13 +12,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.fragments.Create;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //Start MENU fragment
         com.elsys.refpro.refpromobile.fragments.Menu menu = new com.elsys.refpro.refpromobile.fragments.Menu();
@@ -73,7 +82,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu_fragment; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -86,12 +95,47 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_english) {
+
+            setLocale("en");
+
+            Toast.makeText(this, R.string.action_english,
+                    Toast.LENGTH_SHORT).show();
+
+            return true;
+        }
+        else if (id == R.id.action_bulgarian) {
+
+            setLocale("bg");
+
+            Toast.makeText(this, R.string.action_bulgarian,
+                    Toast.LENGTH_SHORT).show();
+
+            return true;
+        }
+
+        else if (id == R.id.action_german) {
+
+            setLocale("de");
+
+            Toast.makeText(this, R.string.action_german,
+                    Toast.LENGTH_SHORT).show();
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setLocale(String lang) {
+
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+        this.recreate();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

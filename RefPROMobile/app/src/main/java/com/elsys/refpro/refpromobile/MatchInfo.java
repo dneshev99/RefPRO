@@ -12,10 +12,10 @@ public class MatchInfo {
     private String competition, venue, home, away, homeabbr, awayabbr, time;
     private int players, subs, lenght;
     private String date;
-    private List<String> home_players = new ArrayList<String>();
-    public ArrayList<String> away_players = new ArrayList<String>();
-    public ArrayList<String> home_subs = new ArrayList<String>();
-    public ArrayList<String> away_subs = new ArrayList<String>();
+    private ArrayList<String> home_players = new ArrayList<String>();
+    private ArrayList<String> away_players = new ArrayList<String>();
+    private ArrayList<String> home_subs = new ArrayList<String>();
+    private ArrayList<String> away_subs = new ArrayList<String>();
 
     public MatchInfo(String competition, String venue, String home, String away, String homeabbr, String awayabbr, String time, int players, int subs, int lenght, String date) {
 
@@ -31,6 +31,7 @@ public class MatchInfo {
         this.lenght = lenght;
         this.date = date;
     }
+
 
     // region GETTERS AND SETTERS
 
@@ -165,10 +166,5 @@ public class MatchInfo {
     }
 
 //endregion
-
-    public void add(String name) {
-
-        home_players.add(name);
-    }
 
 }

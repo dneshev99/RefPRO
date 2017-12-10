@@ -15,9 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.elsys.refpro.refpromobile.MatchInfo;
 import com.elsys.refpro.refpromobile.database.DataBase;
 import com.elsys.refpro.refpromobile.R;
+
+import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -32,6 +36,11 @@ public class Info extends Fragment {
     int match_id;
     boolean canCreate = true;
     DataBase db;
+    MatchInfo match;
+    ArrayList<String> home_players = new ArrayList<String>();
+    ArrayList<String> away_players = new ArrayList<String>();
+    ArrayList<String> home_subs = new ArrayList<String>();
+    ArrayList<String> away_subs = new ArrayList<String>();
 
     @Nullable
     @Override
@@ -52,9 +61,10 @@ public class Info extends Fragment {
         SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
         match_id = mPrefs.getInt("match_id", 0);
 
-        final Cursor data = db.getRow(match_id);
 
-        data.moveToFirst();
+       final Cursor data = db.getRow(match_id);
+
+       data.moveToFirst();
 
 
         //GET information about current match and SET as Text
@@ -71,19 +81,23 @@ public class Info extends Fragment {
         time.setText(data.getString(8));
         teams.setText("" + data.getString(3) + " vs. " + data.getString(4));
 
+        match = new MatchInfo(data.getString(1), data.getString(2), data.getString(3), data.getString(4),
+                data.getString(5), data.getString(6), data.getString(8), data.getInt(9), data.getInt(10), data.getInt(11),
+                data.getString(8));
+
         //endregion
 
         //Create form for every player
-        CreateForms(Integer.parseInt(data.getString(9)), layout, "Home player", 100);
+        CreateForms(Integer.parseInt(data.getString(9)), layout, 1, 100);
 
-        SetTitle(layout, params, "Home substitutions");
-        CreateForms(Integer.parseInt(data.getString(10)), layout, "Home substitute", 200);
+        SetTitle(layout, params, 1);
+        CreateForms(Integer.parseInt(data.getString(10)), layout, 2, 200);
 
-        SetTitle(layout, params, "Away players");
-        CreateForms(Integer.parseInt(data.getString(9)), layout, "Away player", 300);
+        SetTitle(layout, params, 2);
+        CreateForms(Integer.parseInt(data.getString(9)), layout, 3, 300);
 
-        SetTitle(layout, params, "Away substitutes");
-        CreateForms(Integer.parseInt(data.getString(10)), layout, "Away player", 400);
+        SetTitle(layout, params, 3);
+        CreateForms(Integer.parseInt(data.getString(10)), layout, 4, 400);
 
         /////
 
@@ -96,42 +110,118 @@ public class Info extends Fragment {
 
                     EditText check;
                     check = (EditText) createView.findViewById(counter + 100);
+                    char[] toChar = check.toString().toCharArray();
+
+                    if (check.getText().toString().length() < 1 || (toChar[1] != '.' || toChar[2] != '.')
+                            || !(toChar[1] == '.' && Character.isDigit(toChar[0])) ||
+                            !(toChar[2] == '.' && Character.isDigit(toChar[0])) && Character.isDigit(toChar[1])) {
+
+                        canCreate = false;
+                        check.setError(getResources().getString(R.string.empty_field));
+                    }
+                    else {
+
+                        home_players.add(check.getText().toString());
+                    }
+                }
+
+                for (int counter = 0; counter < Integer.parseInt(data.getString(10)); counter++) {
+
+                    EditText check;
+                    check = (EditText) createView.findViewById(counter + 200);
 
                     if (check.getText().toString().length() < 1) {
 
                         canCreate = false;
-                        check.setError("Empty field!!!");
+                        check.setError(getResources().getString(R.string.empty_field));
                     }
                     else {
 
-                        //match.add(check.getText().toString());
+                        home_subs.add(check.getText().toString());
                     }
+                }
+
+                for (int counter = 0; counter < Integer.parseInt(data.getString(9)); counter++) {
+
+                    EditText check;
+                    check = (EditText) createView.findViewById(counter + 300);
+
+                    if (check.getText().toString().length() < 1) {
+
+                        canCreate = false;
+                        check.setError(getResources().getString(R.string.empty_field));
+                    }
+                    else {
+
+                        away_players.add(check.getText().toString());
+                    }
+                }
+
+                for (int counter = 0; counter < Integer.parseInt(data.getString(10)); counter++) {
+
+                    EditText check;
+                    check = (EditText) createView.findViewById(counter + 400);
+
+                    if (check.getText().toString().length() < 1) {
+
+                        canCreate = false;
+                        check.setError(getResources().getString(R.string.empty_field));
+                    }
+                    else {
+
+                        away_subs.add(check.getText().toString());
+                    }
+                }
+
+                if (!canCreate) {
+
+                    canCreate = true;
+                }
+                else {
+                    match.setHome_players(home_players);
+                    match.setHome_subs(home_subs);
+                    match.setAway_players(away_players);
+                    match.setAway_subs(away_subs);
+
+                    Toast.makeText(getActivity(), "Match started",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+
 
         return createView;
     }
 
 
-    public void SetTitle(LinearLayout layout, LinearLayout.LayoutParams params, String text) {
+    public void SetTitle(LinearLayout layout, LinearLayout.LayoutParams params, int type) {
 
         TextView field = new TextView(this.getActivity());
         field.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        field.setText(text);
+
+        if (type == 1)
+            field.setText(R.string.home_subs);
+        else if (type == 2)
+            field.setText(R.string.away_players);
+        else
+            field.setText(R.string.away_subs);
+
         field.setTextColor(Color.parseColor("#000000"));
         field.setTextSize(24);
         field.setTypeface(null, Typeface.BOLD);
         layout.addView(field, params);
     }
 
-    public void CreateForms(int range, LinearLayout layout, String text, int IDIncrease) {
+    public void CreateForms(int range, LinearLayout layout, int type, int IDIncrease) {
 
         for (int counter = 0; counter < range; counter++) {
 
             EditText form = new EditText(this.getActivity());
             form.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            form.setHint(text + " " + (counter + 1));
+
+            form.setHint(getResources().getString(R.string.players_form));
+
             form.setId(counter + IDIncrease);
             form.setGravity(Gravity.CENTER);
 

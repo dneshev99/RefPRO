@@ -1,10 +1,8 @@
 package com.elsys.refpro.refpromobile.fragments;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +30,7 @@ public class Create extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        createView = inflater.inflate(R.layout.create, container, false);
+        createView = inflater.inflate(R.layout.create_fragment, container, false);
 
         // region INITIALIZE
         competition = (EditText) createView.findViewById(R.id.competition);
@@ -79,14 +77,15 @@ public class Create extends Fragment implements View.OnClickListener{
 
             char [] elements = check.toCharArray();
 
-            if (Integer.parseInt(String.valueOf(elements[0])) > 2 || Integer.parseInt(String.valueOf(elements[1])) > 3
-                    || Integer.parseInt(String.valueOf(elements[3])) > 5 || elements.length != 5)
+            if (Integer.parseInt(String.valueOf(elements[0])) > 2 || (Integer.parseInt(String.valueOf(elements[1])) > 3 && Integer.parseInt(String.valueOf(elements[0])) == 2)
+                    || Integer.parseInt(String.valueOf(elements[3])) > 5 || elements.length != 5) {
 
                 time.setError("Wrong time format (HH:MM)");
                 canCreate = false;
+            }
         }
 
-        if (date.getText().toString().isEmpty()) {
+        if (date.getText().toString().isEmpty() || date.getText().toString().length() != 10)   {
 
             date.setError("Wrong date format (YYYY-MM-DD)");
             canCreate = false;
@@ -125,13 +124,12 @@ public class Create extends Fragment implements View.OnClickListener{
                     playersInt, subsInt, lenghtInt);
 
             if (insertData)
-                Toast.makeText(getActivity(), "New match created successfully!!!",
+                Toast.makeText(getActivity(), R.string.create_success,
                         Toast.LENGTH_LONG).show();
             else
-                Toast.makeText(getActivity(), "Something went wrong!!!",
+                Toast.makeText(getActivity(), R.string.error,
                         Toast.LENGTH_LONG).show();
 
-            CreateNotification();
 
             Menu menu = new Menu();
             android.app.FragmentManager fragmentManager = getFragmentManager();
@@ -139,18 +137,12 @@ public class Create extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void CreateNotification() {
-
-
-
-    }
-
 
     public void CheckStringParameters(EditText field, int length, String text) {
 
         if (field.getText().toString().length() < 1 || field.getText().toString().length() > length) {
 
-            field.setError(text + " name must be between 1 and " + length +  " characters");
+            field.setError(getResources().getString(R.string.create_error));
             canCreate = false;
         }
     }
@@ -166,12 +158,12 @@ public class Create extends Fragment implements View.OnClickListener{
 
             if (value < min || value > max) {
 
-                field.setError(text + " must be between " + min + " and " + max);
+                field.setError(getResources().getString(R.string.create_error));
                 canCreate = false;
             }
         }
         else {
-            field.setError(text + " must be between " + min + " and " + max);
+            field.setError(getResources().getString(R.string.create_error));
             canCreate = false;
         }
 

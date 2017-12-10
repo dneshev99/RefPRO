@@ -5,11 +5,11 @@
         <item
             android:id="@+id/nav_menu"
             android:icon="@drawable/ic_menu_send"
-            android:title="Menu" />
+            android:title="@string/nav_menu" />
         <item
             android:id="@+id/nav_create"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Create" />
+            android:title="@string/nav_create" />
 
     </group>
 

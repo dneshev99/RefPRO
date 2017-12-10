@@ -17,7 +17,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:textColor="#FFFFFF"
-            android:textSize="36sp"
+            android:textSize="36dp"
             android:textStyle="bold" />
 
         <ImageView

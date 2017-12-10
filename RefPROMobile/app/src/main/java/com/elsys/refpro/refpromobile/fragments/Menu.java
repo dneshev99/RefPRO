@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class Menu extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        menuView = inflater.inflate(R.layout.menu, container, false);
+        menuView = inflater.inflate(R.layout.menu_fragment, container, false);
 
         //region INITIALIZE
         final SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
@@ -53,6 +54,8 @@ public class Menu extends Fragment {
             fixture.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             fixture.setId(Integer.parseInt(data.getString(0)));
             fixture.setText(data.getString(7) + "  " + data.getString(5) + " - " + data.getString(6));
+            //float dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getResources().getDisplayMetrics());
+            //fixture.setTextSize(dp);
 
             final int id = Integer.parseInt(data.getString(0));
 
@@ -67,8 +70,8 @@ public class Menu extends Fragment {
 
                     //CREATE AlertDialog with options to OPEN or DELETE current match
                     AlertDialog.Builder alert = new AlertDialog.Builder(menuView.getContext());
-                    alert.setMessage("Do you want to Open match information, to Delete current match or to Edit?").setCancelable(true)
-                            .setPositiveButton("Open", new DialogInterface.OnClickListener() {
+                    alert.setMessage(R.string.alert_text).setCancelable(true)
+                            .setPositiveButton(R.string.open, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
@@ -77,32 +80,23 @@ public class Menu extends Fragment {
                                     fragmentManager.beginTransaction().replace(R.id.content_frame, info).commit();
                                 }
                             })
-                            .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
                                     db.delete(id);
 
-                                    Toast.makeText(getActivity(), "Match deleted successfully!!!",
+                                    Toast.makeText(getActivity(), R.string.delete_success,
                                             Toast.LENGTH_LONG).show();
 
                                     Menu menu = new Menu();
                                     android.app.FragmentManager fragmentManager = getFragmentManager();
                                     fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
                                 }
-                            })
-                            .setNeutralButton("Edit", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    Info info = new Info();
-                                    android.app.FragmentManager fragmentManager = getFragmentManager();
-                                    fragmentManager.beginTransaction().replace(R.id.content_frame, info).commit();
-                                }
                     });
 
                     AlertDialog al = alert.create();
-                    al.setTitle("Match Options");
+                    al.setTitle(R.string.options);
                     alert.show();
                 }
 
