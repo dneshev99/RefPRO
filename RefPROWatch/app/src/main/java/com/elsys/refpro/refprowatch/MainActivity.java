@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -15,12 +16,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 public class MainActivity extends WearableActivity implements View.OnClickListener {
 
@@ -38,7 +52,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     ArrayList<String>  awayPlayers = new ArrayList<String>(); // MatchInformation - REPLACE WITH STRING FROM MOBILE
     ArrayList<String>  homeSubs = new ArrayList<String>();    // MatchInformation - REPLACE WITH STRING FROM MOBILE
     ArrayList<String>  awaySubs = new ArrayList<String>();    // MatchInformation - REPLACE WITH STRING FROM MOBILE
-    ArrayList<Integer> IntInfo = new ArrayList<Integer>();          // MatchInformation - REPLACE WITH STRING FROM MOBILE
+    ArrayList<Integer> IntInfo = new ArrayList<Integer>();     // MatchInformation - REPLACE WITH STRING FROM MOBILE
 
     String subName, PlayerToSub;
     String lastClickedPlayer;
@@ -49,7 +63,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     int BigSeconds = 0, SmallSeconds = 0, BigMinutes = 0, SmallMinutes = 0;
     int type = 0; // 0 GOAL, 1 SUB, 2 YELLOW, 3 RED
     int undoType = 0; // 1 GOAL, 2 SUB. 3 YELLOW, 4 RED, 5 HALF
-    String setTime = "", log = "", logUndo = "";
+    String setTime = "", logText = "";
 
     Button startButton, teamBackButton, settingsBackButton, goalButton, yellowCardButton, redCardButton, logButton, logBack, endHalf, subButton, undoButton;
     ArrayList<Button> playerButtons = new ArrayList<Button>();
@@ -60,6 +74,8 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     LinearLayout playersLayout, playersView, logLayout, subsLayout, subsView;
 
     int half = 0; // 0 FH, 1 HT, 2 SH, 3 FT
+
+    ArrayList<MatchEventDTO> events = new ArrayList();
 
     //endregion
 
@@ -124,9 +140,8 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         });
 
 
-        log += info.get(0) + "\n" + info.get(1) + "\n" + info.get(6) + "\n" + info.get(7) + "\n"
-        + info.get(2) + " vs. " + info.get(3) + "\n\n"; // PUTS Competition, Venue, Date and Time into LogString
-        logUndo = log;
+        addEvent("", "", "",  info.get(0) + "\n" + info.get(1) + "\n" + info.get(6) + "\n" + info.get(7) + "\n"
+                + info.get(2) + " vs. " + info.get(3) + "\n\n", true);
 
         ListPlayers(); // CREATES Buttons for all players
         ListSubs();    // CREATES Buttons for all substitutes
@@ -205,8 +220,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     subsLayout.setEnabled(false);
                     MainLayout.setEnabled(true);
 
-                    logUndo = log;
-                    log += BigMinutes + ":" + BigSeconds + "   SUBSTITUTION - " + team + "  - " + PlayerToSub + " with " + playerName + "\n\n";
+                    addEvent(BigMinutes + ":" + BigSeconds, "SUBSTITUTION", team, PlayerToSub + " with " + playerName, false);
 
                     subsLayout.setVisibility(View.INVISIBLE);
                     MainLayout.setVisibility(View.VISIBLE);
@@ -216,6 +230,83 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             subsView.addView(newSub); // CREATE Button for current substitute
         }
     }   // CREATES Buttons for all substitutes
+
+    private void addEvent(String time, String eventType, String team, String message, boolean escape) {
+
+        MatchEventDTO newEvent = null;
+
+        if (!escape) {
+
+            MatchEventDTO event = new MatchEventDTO(time + "   ", eventType + " - ", team + "  - ", message);
+            newEvent = event;
+        }
+        else {
+
+            MatchEventDTO event = new MatchEventDTO(time, eventType, team, message);
+            newEvent = event;
+        }
+
+        events.add(newEvent);
+
+        sendEvent(newEvent);
+
+    }
+
+    private void sendEvent(MatchEventDTO newEvent) {
+
+        //final String token = preferences.getString("token","N/A");
+        final String token = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTUxNDM4NDIyMX0";
+
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder()
+                        .addHeader("Authorization", token)
+                        .build();
+                android.util.Log.i("HERE:", newRequest.toString());
+                android.util.Log.i("HERE:", newRequest.header("Authorization"));
+                return chain.proceed(newRequest);
+            }
+        }).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(client)
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        SendService service = retrofit.create(SendService.class);
+
+        service.send(newEvent).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "SUCCESS",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(getApplicationContext(), "NZ MA NE RABOTI",
+                            Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                Toast.makeText(getApplicationContext(), "FAILURE",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+
+    }
+
+    private void removeEvent() {
+
+        events.remove(events.size() - 1);
+    }
 
     private void ListPlayers() {
 
@@ -256,8 +347,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                     if (type == 0) {    // IF GOAL Button is clicked
 
-                        logUndo = log;
-                        log += setTime + "   GOAL - " + team + "  - " + playerName + "\n\n";
+                        addEvent(setTime, "GOAL", team, playerName, false);
                         changeResult();
 
                         undoType = 1;
@@ -273,8 +363,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     }
                     else if (type == 2){ // IF YELLOW CARD Button is clicked
 
-                        logUndo = log;
-                        log += setTime + "   YELLOW CARD - " + team + "  - " + playerName + "\n\n";
+                        addEvent(setTime, "YELLOW CARD", team, playerName, false);
                         yellowCard++;
                         editor.putInt(playerName, yellowCard);
                         editor.commit(); // SAVE new YellowCard to player
@@ -283,15 +372,14 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                         if (yellowCard == 2 || redCard == 1) { // IF player has 2 Yellow or 1 Red Card => Disable his button
 
-                            log += setTime + "   RED CARD - " + team + "  - " + playerName + "\n\n";
+                            addEvent(setTime, "RED CARD", team, playerName, false);
                             newPlayer.setEnabled(false);
                         }
 
                     }
                     else { // IF RED CARD Button is clicked
 
-                        logUndo = log;
-                        log += setTime + "   RED CARD - " + team + "  - " + playerName + "\n\n";
+                        addEvent(setTime, "RED CARD", team, playerName, false);
                         redCard++;
 
                         editor.putInt(playerName + "R", redCard);
@@ -338,7 +426,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
         playersLayout = (LinearLayout) findViewById(R.id.playersLayout);    // Layout parent of ScrollView with all players
         subsLayout = (LinearLayout) findViewById(R.id.subsLayout);          // Layout parent of ScrollView with all substitutes
-        logLayout = (LinearLayout) findViewById(R.id.logLayout);            // Layout which Prints match log
+        logLayout = (LinearLayout) findViewById(R.id.logLayout);            // Layout which Prints match logText
         playersView = (LinearLayout) findViewById(R.id.playersView);        // Layout which Lists player names
         subsView = (LinearLayout) findViewById(R.id.subsView);              // Layout which Lists substitute names
 
@@ -517,7 +605,16 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 SettingsLayout.setVisibility(View.INVISIBLE);
                 logLayout.setVisibility(View.VISIBLE);
-                Log.setText(log);
+
+                logText = "";
+
+                for(int counter = 0; counter <= events.size() - 1; counter++){
+
+                    logText += events.get(counter).toString();
+                    logText += "\n\n";
+                }
+
+                Log.setText(logText);
                 break;
 
             case R.id.logBack:
@@ -533,6 +630,8 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 if (undoType == 1) {
 
+                    addEvent(setTime, "", "", " - GOAL CANCELED", true);
+
                     if (homePlayers.contains(lastClickedPlayer)) {
                         homeResult--;
                         HomeResult.setText(Integer.toString(homeResult));
@@ -544,9 +643,13 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 }
                 else if (undoType == 2){
 
+                    addEvent(setTime, "", "", " - SUBSTITUTION CANCELED", true);
+
                     Replace(subName, PlayerToSub);
                 }
                 else if (undoType == 3) {
+
+                    addEvent(setTime, "", "", " - YELLOW CARD CANCELED", true);
 
                     int yellowCard = pref.getInt(lastClickedPlayer, 0);
                     yellowCard--;
@@ -554,6 +657,8 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     editor.commit(); // SAVE new YellowCard to player
                 }
                 else if (undoType == 4) {
+
+                    addEvent(setTime, "", "", " - RED CARD CANCELED", true);
 
                     int red = pref.getInt(lastClickedPlayer + "R", 0);
                     red--;
@@ -569,7 +674,6 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                             Toast.LENGTH_SHORT).show();
 
                 undoType = 0;
-                log = logUndo;
                 break;
 
             case R.id.endHalf:
@@ -597,12 +701,13 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        half = 3;
-                        isStarted = false;
-                        logUndo = log;
-                        log += setTime + "   MATCH TERMINATED\n\n";
-                        Toast.makeText(SettingsLayout.getContext(), "MATCH TERMINATED",
-                                Toast.LENGTH_SHORT).show();
+                        if (half < 3) {
+                            half = 3;
+                            isStarted = false;
+                            addEvent(setTime, "", "", " - MATCH TERMINATED", true);
+                            Toast.makeText(SettingsLayout.getContext(), "MATCH TERMINATED",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }) ;
 
@@ -624,8 +729,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             endHalf.setText("START SECOND HALF");
 
             isStarted = false;
-            logUndo = log;
-            log += setTime + "   END OF FIRST HALF\n\n";
+            addEvent(setTime, "", "", " - END OF FIRST HALF", true);
             Toast.makeText(SettingsLayout.getContext(), "END OF FIRST HALF",
                     Toast.LENGTH_SHORT).show();
         } else if (half == 2) { // IF it's HALF TIME
@@ -638,8 +742,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             SmallMinutes = 0;
             SmallSeconds = 0;
 
-            logUndo = log;
-            log += BigMinutes + ":" + "00" + "   SECOND HALF\n\n";
+            addEvent(setTime, "", "", " - SECOND HALF", true);
             Toast.makeText(SettingsLayout.getContext(), "SECOND HALF",
                     Toast.LENGTH_SHORT).show();
 
@@ -647,8 +750,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         } else if (half == 3 && isStarted) { // IF it's SECOND HALF
 
             isStarted = false;
-            logUndo = log;
-            log += setTime + "   FULL TIME\n\n";
+            addEvent(setTime, "", "", " - FULL TIME", true);
             Toast.makeText(SettingsLayout.getContext(), "FULL TIME",
                     Toast.LENGTH_SHORT).show();
 
