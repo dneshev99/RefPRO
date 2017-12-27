@@ -1,7 +1,6 @@
 package com.elsys.refpro.refpromobile.fragments;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,19 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.elsys.refpro.refpromobile.database.DataBase;
+import com.elsys.refpro.refpromobile.database.LocalDatabase;
 import com.elsys.refpro.refpromobile.R;
-import com.elsys.refpro.refpromobile.http.CreateService;
-import com.elsys.refpro.refpromobile.http.LoginService;
-import com.elsys.refpro.refpromobile.http.dto.MatchDto;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import com.elsys.refpro.refpromobile.http.CreateMatchService;
+import com.elsys.refpro.refpromobile.http.dto.CreateMatchDto;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,12 +37,12 @@ public class Create extends Fragment implements View.OnClickListener{
 
     View createView;
     boolean canCreate = true;
-    EditText competition, venue, players, subs, lenght, home, away, homeabbr, awayabbr, time, date;
+    EditText competition, venue, players, subs, length, home, away, homeAbbr, awayAbbr, time, date;
     Button create;
-    DataBase db;
+    ProgressBar loading;
 
+    LocalDatabase db;
     SharedPreferences preferences;
-
 
     @Nullable
     @Override
@@ -61,19 +55,21 @@ public class Create extends Fragment implements View.OnClickListener{
         venue = (EditText) createView.findViewById(R.id.venue);
         players = (EditText) createView.findViewById(R.id.players);
         subs = (EditText) createView.findViewById(R.id.subs);
-        lenght = (EditText) createView.findViewById(R.id.lenght);
+        length = (EditText) createView.findViewById(R.id.lenght);
         home = (EditText) createView.findViewById(R.id.home);
         away = (EditText) createView.findViewById(R.id.away);
-        homeabbr = (EditText) createView.findViewById(R.id.homeabbr);
-        awayabbr = (EditText) createView.findViewById(R.id.awayabbr);
+        homeAbbr = (EditText) createView.findViewById(R.id.homeabbr);
+        awayAbbr = (EditText) createView.findViewById(R.id.awayabbr);
         time = (EditText) createView.findViewById(R.id.time);
         date = (EditText) createView.findViewById(R.id.date);
 
         create = (Button) createView.findViewById(R.id.createMatch);
         create.setOnClickListener(this);
 
+        loading = (ProgressBar) createView.findViewById(R.id.progressBar);
+
         //endregiond
-        db = new DataBase(this.getActivity());
+        db = new LocalDatabase(this.getActivity());
 
         return createView;
     }
@@ -81,14 +77,14 @@ public class Create extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
 
-        int subsInt = 0, playersInt = 0, lenghtInt = 0;
+        int subsInt, playersInt, lengthInt;
 
-        CheckStringParameters(competition, 100, "Competition");
-        CheckStringParameters(venue, 50, "Venue");
-        CheckStringParameters(home, 30, "Home team");
-        CheckStringParameters(away, 30, "Away team");
-        CheckStringParameters(awayabbr, 5, "Away team abbreviation");
-        CheckStringParameters(homeabbr, 5, "Home team abbreviation");
+        CheckStringParameters(competition, 100);
+        CheckStringParameters(venue, 50);
+        CheckStringParameters(home, 30);
+        CheckStringParameters(away, 30);
+        CheckStringParameters(awayAbbr, 5);
+        CheckStringParameters(homeAbbr, 5);
 
         if (time.getText().toString().isEmpty()) {
 
@@ -132,11 +128,11 @@ public class Create extends Fragment implements View.OnClickListener{
             }
         }
 
-        playersInt = CheckIntParameters(players, 8, 15, "Players");
-        subsInt = CheckIntParameters(subs, 3, 12, "Substitutes");
-        lenghtInt = CheckIntParameters(lenght, 30, 55, "Half lenght");
+        playersInt = CheckIntParameters(players, 8, 15);
+        subsInt = CheckIntParameters(subs, 3, 12);
+         lengthInt = CheckIntParameters(length, 30, 55);
 
-        if (canCreate) {
+        if (!canCreate) {
 
             canCreate = true;
         }
@@ -163,16 +159,58 @@ public class Create extends Fragment implements View.OnClickListener{
                     .build();
 
 
-            CreateService service = retrofit.create(CreateService.class);
+            CreateMatchService service = retrofit.create(CreateMatchService.class);
 
-            service.create(new MatchDto(false, "l", "v", "2", "1", "v", "b", "b", "b", 11, 7, 45, "", "", "", "", "")).enqueue(new Callback<ResponseBody>() {
+            loading.setVisibility(View.VISIBLE);
+            create.setVisibility(View.INVISIBLE);
+
+            final int finalPlayersInt = playersInt;
+            final int finalSubsInt = subsInt;
+            final int finalLenghtInt =  lengthInt;
+            service.create(new CreateMatchDto(false, competition.getText().toString(), venue.getText().toString(),
+                    date.getText().toString(), time.getText().toString(), home.getText().toString(), away.getText().toString(),
+                    homeAbbr.getText().toString(), awayAbbr.getText().toString(),
+                    finalPlayersInt, finalSubsInt, finalLenghtInt)).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
+
+                        String mongoID = null;
+                        try {
+                            mongoID = response.body().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        Toast.makeText(getActivity(), "Success:" + mongoID, Toast.LENGTH_LONG).show();
+
+                        boolean insertData = db.addData(competition.getText().toString(), venue.getText().toString(),
+                                home.getText().toString(), away.getText().toString(), homeAbbr.getText().toString()
+                                , awayAbbr.getText().toString(), date.getText().toString(), time.getText().toString(),
+                                finalPlayersInt, finalSubsInt, finalLenghtInt, mongoID);
+
+                        if (insertData)
+                            Toast.makeText(getActivity(), R.string.create_success,
+                                    Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(getActivity(), R.string.error,
+                                    Toast.LENGTH_LONG).show();
+
+                        loading.setVisibility(View.INVISIBLE);
+                        create.setVisibility(View.VISIBLE);
+
+                        Menu menu = new Menu();
+                        android.app.FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
+
                     } else {
                         Toast.makeText(getActivity(), "Error1", Toast.LENGTH_LONG).show();
                         Log.i("HERE", String.valueOf(response.code()));
+
+                        loading.setVisibility(View.INVISIBLE);
+                        create.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -180,31 +218,17 @@ public class Create extends Fragment implements View.OnClickListener{
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
 
                     Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+
+                    loading.setVisibility(View.INVISIBLE);
+                    create.setVisibility(View.VISIBLE);
                 }
             });
 
-
-           /* boolean insertData = db.addData(competition.getText().toString(), venue.getText().toString(),
-                    home.getText().toString(), away.getText().toString(), homeabbr.getText().toString()
-            , awayabbr.getText().toString(), date.getText().toString(), time.getText().toString(),
-                    playersInt, subsInt, lenghtInt);
-
-            if (insertData)
-                Toast.makeText(getActivity(), R.string.create_success,
-                        Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(getActivity(), R.string.error,
-                        Toast.LENGTH_LONG).show();
-
-
-            Menu menu = new Menu();
-            android.app.FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();*/
         }
     }
 
 
-    public void CheckStringParameters(EditText field, int length, String text) {
+    public void CheckStringParameters(EditText field, int length) {
 
         if (field.getText().toString().length() < 1 || field.getText().toString().length() > length) {
 
@@ -213,7 +237,7 @@ public class Create extends Fragment implements View.OnClickListener{
         }
     }
 
-    public int CheckIntParameters(EditText field, int min, int max, String text) {
+    public int CheckIntParameters(EditText field, int min, int max) {
 
         String toInt = field.getText().toString().trim();
         int value = 0;

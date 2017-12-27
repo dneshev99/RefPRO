@@ -8,10 +8,10 @@ public class MatchInfo {
     private String competition, venue, home, away, homeabbr, awayabbr, time, date;
     private int players, subs, lenght;
 
-    private ArrayList<String> home_players = new ArrayList<String>();
-    private ArrayList<String> away_players = new ArrayList<String>();
-    private ArrayList<String> home_subs = new ArrayList<String>();
-    private ArrayList<String> away_subs = new ArrayList<String>();
+    private ArrayList<String> home_players = new ArrayList<>();
+    private ArrayList<String> away_players = new ArrayList<>();
+    private ArrayList<String> home_subs = new ArrayList<>();
+    private ArrayList<String> away_subs = new ArrayList<>();
 
     public MatchInfo(String competition, String venue, String home, String away, String homeabbr, String awayabbr, String time, String date, int players, int subs, int lenght, ArrayList<String> home_players, ArrayList<String> away_players, ArrayList<String> home_subs, ArrayList<String> away_subs) {
         this.competition = competition;

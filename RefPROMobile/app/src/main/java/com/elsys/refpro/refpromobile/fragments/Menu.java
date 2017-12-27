@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,19 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
-import com.elsys.refpro.refpromobile.database.DataBase;
+import com.elsys.refpro.refpromobile.database.LocalDatabase;
 
 import static android.content.Context.MODE_PRIVATE;
-
-/**
- * Created by user on 12.11.2017 г..
- */
 
 public class Menu extends Fragment {
 
     View menuView;
     int match_id;
-    DataBase db;
+    LocalDatabase db;
 
     @Nullable
     @Override
@@ -44,7 +39,7 @@ public class Menu extends Fragment {
         match_id = mPrefs.getInt("ID", 0);
 
         //endregion
-        db = new DataBase(this.getActivity());
+        db = new LocalDatabase(this.getActivity());
 
         Cursor data = db.getData();
 
@@ -54,8 +49,6 @@ public class Menu extends Fragment {
             fixture.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             fixture.setId(Integer.parseInt(data.getString(0)));
             fixture.setText(data.getString(7) + "  " + data.getString(5) + " - " + data.getString(6));
-            //float dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getResources().getDisplayMetrics());
-            //fixture.setTextSize(dp);
 
             final int id = Integer.parseInt(data.getString(0));
 
@@ -66,7 +59,7 @@ public class Menu extends Fragment {
                     //GET the information about match with it's unique key
                     SharedPreferences.Editor prefsEditor = mPrefs.edit();
                     prefsEditor.putInt("match_id", id);
-                    prefsEditor.commit();
+                    prefsEditor.apply();
 
                     //CREATE AlertDialog with options to OPEN or DELETE current match
                     AlertDialog.Builder alert = new AlertDialog.Builder(menuView.getContext());

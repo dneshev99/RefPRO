@@ -1,10 +1,6 @@
 package com.elsys.refpro.refpromobile.http.dto;
 
-/**
- * Created by Mitko on 10.12.2017 г..
- */
-
-public class MatchDto {
+public class CreateMatchDto {
 
     private boolean isActive;
 
@@ -21,14 +17,7 @@ public class MatchDto {
     private int subs;
     private int length;
 
-    private String playersHome;
-    private String playersAway;
-    private String subsHome;
-    private String subsAway;
-
-    private String log;
-
-    public MatchDto(boolean isActive, String competition, String venue, String date, String time, String home, String away, String homeabbr, String awayabbr, int players, int subs, int length, String playersHome, String playersAway, String subsHome, String subsAway, String log) {
+    public CreateMatchDto(boolean isActive, String competition, String venue, String date, String time, String home, String away, String homeabbr, String awayabbr, int players, int subs, int length) {
         this.isActive = isActive;
         this.competition = competition;
         this.venue = venue;
@@ -41,11 +30,9 @@ public class MatchDto {
         this.players = players;
         this.subs = subs;
         this.length = length;
-        this.playersHome = playersHome;
-        this.playersAway = playersAway;
-        this.subsHome = subsHome;
-        this.subsAway = subsAway;
-        this.log = log;
+    }
+
+    public CreateMatchDto() {
     }
 
     public boolean isActive() {
@@ -142,45 +129,5 @@ public class MatchDto {
 
     public void setLength(int length) {
         this.length = length;
-    }
-
-    public String getPlayersHome() {
-        return playersHome;
-    }
-
-    public void setPlayersHome(String playersHome) {
-        this.playersHome = playersHome;
-    }
-
-    public String getPlayersAway() {
-        return playersAway;
-    }
-
-    public void setPlayersAway(String playersAway) {
-        this.playersAway = playersAway;
-    }
-
-    public String getSubsHome() {
-        return subsHome;
-    }
-
-    public void setSubsHome(String subsHome) {
-        this.subsHome = subsHome;
-    }
-
-    public String getSubsAway() {
-        return subsAway;
-    }
-
-    public void setSubsAway(String subsAway) {
-        this.subsAway = subsAway;
-    }
-
-    public String getLog() {
-        return log;
-    }
-
-    public void setLog(String log) {
-        this.log = log;
     }
 }

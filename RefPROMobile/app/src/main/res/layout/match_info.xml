@@ -89,4 +89,12 @@
         android:layout_height="wrap_content"
         android:text="@string/start_match" />
 
+    <ProgressBar
+        android:id="@+id/progressBar3"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.96"
+        android:visibility="gone" />
+
 </LinearLayout>

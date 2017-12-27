@@ -1,10 +1,6 @@
 package com.elsys.refpro.refpromobile.main;
 
-
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,7 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,13 +23,11 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    private TextView getName;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         //Start MENU fragment
         com.elsys.refpro.refpromobile.fragments.Menu menu = new com.elsys.refpro.refpromobile.fragments.Menu();
@@ -46,8 +39,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle("RefPRO Mobile");
-        //logoto izmestva texta
-        //getSupportActionBar().setLogo(R.drawable.logo);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -61,14 +52,16 @@ public class MainActivity extends AppCompatActivity
         View navView = navigationView.getHeaderView(0);
 
         //GET Username and SET in NAVDrawer
-        getName = (TextView) navView.findViewById(R.id.refereeName);
+        TextView getUserName = (TextView) navView.findViewById(R.id.refereeName);
         String refName= getIntent().getExtras().getString("Username");
-        getName.setText(refName);
+        getUserName.setText(refName);
     }
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

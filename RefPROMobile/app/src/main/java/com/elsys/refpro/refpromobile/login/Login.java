@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
@@ -27,7 +28,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Login extends AppCompatActivity {
 
     EditText username, password;
-    Button sign;
+    Button signButton;
+    ProgressBar loading;
 
     SharedPreferences preferences;
 
@@ -39,13 +41,14 @@ public class Login extends AppCompatActivity {
 
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        sign = (Button) findViewById(R.id.sign);
+        signButton = (Button) findViewById(R.id.sign);
         final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        loading = (ProgressBar) findViewById(R.id.progressBar);
 
         preferences = getSharedPreferences("RefPRO" , 0);
 
 
-        sign.setOnClickListener(new View.OnClickListener() {
+        signButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -57,12 +60,15 @@ public class Login extends AppCompatActivity {
                     vibrator.vibrate(300);
                 } else {
 
-                   /* Retrofit retrofit = new Retrofit.Builder()
+                    Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("http://10.0.2.2:8080")
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
                     LoginService service = retrofit.create(LoginService.class);
+
+                    loading.setVisibility(View.VISIBLE);
+                    signButton.setVisibility(View.INVISIBLE);
 
                     service.login(new AccountDto(userString,passString)).enqueue(new Callback<ResponseBody>() {
 
@@ -73,10 +79,7 @@ public class Login extends AppCompatActivity {
 
                                     SharedPreferences.Editor prefsEditor = preferences.edit();
                                     prefsEditor.putString("token", response.headers().get("authorization"));
-                                    prefsEditor.commit();
-
-                                    //Toast.makeText(getBaseContext(), "Code " + response.code() + " Token " + response.headers().get("Authorization"),
-                                          //  Toast.LENGTH_LONG).show();
+                                    prefsEditor.apply();
 
                                     Intent app = new Intent(getApplicationContext(), MainActivity.class);
                                     app.putExtra("Username", userString);
@@ -87,6 +90,9 @@ public class Login extends AppCompatActivity {
 
                                     Toast.makeText(getBaseContext(), "Wrong username or password", Toast.LENGTH_LONG).show();
                                 }
+
+                                loading.setVisibility(View.INVISIBLE);
+                                signButton.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -95,12 +101,13 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(getBaseContext(), "Error!",
                                     Toast.LENGTH_LONG).show();
                             Log.i("Failure", t.getMessage() + " ");
+
+                            loading.setVisibility(View.INVISIBLE);
+                            signButton.setVisibility(View.VISIBLE);
                         }
-                    });*/
+                    });
 
                     vibrator.vibrate(300);
-
-
                 }
             }
         });
