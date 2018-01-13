@@ -9,6 +9,7 @@ import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,9 +43,11 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     int bigSeconds = 0, smallSeconds = 0, bigMinutes = 0, smallMinutes = 0;
     int type = 0; // 0 GOAL, 1 SUB, 2 YELLOW, 3 RED
     int undoType = 0; // 1 GOAL, 2 SUB. 3 YELLOW, 4 RED, 5 HALF
+    int extraTimeType = 0;
     String setTime = "00:00", logText = "";
 
-    Button startButton, teamBackButton, settingsBackButton, goalButton, yellowCardButton, redCardButton, logButton, logBack, endHalf, subButton, undoButton;
+    ImageButton startButton;
+    Button  terminateButton, extraTimeButton, teamBackButton, settingsBackButton, goalButton, yellowCardButton, redCardButton, logButton, logBack, endHalf, subButton, undoButton;
     ArrayList<Button> playerButtons = new ArrayList<>();
     ArrayList<Button> subsButtons = new ArrayList<>();
     boolean isStarted = false, smallT = false, isHome = true, vibrator = false;
@@ -57,6 +60,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     ArrayList<MatchEventDTO> events = new ArrayList<>();
     String id = "";
     CreateEvent newEvent;
+    boolean ownGoal = false;
 
     //endregion
 
@@ -233,11 +237,11 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();
 
-                    String playerName = newPlayer.getText().toString();
+                    final String playerName = newPlayer.getText().toString();
                     lastClickedPlayer = playerName;
                     int yellowCard = pref.getInt(playerName, 0);
                     int redCard = pref.getInt(playerName + "R", 0); // GETS yellow and red cards of ClickedPlayer
-                    String team;
+                    final String team;
 
                     if (isHome) {
                         team = info.get(4);
@@ -255,8 +259,30 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                     if (type == 0) {    // IF GOAL Button is clicked
 
-                        changeResult();
-                        events = newEvent.addEvent(bigMinutes + ":" + bigSeconds + " / " + homeResult + ":" + awayResult, getResources().getString(R.string.goalEvent), team, playerName, false);
+                        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                        alert.setMessage("GOAL").setCancelable(true)
+                                .setPositiveButton("GOAL", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        ownGoal = false;
+                                        changeResult(ownGoal);
+                                        events = newEvent.addEvent(bigMinutes + ":" + bigSeconds + " / " + homeResult + ":" + awayResult, getResources().getString(R.string.goalEvent), team, playerName, false);
+                                    }
+                                })
+                                .setNegativeButton("OWN GOAL", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        ownGoal = true;
+                                        changeResult(ownGoal);
+                                        events = newEvent.addEvent(bigMinutes + ":" + bigSeconds + " / " + homeResult + ":" + awayResult, getResources().getString(R.string.ownGoalEvent), team, playerName, false);
+                                    }
+                                });
+
+                        AlertDialog al = alert.create();
+                        al.setTitle("GOAL");
+                        alert.show();
 
                         undoType = 1;
                     }
@@ -357,7 +383,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         playersView = (LinearLayout) findViewById(R.id.listPlayersView);        // Layout which Lists player names
         subsView = (LinearLayout) findViewById(R.id.listSubsView);              // Layout which Lists substitute names
 
-        startButton = (Button) findViewById(R.id.startMatchButton);                // Starts Match and Timers
+        startButton = (ImageButton) findViewById(R.id.startMatchButton);                // Starts Match and Timers
         startButton.setOnClickListener(this);
         teamBackButton = (Button) findViewById(R.id.teamLayoutBackButton);              // Returns from teamLayout to mainLayout
         teamBackButton.setOnClickListener(this);
@@ -379,6 +405,11 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         endHalf.setOnClickListener(this);
         undoButton = (Button) findViewById(R.id.undoButton);
         undoButton.setOnClickListener(this);
+        extraTimeButton = (Button) findViewById(R.id.extraTimeButton);
+        extraTimeButton.setOnClickListener(this);
+        extraTimeButton.setEnabled(false);
+        terminateButton = (Button) findViewById(R.id.terminateButton);
+        terminateButton.setOnClickListener(this);
     } // Initialization of all TextView, Button, Layout variables
 
     public void Replace(String playerNameString, String subNameString) {
@@ -479,7 +510,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 Toast.makeText(this, getResources().getString(R.string.matchStartedText),
                         Toast.LENGTH_SHORT).show();
-                events = newEvent.addEvent(clock.getText().toString(), "", "", "MATCH STARTED", true);
+                events = newEvent.addEvent(clock.getText().toString(), "", "",  " - " +  "MATCH STARTED", true);
                 newEvent.addState(true, events);
                 break;
 
@@ -550,6 +581,28 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 settingsLayout.setVisibility(View.VISIBLE);
                 break;
 
+            case R.id.extraTimeButton:
+
+                if (half < 3) {
+
+                    extraTimeType++;
+                    extraTime(extraTimeType);
+                }
+                break;
+
+            case R.id.terminateButton:
+
+                if (half < 3) {
+                    half = 3;
+                    isStarted = false;
+                    events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.matchTerminatedText), true);
+                    newEvent.addState(false, events);
+                    Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.matchTerminatedText),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
             case R.id.undoButton:
 
                 SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
@@ -557,7 +610,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 if (undoType == 1) {
 
-                    if (homePlayers.contains(lastClickedPlayer)) {
+                    if ((homePlayers.contains(lastClickedPlayer) && !ownGoal) || (awayPlayers.contains(lastClickedPlayer) && ownGoal)) {
                         homeResult--;
                         homeResultField.setText(Integer.toString(homeResult));
                     }
@@ -622,22 +675,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                             }
 
-                        })
-                        .setNeutralButton(getResources().getString(R.string.terminateMatch), new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if (half < 3) {
-                            half = 3;
-                            isStarted = false;
-                            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.matchTerminatedText), true);
-                            newEvent.addState(false, events);
-                            Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.matchTerminatedText),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }) ;
+                        });
 
                 AlertDialog al = alert.create();
                 al.setTitle(getResources().getString(R.string.question));
@@ -664,6 +702,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
             endHalf.setText(getResources().getString(R.string.fullTimeText));
 
+            extraTimeButton.setEnabled(true);
             isStarted = true;
             bigMinutes = intInfo.get(2);
             bigSeconds = 0;
@@ -687,7 +726,72 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         }
     }
 
-    public void changeResult(){
+    public void extraTime(int extraTimetype) {
+
+        vibrator = true;
+
+        if (extraTimetype == 1) {
+
+            endHalf.setEnabled(false);
+            isStarted = false;
+
+            extraTimeButton.setText(getResources().getString(R.string.startExtraTimeButton));
+        }
+        else if (extraTimetype == 2) {
+
+            bigMinutes = intInfo.get(2) * 2;
+            bigSeconds = 0;
+            smallMinutes = 0;
+            smallSeconds = 0;
+            isStarted = true;
+            extraTimeButton.setText(getResources().getString(R.string.endExtraTimeButton));
+
+            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.extraTimeButton), true);
+            Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.extraTimeButton),
+                    Toast.LENGTH_SHORT).show();
+        }
+        else if (extraTimetype == 3) {
+
+            extraTimeButton.setText(getResources().getString(R.string.secondExtraTimeButton));
+            isStarted = false;
+
+            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.endExtraTimeButton), true);
+            Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.endExtraTimeButton),
+                    Toast.LENGTH_SHORT).show();
+        }
+        else  if (extraTimetype == 4) {
+
+            bigMinutes = intInfo.get(2) * 2 + 15;
+            bigSeconds = 0;
+            smallMinutes = 0;
+            smallSeconds = 0;
+            isStarted = true;
+            extraTimeButton.setText(getResources().getString(R.string.penaltiesButton));
+            endHalf.setEnabled(true);
+
+            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.endExtraTimeButton), true);
+            Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.secondExtraTimeButton),
+                    Toast.LENGTH_SHORT).show();
+        }
+        else {
+
+            bigMinutes = 0;
+            bigSeconds = 0;
+            smallMinutes = 0;
+            smallSeconds = 0;
+
+            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.penaltiesButton), true);
+            Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.penaltiesButton),
+                    Toast.LENGTH_SHORT).show();
+
+            extraTimeButton.setEnabled(false);
+        }
+    }
+
+    public void changeResult(boolean ownGoal){
+
+        if (ownGoal)
+            isHome = !isHome;
 
         if (isHome) {
 
@@ -707,8 +811,14 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             halfText.setText(getResources().getString(R.string.displayHalf));
         else if (half == 1)
             halfText.setText(getResources().getString(R.string.halfTimeTextShort));
-        else if (half == 2)
+        else if (half == 2 && extraTimeType == 0)
             halfText.setText(getResources().getString(R.string.secondHalfTextShort));
+        else if ((half == 2 && extraTimeType == 1) || (half == 2 && extraTimeType == 2))
+            halfText.setText(getResources().getString(R.string.extraTimeTextShort));
+        else if ((half == 2 && extraTimeType == 3) || (half == 2 && extraTimeType == 4))
+            halfText.setText(getResources().getString(R.string.extraTimeTextShort));
+        else if ((half == 2 && extraTimeType == 5))
+            halfText.setText(getResources().getString(R.string.penaltiesTimeTextShort));
         else
             halfText.setText(getResources().getString(R.string.fullTimeTextShort));
 

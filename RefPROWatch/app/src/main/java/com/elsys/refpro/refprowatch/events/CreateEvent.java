@@ -102,7 +102,7 @@ public class CreateEvent {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                Toast.makeText(context, "FAILURE",
+                Toast.makeText(context, "FAILURE-EVENT",
                         Toast.LENGTH_SHORT).show();
                 android.util.Log.d("Error:",t.getMessage());
 
@@ -165,7 +165,7 @@ public class CreateEvent {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                Toast.makeText(context, "FAILURE",
+                Toast.makeText(context, "FAILURE-STATE",
                         Toast.LENGTH_SHORT).show();
                 android.util.Log.d("Error:",t.getMessage());
 

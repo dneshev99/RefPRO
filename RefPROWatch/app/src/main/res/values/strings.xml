@@ -9,9 +9,16 @@
     <string name="undoButton">Undo</string>
     <string name="endHalfButton">End Half</string>
 
+    <string name="extraTimeButton">Extra Time</string>
+    <string name="startExtraTimeButton">Start Extra Time</string>
+    <string name="endExtraTimeButton">End Extra Time</string>
+    <string name="secondExtraTimeButton">Extra Time №2</string>
+    <string name="penaltiesButton">Penalties</string>
+
     <string name="displayHalf">FH</string>
 
     <string name="goalEvent">GOAL</string>
+    <string name="ownGoalEvent">OWN GOAL</string>
     <string name="substitutionEvent">SUBSTITUTION</string>
     <string name="yellowCardEvent">YELLOW CARD</string>
     <string name="redCardEvent">RED CARD</string>
@@ -40,10 +47,16 @@
     <string name="halfTimeTextShort">HT</string>
     <string name="secondHalfTextShort">SH</string>
     <string name="fullTimeTextShort">FT</string>
+    <string name="extraTimeTextShort">ET</string>
+    <string name="penaltiesTimeTextShort">PS</string>
 
     <string name="firstHalfEnd">END OF FIRST HALF</string>
     <string name="secondHalfStart">SECOND HALF</string>
 
     <string name="redCardsWarning">TOO MANY RED CARDS</string>
+
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Sign in</string>
 
 </resources>

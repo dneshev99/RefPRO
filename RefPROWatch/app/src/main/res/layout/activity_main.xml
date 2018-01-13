@@ -15,6 +15,30 @@
         android:layout_alignParentTop="true"
         android:visibility="visible">
 
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/timerLayout"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/displayHalf"
+            android:layout_toEndOf="@+id/displayHalf"
+            android:scaleType="fitCenter"
+            android:src="@drawable/background"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/timerLayout"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/displayHalf"
+            android:layout_toStartOf="@+id/displayHalf"
+            android:scaleType="fitCenter"
+            android:src="@drawable/background"
+            android:visibility="visible" />
+
         <RelativeLayout
             android:id="@+id/awayLayout"
             android:layout_width="match_parent"
@@ -63,9 +87,10 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/homeResult"
             android:layout_alignBottom="@+id/homeResult"
-            android:layout_alignEnd="@+id/awayAbbr"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@+id/displayHalf"
             android:text="@string/defaultResult"
-            android:textAlignment="viewStart"
+            android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="50sp"
             android:textStyle="bold" />
@@ -85,11 +110,12 @@
             android:id="@+id/homeResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/homeAbbr"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/homeAbbr"
             android:layout_marginTop="14dp"
+            android:layout_toStartOf="@+id/displayHalf"
             android:text="@string/defaultResult"
-            android:textAlignment="viewStart"
+            android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="50sp"
             android:textStyle="bold" />
@@ -137,13 +163,20 @@
                 android:textStyle="bold"
                 android:visibility="invisible" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/startMatchButton"
+                style="@android:style/Widget.Holo.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/currentTimeTimer"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/currentTimeTimer"
+                android:background="@drawable/action_item_background"
+                android:scaleType="centerInside"
+                android:src="@mipmap/logo"
                 android:text="@string/startButton" />
+
         </RelativeLayout>
     </RelativeLayout> <!-- Main Layout (timers, result, teams) -->
 
@@ -251,43 +284,67 @@
         android:layout_centerVertical="true"
         android:visibility="invisible">
 
-        <Button
-            android:id="@+id/endHalfButton"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:lineSpacingExtra="18sp"
-            android:text="@string/endHalfButton"
-            android:textStyle="bold" />
+            android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/logButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="44dp"
-            android:text="@string/logButton"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/undoButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/logButton"
-            android:layout_centerHorizontal="true"
-            android:text="@string/undoButton"
-            android:textStyle="bold" />
+                <Button
+                    android:id="@+id/logButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/logButton"
+                    android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/settingsBackButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:text="@string/backButtonText"
-            android:textStyle="bold" />
+                <Button
+                    android:id="@+id/undoButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/logButton"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/undoButton"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/endHalfButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:lineSpacingExtra="18sp"
+                    android:text="@string/endHalfButton"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/extraTimeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/extraTimeButton"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/terminateButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/terminateMatch"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/settingsBackButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/backButtonText"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </ScrollView>
 
     </RelativeLayout> <!-- Settings Layout (end match/log/undo operations) -->
 
@@ -354,7 +411,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="179dp">
 
             <LinearLayout
                 android:id="@+id/listSubsView"
@@ -363,6 +420,8 @@
                 android:orientation="vertical" />
         </ScrollView>
 
-    </LinearLayout> <!-- List Substitutes Layout (list of home/away substitutes) -->
+    </LinearLayout>
+
+    <!-- List Substitutes Layout (list of home/away substitutes) -->
 
 </RelativeLayout>
