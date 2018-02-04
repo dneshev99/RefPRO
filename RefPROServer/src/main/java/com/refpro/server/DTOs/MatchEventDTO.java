@@ -25,4 +25,13 @@ public class MatchEventDTO {
     public String getTime() {
         return time;
     }
+
+    @Override
+    public String toString() {
+        return "MatchEventDTO{" +
+                "team='" + team + '\'' +
+                ", message='" + message + '\'' +
+                ", time='" + time + '\'' +
+                '}';
+    }
 }

@@ -1,13 +1,16 @@
 package com.refpro.server.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.ArrayList;
 
 public class MatchInfo {
     @Id
+    @Indexed
     String ID;
 
+    @Indexed
     private boolean isActive;
 
     private String competition;
@@ -16,8 +19,8 @@ public class MatchInfo {
     private String time;
     private String home;
     private String away;
-    private String homeabbr;
-    private String awayabbr;
+    private String homeAbbr;
+    private String awayAbbr;
 
     private int players;
     private int subs;
@@ -31,7 +34,7 @@ public class MatchInfo {
 
     private String log;
 
-    public MatchInfo(boolean isActive, String competition, String venue, String date, String time, String home, String away, String homeabbr, String awayabbr, int players, int subs, int length, ArrayList<String> playersHome, ArrayList<String> playersAway, ArrayList<String> subsHome, ArrayList<String> subsAway, String log) {
+    public MatchInfo(boolean isActive, String competition, String venue, String date, String time, String home, String away, String homeAbbr, String awayAbbr, int players, int subs, int length, ArrayList<String> playersHome, ArrayList<String> playersAway, ArrayList<String> subsHome, ArrayList<String> subsAway, String log) {
         this.isActive = isActive;
         this.competition = competition;
         this.venue = venue;
@@ -39,8 +42,8 @@ public class MatchInfo {
         this.time = time;
         this.home = home;
         this.away = away;
-        this.homeabbr = homeabbr;
-        this.awayabbr = awayabbr;
+        this.homeAbbr = homeAbbr;
+        this.awayAbbr = awayAbbr;
         this.players = players;
         this.subs = subs;
         this.length = length;
@@ -114,20 +117,20 @@ public class MatchInfo {
         this.away = away;
     }
 
-    public String getHomeabbr() {
-        return homeabbr;
+    public String getHomeAbbr() {
+        return homeAbbr;
     }
 
-    public void setHomeabbr(String homeabbr) {
-        this.homeabbr = homeabbr;
+    public void setHomeAbbr(String homeAbbr) {
+        this.homeAbbr = homeAbbr;
     }
 
-    public String getAwayabbr() {
-        return awayabbr;
+    public String getAwayAbbr() {
+        return awayAbbr;
     }
 
-    public void setAwayabbr(String awayabbr) {
-        this.awayabbr = awayabbr;
+    public void setAwayAbbr(String awayAbbr) {
+        this.awayAbbr = awayAbbr;
     }
 
     public int getPlayers() {

@@ -10,10 +10,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class MatchInfoHandler {
+public class MatchInfoHandler implements MatchInfoService {
     @Autowired
     private MatchInfoRepository matchInfoRepository;
 
+    @Override
     public String addMatchInfo(NewMatchInfoDTO newMatchInfoDTO) {
         MatchInfo newEntry = new MatchInfo();
 
@@ -24,8 +25,8 @@ public class MatchInfoHandler {
         newEntry.setTime(newMatchInfoDTO.getTime());
         newEntry.setHome(newMatchInfoDTO.getHome());
         newEntry.setAway(newMatchInfoDTO.getAway());
-        newEntry.setHomeabbr(newMatchInfoDTO.getHomeabbr());
-        newEntry.setAwayabbr(newMatchInfoDTO.getAwayabbr());
+        newEntry.setHomeAbbr(newMatchInfoDTO.getHomeabbr());
+        newEntry.setAwayAbbr(newMatchInfoDTO.getAwayabbr());
         newEntry.setPlayers(newMatchInfoDTO.getPlayers());
         newEntry.setSubs(newMatchInfoDTO.getSubs());
         newEntry.setLength(newMatchInfoDTO.getLength());
@@ -42,9 +43,10 @@ public class MatchInfoHandler {
 
     }
 
+    @Override
     public void updateMatchInfo(MatchUpdateDTO matchUpdateDTO) {
-            System.out.println(matchUpdateDTO.getMatchID());
-            MatchInfo entryToUpdate = matchInfoRepository.findOne(matchUpdateDTO.getMatchID());
+            System.out.println(matchUpdateDTO.getMatchId());
+            MatchInfo entryToUpdate = matchInfoRepository.findOne(matchUpdateDTO.getMatchId());
             entryToUpdate.setPlayersHome(matchUpdateDTO.getPlayersHome());
             entryToUpdate.setPlayersAway(matchUpdateDTO.getPlayersAway());
             entryToUpdate.setSubsAway(matchUpdateDTO.getSubsAway());
@@ -53,11 +55,18 @@ public class MatchInfoHandler {
             matchInfoRepository.save(entryToUpdate);
     }
 
+    @Override
     public List<MatchInfo> getAllMatchInfo() {
         return matchInfoRepository.findAll();
     }
 
+    @Override
     public void delete() {
         matchInfoRepository.deleteAll();
+    }
+
+    @Override
+    public void deleteMatchInfo(String id) {
+        matchInfoRepository.delete(id);
     }
 }

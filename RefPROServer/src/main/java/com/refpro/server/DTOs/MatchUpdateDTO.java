@@ -3,14 +3,14 @@ package com.refpro.server.DTOs;
 import java.util.ArrayList;
 
 public class MatchUpdateDTO {
-    private String MatchID;
+    private String matchId;
     private ArrayList<String> playersHome;
     private ArrayList<String> playersAway;
     private ArrayList<String> subsHome;
     private ArrayList<String> subsAway;
 
-    public MatchUpdateDTO(String MatchID, ArrayList<String> playersHome, ArrayList<String> playersAway, ArrayList<String> subsHome, ArrayList<String> subsAway) {
-        this.MatchID = MatchID;
+    public MatchUpdateDTO(String matchId, ArrayList<String> playersHome, ArrayList<String> playersAway, ArrayList<String> subsHome, ArrayList<String> subsAway) {
+        this.matchId = matchId;
         this.playersHome = playersHome;
         this.playersAway = playersAway;
         this.subsHome = subsHome;
@@ -22,12 +22,12 @@ public class MatchUpdateDTO {
     }
 
 
-    public String getMatchID() {
-        return MatchID;
+    public String getMatchId() {
+        return matchId;
     }
 
-    public void setMatchID(String matchID) {
-        MatchID = matchID;
+    public void setMatchId(String matchId) {
+        this.matchId = matchId;
     }
 
     public ArrayList<String> getPlayersHome() {
@@ -65,7 +65,7 @@ public class MatchUpdateDTO {
     @Override
     public String toString() {
         return "MatchUpdateDTO{" +
-                "MatchID='" + MatchID + '\'' +
+                "MatchId='" + matchId + '\'' +
                 ", playersHome=" + playersHome +
                 ", playersAway=" + playersAway +
                 ", subsHome=" + subsHome +
