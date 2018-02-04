@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 public class UserHandler implements UserDetailsService {
     @Autowired
@@ -48,19 +51,13 @@ public class UserHandler implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public String getFCMtokenForUser(String username,DeviceType deviceType) throws Exception {
+    public UserDTO getFCMtokenForUser(String username) throws Exception {
         User user = userRepository.getUserByUsername(username);
-        String token = null;
+        Map<DeviceType,String> tokens = new HashMap<DeviceType,String>();
+        tokens.put(DeviceType.MOBILE,user.getMobileFCMtoken());
+        tokens.put(DeviceType.WEAR,user.getWatchFCMtoken());
+        UserDTO resultDto = new UserDTO(user.getUsername(),tokens);
 
-        switch(deviceType){
-            case WEAR:
-                token = user.getWatchFCMtoken();
-                break;
-            case MOBILE:
-                token = user.getMobileFCMtoken();
-                break;
-        }
-
-        return token;
+        return resultDto;
     }
 }
