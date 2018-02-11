@@ -1,34 +1,24 @@
-package com.refpro.server.models;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-
-import java.util.ArrayList;
-
-public class Team {
-    @Id
-    String id;
+package com.refpro.server.DTOs;
 
 
-    @Indexed(unique = true)
+import com.refpro.server.models.Team;
+
+public class TeamDto {
+
     private String name;
     private String abbreaviature;
     private String country;
 
-    @DBRef
-    private Player coach;
 
-    public Team() {
+    private PlayerDto coach;
+
+    public TeamDto(Team team) {
+        this.name=team.getName();
+        this.abbreaviature=team.getAbbreaviature();
+        this.country=team.getCountry();
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    public TeamDto(){}
 
     public String getName() {
         return name;
@@ -54,11 +44,11 @@ public class Team {
         this.country = country;
     }
 
-    public Player getCoach() {
+    public PlayerDto getCoach() {
         return coach;
     }
 
-    public void setCoach(Player coach) {
+    public void setCoach(PlayerDto coach) {
         this.coach = coach;
     }
 }

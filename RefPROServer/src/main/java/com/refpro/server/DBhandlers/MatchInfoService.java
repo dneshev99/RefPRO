@@ -11,6 +11,8 @@ public interface MatchInfoService {
 
     void updateMatchInfo(MatchUpdateDTO matchUpdateDTO);
 
+    void addEventToMatch();
+
     List<MatchInfo> getAllMatchInfo();
 
     void delete();

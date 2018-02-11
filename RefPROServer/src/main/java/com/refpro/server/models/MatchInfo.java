@@ -2,8 +2,10 @@ package com.refpro.server.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MatchInfo {
     @Id
@@ -17,48 +19,30 @@ public class MatchInfo {
     private String venue;
     private String date;
     private String time;
-    private String home;
-    private String away;
+    @DBRef
+    private Team home;
+    @DBRef
+    private Team away;
     private String homeAbbr;
     private String awayAbbr;
 
-    private int players;
-    private int subs;
+    private List<Player> homePlayers= new ArrayList<>();
+    private List<Player> awayPlayers=new ArrayList<>();;
     private int length;
 
 
-    private ArrayList<String> playersHome;
-    private ArrayList<String> playersAway;
-    private ArrayList<String> subsHome;
-    private ArrayList<String> subsAway;
 
-    private String log;
+    private List<Player> subsHome=new ArrayList<>();;
+    private List<Player> subsAway=new ArrayList<>();;
 
-    public MatchInfo(boolean isActive, String competition, String venue, String date, String time, String home, String away, String homeAbbr, String awayAbbr, int players, int subs, int length, ArrayList<String> playersHome, ArrayList<String> playersAway, ArrayList<String> subsHome, ArrayList<String> subsAway, String log) {
-        this.isActive = isActive;
-        this.competition = competition;
-        this.venue = venue;
-        this.date = date;
-        this.time = time;
-        this.home = home;
-        this.away = away;
-        this.homeAbbr = homeAbbr;
-        this.awayAbbr = awayAbbr;
-        this.players = players;
-        this.subs = subs;
-        this.length = length;
-        this.playersHome = playersHome;
-        this.playersAway = playersAway;
-        this.subsHome = subsHome;
-        this.subsAway = subsAway;
-        this.log = log;
-    }
-
-    public MatchInfo() {
-    }
+    private List<MatchEvent> eventList=new ArrayList<>();
 
     public String getID() {
         return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public boolean isActive() {
@@ -101,19 +85,19 @@ public class MatchInfo {
         this.time = time;
     }
 
-    public String getHome() {
+    public Team getHome() {
         return home;
     }
 
-    public void setHome(String home) {
+    public void setHome(Team home) {
         this.home = home;
     }
 
-    public String getAway() {
+    public Team getAway() {
         return away;
     }
 
-    public void setAway(String away) {
+    public void setAway(Team away) {
         this.away = away;
     }
 
@@ -133,20 +117,20 @@ public class MatchInfo {
         this.awayAbbr = awayAbbr;
     }
 
-    public int getPlayers() {
-        return players;
+    public List<Player> getHomePlayers() {
+        return homePlayers;
     }
 
-    public void setPlayers(int players) {
-        this.players = players;
+    public void setHomePlayers(List<Player> homePlayers) {
+        this.homePlayers = homePlayers;
     }
 
-    public int getSubs() {
-        return subs;
+    public List<Player> getAwayPlayers() {
+        return awayPlayers;
     }
 
-    public void setSubs(int subs) {
-        this.subs = subs;
+    public void setAwayPlayers(List<Player> awayPlayers) {
+        this.awayPlayers = awayPlayers;
     }
 
     public int getLength() {
@@ -157,43 +141,27 @@ public class MatchInfo {
         this.length = length;
     }
 
-    public ArrayList<String> getPlayersHome() {
-        return playersHome;
-    }
-
-    public void setPlayersHome(ArrayList<String> playersHome) {
-        this.playersHome = playersHome;
-    }
-
-    public ArrayList<String> getPlayersAway() {
-        return playersAway;
-    }
-
-    public void setPlayersAway(ArrayList<String> playersAway) {
-        this.playersAway = playersAway;
-    }
-
-    public ArrayList<String> getSubsHome() {
+    public List<Player> getSubsHome() {
         return subsHome;
     }
 
-    public void setSubsHome(ArrayList<String> subsHome) {
+    public void setSubsHome(ArrayList<Player> subsHome) {
         this.subsHome = subsHome;
     }
 
-    public ArrayList<String> getSubsAway() {
+    public List<Player> getSubsAway() {
         return subsAway;
     }
 
-    public void setSubsAway(ArrayList<String> subsAway) {
+    public void setSubsAway(ArrayList<Player> subsAway) {
         this.subsAway = subsAway;
     }
 
-    public String getLog() {
-        return log;
+    public List<MatchEvent> getEventList() {
+        return eventList;
     }
 
-    public void setLog(String log) {
-        this.log = log;
+    public void setEventList(List<MatchEvent> eventList) {
+        this.eventList = eventList;
     }
 }

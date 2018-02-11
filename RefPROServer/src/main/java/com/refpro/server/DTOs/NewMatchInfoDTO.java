@@ -1,7 +1,5 @@
 package com.refpro.server.DTOs;
 
-import java.util.ArrayList;
-
 public class NewMatchInfoDTO {
 
     private boolean isActive;
@@ -12,14 +10,14 @@ public class NewMatchInfoDTO {
     private String time;
     private String home;
     private String away;
-    private String homeabbr;
-    private String awayabbr;
+    private String homeAbbreviature;
+    private String awayAbbreviature;
 
-    private int players;
-    private int subs;
-    private int length;
+    private int playersNumber;
+    private int substitutesNumber;
+    private int halfLength;
 
-    public NewMatchInfoDTO(boolean isActive, String competition, String venue, String date, String time, String home, String away, String homeabbr, String awayabbr, int players, int subs, int length) {
+    public NewMatchInfoDTO(boolean isActive, String competition, String venue, String date, String time, String home, String away, String homeAbbreviature, String awayAbbreviature, int playersNumber, int substitutesNumber, int halfLength) {
         this.isActive = isActive;
         this.competition = competition;
         this.venue = venue;
@@ -27,11 +25,11 @@ public class NewMatchInfoDTO {
         this.time = time;
         this.home = home;
         this.away = away;
-        this.homeabbr = homeabbr;
-        this.awayabbr = awayabbr;
-        this.players = players;
-        this.subs = subs;
-        this.length = length;
+        this.homeAbbreviature = homeAbbreviature;
+        this.awayAbbreviature = awayAbbreviature;
+        this.playersNumber = playersNumber;
+        this.substitutesNumber = substitutesNumber;
+        this.halfLength = halfLength;
     }
 
     public NewMatchInfoDTO() {
@@ -65,23 +63,41 @@ public class NewMatchInfoDTO {
         return away;
     }
 
-    public String getHomeabbr() {
-        return homeabbr;
+    public String getHomeAbbreviature() {
+        return homeAbbreviature;
     }
 
-    public String getAwayabbr() {
-        return awayabbr;
+    public String getAwayAbbreviature() {
+        return awayAbbreviature;
     }
 
-    public int getPlayers() {
-        return players;
+    public int getPlayersNumber() {
+        return playersNumber;
     }
 
-    public int getSubs() {
-        return subs;
+    public int getSubstitutesNumber() {
+        return substitutesNumber;
     }
 
-    public int getLength() {
-        return length;
+    public int getHalfLength() {
+        return halfLength;
+    }
+
+    @Override
+    public String toString() {
+        return "NewMatchInfoDTO{" +
+                "isActive=" + isActive +
+                ", competition='" + competition + '\'' +
+                ", venue='" + venue + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", home='" + home + '\'' +
+                ", away='" + away + '\'' +
+                ", homeAbbreviature='" + homeAbbreviature + '\'' +
+                ", awayAbbreviature='" + awayAbbreviature + '\'' +
+                ", playersNumber=" + playersNumber +
+                ", substitutesNumber=" + substitutesNumber +
+                ", halfLength=" + halfLength +
+                '}';
     }
 }

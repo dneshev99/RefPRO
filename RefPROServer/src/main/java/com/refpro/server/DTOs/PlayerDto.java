@@ -1,14 +1,8 @@
-package com.refpro.server.models;
+package com.refpro.server.DTOs;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+public class PlayerDto {
 
-public class Player {
-    @Id
-    String id;
-
-    @DBRef
-    private Team team;
+    private TeamDto team;
 
     private String firstName;
     private String lastName;
@@ -17,19 +11,13 @@ public class Player {
     private int shirtNumber;
     private String shirtName;
 
-    public String getId() {
-        return id;
-    }
+    public PlayerDto(){}
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Team getTeam() {
+    public TeamDto getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(TeamDto team) {
         this.team = team;
     }
 

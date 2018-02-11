@@ -16,19 +16,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @RequestMapping("/MatchInfo")
 @Controller
 public class MatchInfoController {
     @Autowired
     private MatchInfoService matchInfoHandler;
     private ObjectMapper mapper = new ObjectMapper();
-
     private UserHandler userHandler = new UserHandler();
+    private static final Logger log= Logger.getLogger(MatchInfoController.class.getName());
 
     @RequestMapping(value = "/Create",method = RequestMethod.POST)
     public ResponseEntity<String> createMatchInfo(@RequestBody NewMatchInfoDTO newMatchInfoDTO) {
         String ID = matchInfoHandler.addMatchInfo(newMatchInfoDTO);
-        System.out.println("asd "+ID);
+        log.log(Level.INFO,"Create matcg Info: "+newMatchInfoDTO);
+
         return  new ResponseEntity<>(ID,HttpStatus.OK);
     }
 
@@ -43,6 +47,13 @@ public class MatchInfoController {
         }
 
         return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/test",method = RequestMethod.GET)
+    public HttpEntity<String> test() {
+       matchInfoHandler.addEventToMatch();
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     /*@RequestMapping(value = "/register",method = RequestMethod.POST)
@@ -73,7 +84,7 @@ public class MatchInfoController {
     @RequestMapping(value = "/Delete/{id}",method = RequestMethod.DELETE)
     public HttpEntity<String> deleteMatchInfo(@PathVariable("id") String id) {
         matchInfoHandler.deleteMatchInfo(id);
-
+        log.log(Level.INFO,"Delete match: "+id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
