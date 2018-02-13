@@ -4,23 +4,10 @@ import java.util.ArrayList;
 
 public class MatchUpdateDTO {
     private String matchId;
-    private ArrayList<String> playersHome;
-    private ArrayList<String> playersAway;
-    private ArrayList<String> subsHome;
-    private ArrayList<String> subsAway;
-
-    public MatchUpdateDTO(String matchId, ArrayList<String> playersHome, ArrayList<String> playersAway, ArrayList<String> subsHome, ArrayList<String> subsAway) {
-        this.matchId = matchId;
-        this.playersHome = playersHome;
-        this.playersAway = playersAway;
-        this.subsHome = subsHome;
-        this.subsAway = subsAway;
-    }
-
-    public MatchUpdateDTO() {
-
-    }
-
+    private ArrayList<PlayerDTO> playersHome;
+    private ArrayList<PlayerDTO> playersAway;
+    private ArrayList<PlayerDTO> subsHome;
+    private ArrayList<PlayerDTO> subsAway;
 
     public String getMatchId() {
         return matchId;
@@ -30,46 +17,35 @@ public class MatchUpdateDTO {
         this.matchId = matchId;
     }
 
-    public ArrayList<String> getPlayersHome() {
+    public ArrayList<PlayerDTO> getPlayersHome() {
         return playersHome;
     }
 
-    public void setPlayersHome(ArrayList<String> playersHome) {
+    public void setPlayersHome(ArrayList<PlayerDTO> playersHome) {
         this.playersHome = playersHome;
     }
 
-    public ArrayList<String> getPlayersAway() {
+    public ArrayList<PlayerDTO> getPlayersAway() {
         return playersAway;
     }
 
-    public void setPlayersAway(ArrayList<String> playersAway) {
+    public void setPlayersAway(ArrayList<PlayerDTO> playersAway) {
         this.playersAway = playersAway;
     }
 
-    public ArrayList<String> getSubsHome() {
+    public ArrayList<PlayerDTO> getSubsHome() {
         return subsHome;
     }
 
-    public void setSubsHome(ArrayList<String> subsHome) {
+    public void setSubsHome(ArrayList<PlayerDTO> subsHome) {
         this.subsHome = subsHome;
     }
 
-    public ArrayList<String> getSubsAway() {
+    public ArrayList<PlayerDTO> getSubsAway() {
         return subsAway;
     }
 
-    public void setSubsAway(ArrayList<String> subsAway) {
+    public void setSubsAway(ArrayList<PlayerDTO> subsAway) {
         this.subsAway = subsAway;
-    }
-
-    @Override
-    public String toString() {
-        return "MatchUpdateDTO{" +
-                "MatchId='" + matchId + '\'' +
-                ", playersHome=" + playersHome +
-                ", playersAway=" + playersAway +
-                ", subsHome=" + subsHome +
-                ", subsAway=" + subsAway +
-                '}';
     }
 }

@@ -12,7 +12,7 @@ public class Player {
 
     private String firstName;
     private String lastName;
-    private int age;
+    private String birthday;
 
     private int shirtNumber;
     private String shirtName;
@@ -49,12 +49,12 @@ public class Player {
         this.lastName = lastName;
     }
 
-    public int getAge() {
-        return age;
+    public String getBirthday() {
+        return birthday;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public int getShirtNumber() {

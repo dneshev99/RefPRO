@@ -1,28 +1,17 @@
-package com.refpro.server.models;
+package com.refpro.server.DTOs;
 
 import com.refpro.server.enums.MatchEventTypes;
-import org.springframework.data.annotation.Id;
+import com.refpro.server.models.Player;
 
-public class MatchEvent {
-
+public class PlayerEventDTO {
     private String time;
     private MatchEventTypes eventType;
-    private Team team;
+    private String team;
     private String message;
+    private PlayerDTO player;
 
-
-
-    public MatchEvent(String time, MatchEventTypes eventType, Team team, String message) {
-        this.time = time;
-        this.eventType = eventType;
-        this.team = team;
-        this.message = message;
+    public PlayerEventDTO() {
     }
-
-    public MatchEvent() {
-    }
-
-
 
     public String getTime() {
         return time;
@@ -40,11 +29,11 @@ public class MatchEvent {
         this.eventType = eventType;
     }
 
-    public Team getTeam() {
+    public String getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(String team) {
         this.team = team;
     }
 
@@ -54,5 +43,13 @@ public class MatchEvent {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public PlayerDTO getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(PlayerDTO player) {
+        this.player = player;
     }
 }

@@ -10,7 +10,7 @@ public class TeamDto {
     private String country;
 
 
-    private PlayerDto coach;
+    private PlayerDTO coach;
 
     public TeamDto(Team team) {
         this.name=team.getName();
@@ -44,11 +44,11 @@ public class TeamDto {
         this.country = country;
     }
 
-    public PlayerDto getCoach() {
+    public PlayerDTO getCoach() {
         return coach;
     }
 
-    public void setCoach(PlayerDto coach) {
+    public void setCoach(PlayerDTO coach) {
         this.coach = coach;
     }
 }

@@ -1,7 +1,7 @@
 package com.refpro.server.DBhandlers;
 
-import com.refpro.server.DTOs.MatchUpdateDTO;
-import com.refpro.server.DTOs.NewMatchInfoDTO;
+import com.refpro.server.DTOs.*;
+import com.refpro.server.exception.MatchNotFoundException;
 import com.refpro.server.models.MatchInfo;
 
 import java.util.List;
@@ -9,13 +9,15 @@ import java.util.List;
 public interface MatchInfoService {
     String addMatchInfo(NewMatchInfoDTO newMatchInfoDTO);
 
-    void updateMatchInfo(MatchUpdateDTO matchUpdateDTO);
+    void updateMatchInfo(MatchUpdateDTO matchUpdateDTO) throws MatchNotFoundException;
 
-    void addEventToMatch();
+    void addMatchEventToMatch(String id, MatchEventDTO matchEvent) throws MatchNotFoundException;
+
+    void addPlayerEventToMatch(String id, PlayerEventDTO matchEventDTO) throws MatchNotFoundException;
 
     List<MatchInfo> getAllMatchInfo();
 
-    void delete();
+    public MatchInfoDTO getMatchById(String id) throws MatchNotFoundException;
 
-    void deleteMatchInfo(String id);
+    void deleteMatchInfo(String id) throws MatchNotFoundException;
 }

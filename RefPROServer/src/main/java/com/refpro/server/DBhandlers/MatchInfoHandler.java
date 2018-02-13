@@ -1,18 +1,15 @@
 package com.refpro.server.DBhandlers;
 
-import com.refpro.server.DTOs.MatchUpdateDTO;
-import com.refpro.server.DTOs.NewMatchInfoDTO;
-import com.refpro.server.enums.MatchEventTypes;
-import com.refpro.server.models.MatchEvent;
-import com.refpro.server.models.MatchInfo;
-import com.refpro.server.models.PlayerEvent;
-import com.refpro.server.models.Team;
+import com.refpro.server.DTOs.*;
+import com.refpro.server.exception.MatchNotFoundException;
+import com.refpro.server.models.*;
 import com.refpro.server.repositories.MatchInfoRepository;
 import com.refpro.server.repositories.PlayerRepository;
 import com.refpro.server.repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -45,14 +42,7 @@ public class MatchInfoHandler implements MatchInfoService {
         newEntry.setHomeAbbr(homeTeam.getAbbreaviature());
         newEntry.setAwayAbbr(awayTeam.getAbbreaviature());
 
-//        newEntry.setPlayers(newMatchInfoDTO.getPlayersNumber());
-//        newEntry.setSubs(newMatchInfoDTO.getSubstitutesNumber());
         newEntry.setLength(newMatchInfoDTO.getHalfLength());
-//        newEntry.setPlayersHome(null);
-//        newEntry.setSubsHome(null);
-//        newEntry.setPlayersAway(null);
-//        newEntry.setSubsAway(null);
-//        newEntry.setLog(null);
 
         MatchInfo matchInfo = matchInfoRepository.save(newEntry);
 
@@ -62,27 +52,106 @@ public class MatchInfoHandler implements MatchInfoService {
     }
 
     @Override
-    public void updateMatchInfo(MatchUpdateDTO matchUpdateDTO) {
+    public void updateMatchInfo(MatchUpdateDTO matchUpdateDTO) throws MatchNotFoundException {
             System.out.println(matchUpdateDTO.getMatchId());
             MatchInfo entryToUpdate = matchInfoRepository.findOne(matchUpdateDTO.getMatchId());
-//            entryToUpdate.setPlayersHome(matchUpdateDTO.getPlayersHome());
-//            entryToUpdate.setPlayersAway(matchUpdateDTO.getPlayersAway());
-//            entryToUpdate.setSubsAway(matchUpdateDTO.getSubsAway());
-//            entryToUpdate.setSubsHome(matchUpdateDTO.getSubsHome());
 
+            if (entryToUpdate == null) throw new MatchNotFoundException("Match not found");
 
+            List<Player> homePlayers = getPlayersFromDTO(matchUpdateDTO.getPlayersHome());
+            List<Player> awayPlayers = getPlayersFromDTO(matchUpdateDTO.getPlayersAway());
+            List<Player> homeSubs = getPlayersFromDTO(matchUpdateDTO.getSubsHome());
+            List<Player> awaySubs = getPlayersFromDTO(matchUpdateDTO.getSubsAway());
+
+            entryToUpdate.setHomePlayers(homePlayers);
+            entryToUpdate.setAwayPlayers(awayPlayers);
+            entryToUpdate.setSubsHome(homeSubs);
+            entryToUpdate.setSubsAway(awaySubs);
 
             matchInfoRepository.save(entryToUpdate);
     }
 
     @Override
-    public void addEventToMatch(){
-        PlayerEvent newPlayerEvent = new PlayerEvent();
-        MatchInfo matchInfo = matchInfoRepository.findOne("5a806e178abaee2d94e434f8");
-        newPlayerEvent.setEventType(MatchEventTypes.GOAL);
-        newPlayerEvent.setPlayer(playerRepository.findOne("5a8072b68abaee2028dd1c6d"));
-        matchInfo.getEventList().add(newPlayerEvent);
-        matchInfoRepository.save(matchInfo);
+    public MatchInfoDTO getMatchById(String id) throws MatchNotFoundException {
+        MatchInfoDTO result = new MatchInfoDTO();
+
+        MatchInfo entry = matchInfoRepository.findOne(id);
+
+        if (entry == null) throw new MatchNotFoundException("Match not found");
+
+        Team homeTeam = entry.getHome();
+        Team awayTeam = entry.getAway();
+
+        result.setCompetition(entry.getCompetition());
+        result.setVenue(entry.getVenue());
+        result.setDate(entry.getDate());
+        result.setTime(entry.getTime());
+        result.setAway(awayTeam);
+        result.setAwayAbbr(awayTeam.getAbbreaviature());
+        result.setHome(homeTeam);
+        result.setHomeAbbr(homeTeam.getAbbreaviature());
+        result.setAwayPlayers(entry.getAwayPlayers());
+        result.setHomePlayers(entry.getHomePlayers());
+        result.setLength(entry.getLength());
+        result.setSubsAway(entry.getSubsAway());
+        result.setSubsHome(entry.getSubsHome());
+
+        return result;
+
+    }
+
+    private List<Player> getPlayersFromDTO(ArrayList<PlayerDTO> playersDTO) {
+        List<Player> result = new ArrayList<>();
+
+
+        for (PlayerDTO playerDTO : playersDTO) {
+            Player newEntry = playerRepository.findPlayerByShirtNumberAndShirtName(playerDTO.getShirtNumber(),
+                                                                                   playerDTO.getShirtName());
+            result.add(newEntry);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void addMatchEventToMatch(String id, MatchEventDTO matchEventDTO) throws MatchNotFoundException {
+        MatchInfo entry = matchInfoRepository.findOne(id);
+        MatchEvent matchEvent = new MatchEvent();
+
+        if (entry == null) throw new MatchNotFoundException("Match not found");
+
+        Team team = teamRepository.findByName(matchEventDTO.getTeam());
+        matchEvent.setEventType(matchEventDTO.getEventType());
+        matchEvent.setTeam(team);
+        matchEvent.setTime(matchEventDTO.getTime());
+        matchEvent.setMessage(matchEventDTO.getMessage());
+
+        entry.addEvent(matchEvent);
+
+        matchInfoRepository.save(entry);
+    }
+
+    @Override
+    public void addPlayerEventToMatch(String id, PlayerEventDTO playerEventDTO) throws MatchNotFoundException {
+        MatchInfo entry = matchInfoRepository.findOne(id);
+        PlayerEvent playerEvent = new PlayerEvent();
+
+        if (entry == null) throw new MatchNotFoundException("Match not found");
+
+        Team team = teamRepository.findByName(playerEventDTO.getTeam());
+        Player player = playerRepository.findPlayerByShirtNumberAndShirtName(playerEventDTO.getPlayer().getShirtNumber(),
+                                                                             playerEventDTO.getPlayer().getShirtName());
+
+        playerEvent.setEventType(playerEventDTO.getEventType());
+        playerEvent.setTeam(team);
+        playerEvent.setTime(playerEventDTO.getTime());
+        playerEvent.setMessage(playerEventDTO.getMessage());
+        playerEvent.setPlayer(player);
+
+        entry.addEvent(playerEvent);
+
+        matchInfoRepository.save(entry);
+
     }
 
     @Override
@@ -90,13 +159,13 @@ public class MatchInfoHandler implements MatchInfoService {
         return matchInfoRepository.findAll();
     }
 
-    @Override
-    public void delete() {
-        matchInfoRepository.deleteAll();
-    }
 
     @Override
-    public void deleteMatchInfo(String id) {
+    public void deleteMatchInfo(String id) throws MatchNotFoundException {
+        MatchInfo entry = matchInfoRepository.findOne(id);
+
+        if (entry == null) throw new MatchNotFoundException("Match not found");
+
         matchInfoRepository.delete(id);
     }
 }

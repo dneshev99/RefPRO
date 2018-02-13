@@ -1,23 +1,34 @@
 package com.refpro.server.DTOs;
 
-public class PlayerDto {
+import com.refpro.server.models.Player;
 
-    private TeamDto team;
+public class PlayerDTO {
+
+    private String team;
 
     private String firstName;
     private String lastName;
-    private int age;
+    private String birthday;
 
     private int shirtNumber;
     private String shirtName;
 
-    public PlayerDto(){}
+    public PlayerDTO(){}
 
-    public TeamDto getTeam() {
+    public PlayerDTO(Player player) {
+        this.team = player.getTeam().getName();
+        this.firstName = player.getFirstName();
+        this.lastName = player.getLastName();
+        this.birthday = player.getBirthday();
+        this.shirtNumber = player.getShirtNumber();
+        this.shirtName = player.getShirtName();
+    }
+
+    public String getTeam() {
         return team;
     }
 
-    public void setTeam(TeamDto team) {
+    public void setTeam(String team) {
         this.team = team;
     }
 
@@ -37,12 +48,12 @@ public class PlayerDto {
         this.lastName = lastName;
     }
 
-    public int getAge() {
-        return age;
+    public String getBirthday() {
+        return birthday;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public int getShirtNumber() {

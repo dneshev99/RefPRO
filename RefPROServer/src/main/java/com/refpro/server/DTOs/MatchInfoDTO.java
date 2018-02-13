@@ -1,56 +1,28 @@
-package com.refpro.server.models;
+package com.refpro.server.DTOs;
 
-import com.refpro.server.DTOs.MatchEventDTO;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import com.refpro.server.models.Player;
+import com.refpro.server.models.Team;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MatchInfo {
-    @Id
-    @Indexed
-    String ID;
-
-    @Indexed
-    private boolean isActive;
-
+public class MatchInfoDTO {
     private String competition;
     private String venue;
     private String date;
     private String time;
-    @DBRef
+
     private Team home;
-    @DBRef
     private Team away;
+
     private String homeAbbr;
     private String awayAbbr;
 
-    private List<Player> homePlayers= new ArrayList<>();
-    private List<Player> awayPlayers=new ArrayList<>();
+    private List<Player> homePlayers;
+    private List<Player> awayPlayers;
     private int length;
 
-    private List<Player> subsHome=new ArrayList<>();
-    private List<Player> subsAway=new ArrayList<>();
-
-    private List<MatchEvent> eventList=new ArrayList<>();
-
-    public String getID() {
-        return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
+    private List<Player> subsHome;
+    private List<Player> subsAway;
 
     public String getCompetition() {
         return competition;
@@ -154,17 +126,5 @@ public class MatchInfo {
 
     public void setSubsAway(List<Player> subsAway) {
         this.subsAway = subsAway;
-    }
-
-    public List<MatchEvent> getEventList() {
-        return eventList;
-    }
-
-    public void setEventList(List<MatchEvent> eventList) {
-        this.eventList = eventList;
-    }
-
-    public void addEvent(MatchEvent matchEvent) {
-        this.eventList.add(matchEvent);
     }
 }
