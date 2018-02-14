@@ -1,6 +1,6 @@
-package com.elsys.refpro.refpromobile.http;
+package com.elsys.refpro.refpromobile.services;
 
-import com.elsys.refpro.refpromobile.http.dto.UpdateMatchDto;
+import com.elsys.refpro.refpromobile.dto.MatchUpdateDTO;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -10,5 +10,5 @@ import retrofit2.http.POST;
 public interface UpdateMatchService {
 
     @POST("/MatchInfo/Update")
-    Call<ResponseBody> update(@Body UpdateMatchDto body);
+    Call<ResponseBody> update(@Body MatchUpdateDTO body);
 }

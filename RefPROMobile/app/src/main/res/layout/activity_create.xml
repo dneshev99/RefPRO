@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/addMatchText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -19,11 +19,11 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/competition"
+        android:id="@+id/competitionForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/addMatchText"
         android:layout_marginTop="25dp"
         android:ems="10"
         android:hint="@string/competition"
@@ -32,81 +32,58 @@
         android:singleLine="false" />
 
     <EditText
-        android:id="@+id/time"
+        android:id="@+id/timeForm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/time"
         android:inputType="time"
-        android:layout_below="@+id/venue"
-        android:layout_toEndOf="@+id/date" />
+        android:layout_below="@+id/venueForm"
+        android:layout_toEndOf="@+id/dateForm" />
 
     <EditText
-        android:id="@+id/date"
+        android:id="@+id/dateForm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/date"
         android:inputType="date"
-        android:layout_below="@+id/venue"
+        android:layout_below="@+id/venueForm"
+        android:layout_alignParentStart="true" />
+
+    <AutoCompleteTextView
+        android:id="@+id/home"
+        android:hint="@string/home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_below="@+id/timeForm"
+        android:layout_alignEnd="@+id/progressBar"
+        android:layout_marginTop="33dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/awayTeamForm"
+        android:hint="@string/away"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_below="@+id/home"
         android:layout_alignParentStart="true" />
 
     <EditText
-        android:id="@+id/venue"
+        android:id="@+id/venueForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/venue"
         android:inputType="textPersonName"
-        android:layout_below="@+id/competition"
+        android:layout_below="@+id/competitionForm"
         android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/home"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/home"
-        android:inputType="textPersonName"
-        android:layout_above="@+id/away"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/homeabbr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/home"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/home"
-        android:ems="10"
-        android:hint="@string/homeabbr"
-        android:inputType="textPersonName"
-        android:textAlignment="viewStart" />
-
-    <EditText
-        android:id="@+id/away"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/away"
-        android:inputType="textPersonName"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/awayabbr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/away"
-        android:layout_alignBottom="@+id/away"
-        android:layout_toEndOf="@+id/away"
-        android:ems="10"
-        android:hint="@string/awayabbr"
-        android:inputType="textPersonName"
-        android:textAlignment="viewStart" />
 
     <Button
-        android:id="@+id/createMatch"
+        android:id="@+id/createMatchButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -114,35 +91,35 @@
         android:text="@string/create_match" />
 
     <EditText
-        android:id="@+id/players"
+        android:id="@+id/numberOfPlayersForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/players"
         android:inputType="number"
-        android:layout_above="@+id/subs"
-        android:layout_alignEnd="@+id/time" />
+        android:layout_above="@+id/numberOfSubsForm"
+        android:layout_alignEnd="@+id/timeForm" />
 
     <EditText
-        android:id="@+id/subs"
+        android:id="@+id/numberOfSubsForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/subs"
         android:inputType="number"
         android:textAlignment="viewStart"
-        android:layout_above="@+id/lenght"
+        android:layout_above="@+id/halfLengthForm"
         android:layout_alignParentStart="true" />
 
     <EditText
-        android:id="@+id/lenght"
+        android:id="@+id/halfLengthForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/length"
         android:inputType="number"
         android:textAlignment="viewStart"
-        android:layout_above="@+id/createMatch"
+        android:layout_above="@+id/createMatchButton"
         android:layout_alignParentStart="true" />
 
     <ProgressBar
@@ -150,7 +127,7 @@
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/lenght"
+        android:layout_below="@+id/halfLengthForm"
         android:layout_centerHorizontal="true"
         android:visibility="invisible"
         android:layout_alignParentBottom="true" />

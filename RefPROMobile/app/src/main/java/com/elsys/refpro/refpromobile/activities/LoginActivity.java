@@ -1,4 +1,4 @@
-package com.elsys.refpro.refpromobile.login;
+package com.elsys.refpro.refpromobile.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,9 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
-import com.elsys.refpro.refpromobile.http.LoginService;
-import com.elsys.refpro.refpromobile.http.dto.AccountDto;
-import com.elsys.refpro.refpromobile.main.MainActivity;
+import com.elsys.refpro.refpromobile.http.HttpDetails;
+import com.elsys.refpro.refpromobile.services.UserService;
+import com.elsys.refpro.refpromobile.dto.UserDTO;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -25,7 +25,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     EditText username, password;
     Button signButton;
@@ -39,13 +39,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        username = (EditText) findViewById(R.id.username);
-        password = (EditText) findViewById(R.id.password);
-        signButton = (Button) findViewById(R.id.sign);
-        final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        loading = (ProgressBar) findViewById(R.id.progressBar);
-
-        preferences = getSharedPreferences("RefPRO" , 0);
+        initialize();
+        final Vibrator vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 
         signButton.setOnClickListener(new View.OnClickListener() {
@@ -55,22 +50,23 @@ public class Login extends AppCompatActivity {
                 final String userString = username.getText().toString().trim();
                 final String passString = password.getText().toString().trim();
 
+
                 if (userString.isEmpty() || passString.isEmpty()) {
 
-                    vibrator.vibrate(300);
+                    vibrate.vibrate(300);
                 } else {
 
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://10.0.2.2:8080")
+                            .baseUrl(HttpDetails.getRetrofitUrl())
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    LoginService service = retrofit.create(LoginService.class);
+                    UserService service = retrofit.create(UserService.class);
 
                     loading.setVisibility(View.VISIBLE);
                     signButton.setVisibility(View.INVISIBLE);
 
-                    service.login(new AccountDto(userString,passString)).enqueue(new Callback<ResponseBody>() {
+                    service.login(new UserDTO(userString,passString)).enqueue(new Callback<ResponseBody>() {
 
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -79,11 +75,14 @@ public class Login extends AppCompatActivity {
 
                                     SharedPreferences.Editor prefsEditor = preferences.edit();
                                     prefsEditor.putString("token", response.headers().get("authorization"));
+
+                                    prefsEditor.putString("username", userString);
                                     prefsEditor.apply();
 
                                     Intent app = new Intent(getApplicationContext(), MainActivity.class);
                                     app.putExtra("Username", userString);
                                     app.putExtra("Password", passString);
+
                                     startActivity(app);
                                 }
                                 else {
@@ -107,10 +106,20 @@ public class Login extends AppCompatActivity {
                         }
                     });
 
-                    vibrator.vibrate(300);
+                    vibrate.vibrate(300);
                 }
             }
         });
+    }
+
+    private void initialize() {
+
+        username = (EditText) findViewById(R.id.usernameField);
+        password = (EditText) findViewById(R.id.passwordField);
+        signButton = (Button) findViewById(R.id.signInButton);
+        loading = (ProgressBar) findViewById(R.id.progressBar);
+
+        preferences = getSharedPreferences("RefPRO" , 0);
     }
 }
 

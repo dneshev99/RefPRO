@@ -1,4 +1,4 @@
-package com.elsys.refpro.refpromobile.main;
+package com.elsys.refpro.refpromobile.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
-import com.elsys.refpro.refpromobile.fragments.Create;
 
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         //Start MENU fragment
-        com.elsys.refpro.refpromobile.fragments.Menu menu = new com.elsys.refpro.refpromobile.fragments.Menu();
+        MenuActivity menu = new MenuActivity();
         android.app.FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
 
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
 
-            com.elsys.refpro.refpromobile.fragments.Menu menu = new com.elsys.refpro.refpromobile.fragments.Menu();
+            MenuActivity menu = new MenuActivity();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
             //super.onBackPressed();
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu_fragment; this adds items to the action bar if it is present.
+        // Inflate the activity_menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -88,33 +87,34 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_english) {
+        switch (id) {
 
-            setLocale("en");
+            case R.id.action_english:
 
-            Toast.makeText(this, R.string.action_english,
-                    Toast.LENGTH_SHORT).show();
+                setLocale("en");
 
-            return true;
-        }
-        else if (id == R.id.action_bulgarian) {
+                Toast.makeText(this, R.string.action_english,
+                        Toast.LENGTH_SHORT).show();
 
-            setLocale("bg");
+                return true;
 
-            Toast.makeText(this, R.string.action_bulgarian,
-                    Toast.LENGTH_SHORT).show();
+            case R.id.action_bulgarian:
 
-            return true;
-        }
+                setLocale("bg");
 
-        else if (id == R.id.action_german) {
+                Toast.makeText(this, R.string.action_bulgarian,
+                        Toast.LENGTH_SHORT).show();
 
-            setLocale("de");
+                return true;
 
-            Toast.makeText(this, R.string.action_german,
-                    Toast.LENGTH_SHORT).show();
+            case R.id.action_german:
 
-            return true;
+                setLocale("de");
+
+                Toast.makeText(this, R.string.action_german,
+                        Toast.LENGTH_SHORT).show();
+
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -139,15 +139,15 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_menu) {
 
-            com.elsys.refpro.refpromobile.fragments.Menu menu = new com.elsys.refpro.refpromobile.fragments.Menu();
+            MenuActivity menu = new MenuActivity();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
             // Handle the camera action
         } else if (id == R.id.nav_create) {
 
-            Create create = new Create();
+            CreateActivity createActivity = new CreateActivity();
             android.app.FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, create).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, createActivity).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
