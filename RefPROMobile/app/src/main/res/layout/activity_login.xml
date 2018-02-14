@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.elsys.refpro.refpromobile.login.Login">
+    tools:context="com.elsys.refpro.refpromobile.activities.LoginActivity">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -16,7 +16,7 @@
         android:layout_alignParentStart="true" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:srcCompat="@drawable/logo"
@@ -27,40 +27,42 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RefPRO"
+        android:text="@string/refpro"
         android:textSize="36dp"
         android:textStyle="bold"
         android:textColor="#000000"
-        android:layout_below="@+id/imageView2"
+        android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/smallTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView5"
+        android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
-        android:text="Ref like a PRO!"
+        android:text="@string/ref_like_a_pro"
         android:textColor="#000000"
         android:textSize="14dp"
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/usernameField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/password"
-        android:layout_alignStart="@+id/password"
+        android:layout_alignBottom="@+id/passwordField"
+        android:layout_alignStart="@+id/passwordField"
         android:layout_marginBottom="43dp"
         android:ems="10"
         android:hint="@string/prompt_username"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:selectAllOnFocus="false"
+        android:singleLine="false" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/passwordField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="98dp"
@@ -68,25 +70,25 @@
         android:inputType="textPassword"
         android:hint="@string/prompt_password"
         android:maxLines="1"
-        android:layout_below="@+id/textView6"
+        android:layout_below="@+id/smallTitle"
         android:layout_centerHorizontal="true" />
 
 
     <Button
-        android:id="@+id/sign"
+        android:id="@+id/signInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/smallTitle"
+        android:layout_below="@+id/passwordField"
         android:layout_marginTop="31dp"
-        android:text="@string/action_sign_in_short"
-        android:layout_below="@+id/password"
-        android:layout_alignStart="@+id/textView6" />
+        android:text="@string/action_sign_in_short" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/sign"
+        android:layout_alignTop="@+id/signInButton"
         android:layout_centerHorizontal="true"
         android:visibility="invisible" />
 

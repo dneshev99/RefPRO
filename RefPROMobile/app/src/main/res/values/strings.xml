@@ -13,10 +13,10 @@
     <string name="nav_menu">Menu</string>
     <string name="nav_create">Create</string>
 
-    <!-- Strings related to Menu -->
+    <!-- Strings related to MenuActivity -->
     <string name="fixtures">Upcoming fixtures</string>
 
-    <!-- Strings related to Create -->
+    <!-- Strings related to CreateActivity -->
     <string name="add_match">Add match</string>
     <string name="create_match">Create</string>
 
@@ -38,14 +38,14 @@
     <string name="create_success">New match created successfully!!!</string>
     <string name="error">Something went wrong!!!</string>
 
-    <!-- Strings related to Info -->
-
+    <!-- Strings related to MatchInfoActivity -->
     <string name="home_players">Home players</string>
     <string name="away_players">Away players</string>
     <string name="home_subs">Home substitutes</string>
     <string name="away_subs">Away substitutes</string>
 
-    <string name="players_form">Number/Name (10.Harry Kane) </string>
+    <string name="players_number">Number(10)</string>
+    <string name="players_name_form">Name(Harry Kane) </string>
 
     <string name="empty_field">Empty field!!! </string>
 
@@ -61,6 +61,7 @@
     <string name="options">Match Options </string>
     <string name="alert_text">Do you want to Open match information or to Delete this match? </string>
     <string name="delete_success">Match deleted successfully!!! </string>
+    <string name="fcmToken_error">Unable to send device token </string>
 
 
 
@@ -79,4 +80,20 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="refpro">RefPRO</string>
+    <string name="ref_like_a_pro">Ref like a PRO!</string>
+    <string name="add_player">Add player</string>
+
+
+    <string name="match_name_template">match_name</string>
+    <string name="match_date_template">match_date</string>
+    <string name="match_time_template">match_time</string>
+    <string name="match_teams_template">home_away</string>
+
+
+    <string-array name="teams">
+        <item>Levski Sofia</item>
+        <item>CSKA-Sofia</item>
+        <item>Slavia Sofia</item>
+    </string-array>
 </resources>

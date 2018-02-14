@@ -13,10 +13,10 @@
     <string name="nav_menu">Меню</string>
     <string name="nav_create">Създай</string>
 
-    <!-- Strings related to Menu -->
+    <!-- Strings related to MenuActivity -->
     <string name="fixtures">Предстоящи мачове</string>
 
-    <!-- Strings related to Create -->
+    <!-- Strings related to CreateActivity -->
     <string name="add_match">Добави мач</string>
     <string name="create_match">Създай</string>
 
@@ -37,13 +37,14 @@
     <string name="create_success">Мачът е успешно създаден!!!</string>
     <string name="error">Грешка!!!</string>
 
-    <!-- Strings related to Info -->
-    <string name="home_players">Домакин (играчи)</string>
+    <!-- Strings related to MatchInfoActivity -->
+    <string name="home_players">Домакин(играчи)</string>
     <string name="away_players">Гост(играчи)</string>
-    <string name="home_subs">Домакин (резерви)</string>
-    <string name="away_subs">Гост (резерви)</string>
+    <string name="home_subs">Домакин(резерви)</string>
+    <string name="away_subs">Гост(резерви)</string>
 
-    <string name="players_form">Номер/Име (10.Ивелин Попов) </string>>
+    <string name="players_number">Номер(10) </string>
+    <string name="players_name_form">Име(Ивелин Попов) </string>
 
     <string name="empty_field">Празно поле!!!</string>
 
@@ -74,4 +75,13 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="refpro">RefPRO</string>
+    <string name="ref_like_a_pro">Ref like a PRO!</string>
+
+    <string name="add_player">Добави играч</string>
+
+    <string name="match_name_template">match_name</string>
+    <string name="match_date_template">match_date</string>
+    <string name="match_time_template">match_time</string>
+    <string name="match_teams_template">home_away</string>
 </resources>
