@@ -23,33 +23,28 @@ public class UserController {
     @Autowired
     private UserHandler userHandler;
 
-    @RequestMapping(value = "/token",method = RequestMethod.POST)
+    @RequestMapping(value = "/updateUserToken",method = RequestMethod.POST)
     public HttpEntity<Void> saveToken(@RequestBody String fcmTokenForUser,@RequestHeader("DeviceType") String deviceTypeHeader) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = auth.getName();
         DeviceType deviceType = DeviceType.valueOf(deviceTypeHeader);
-        userHandler.updateUserFcmToken(userName,fcmTokenForUser,deviceType);
-
-        System.out.println("DA" + " " + deviceTypeHeader + ":" + fcmTokenForUser);
-
+        userHandler.updateUserFcmToken(userName,fcmTokenForUser.replace("\"",""),deviceType);
+        System.out.println("asd");
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public HttpEntity<Void> saveToken(@RequestBody UserDTO userDTO) throws Exception {
+    public HttpEntity<Void> register(@RequestBody UserDTO userDTO) throws Exception {
         userHandler.registerNewUserAccount(userDTO);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getFCMtokentforUser",method = RequestMethod.GET)
-    public HttpEntity<String> getTokenForUser(@RequestHeader("DeviceType") String deviceTypeHeader) throws Exception {
+    @RequestMapping(value = "/getTokensForUser",method = RequestMethod.GET)
+    public HttpEntity<UserDTO> getTokenForUser() throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = auth.getName();
-        DeviceType deviceType = DeviceType.valueOf(deviceTypeHeader);
-
-        String token = userHandler.getFCMtokenForUser(userName,deviceType);
-
-        return new ResponseEntity<>(token,HttpStatus.OK);
+        UserDTO userDto = userHandler.getFCMtokenForUser(userName);
+        return new ResponseEntity<UserDTO>(userDto,HttpStatus.OK);
     }
 
 }
