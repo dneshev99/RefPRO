@@ -38,11 +38,11 @@ public class TeamController {
     }
 
     @RequestMapping(value = "/create",method = RequestMethod.POST)
-    public ResponseEntity createNewTeam(@RequestBody TeamDto teamDto) {
+    public ResponseEntity createNewTeam(@RequestBody List<TeamDto> teamsDto) {
 
        // log.log(Level.INFO,"Create matcg Info: "+newMatchInfoDTO);
-        String id=teamHandler.createNewTeam(teamDto);
-        return  new ResponseEntity<>(id, HttpStatus.OK);
+        List<String> ids=teamHandler.createNewTeam(teamsDto);
+        return  new ResponseEntity<>(ids, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/getAll",method = RequestMethod.GET)

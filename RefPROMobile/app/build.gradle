@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.elsys.refpro.refpromobile"
         minSdkVersion 19
@@ -33,6 +32,7 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.2.0.Final'
+    compile ('io.jsonwebtoken:jjwt:0.9.0')
     testCompile 'junit:junit:4.12'
 }
 

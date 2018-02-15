@@ -1,11 +1,13 @@
 package com.elsys.refpro.refpromobile.http;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
+import com.elsys.refpro.refpromobile.activities.CreateActivity;
 import com.elsys.refpro.refpromobile.dto.TeamDTO;
 import com.elsys.refpro.refpromobile.services.TeamService;
 
@@ -51,9 +53,6 @@ public class TeamsHandler {
 
 
 
-
-
-
     public List<TeamDTO> getAllTeams(final AutoCompleteTextView home,final AutoCompleteTextView away,final Context context){
         TeamService service = retrofit.create(TeamService.class);
         final List<TeamDTO> teams=new ArrayList<>();
@@ -66,12 +65,14 @@ public class TeamsHandler {
 
                 List<String>teamNames=new ArrayList<String>();
                 for(TeamDTO eachTeamDto:teams){
-                    teamNames.add(eachTeamDto.getName());
+                    if(eachTeamDto!=null && eachTeamDto.getName()!=null)
+                        teamNames.add(eachTeamDto.getName());
                 }
-
+                Log.d("HttpCall",teamNames+"");
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, teamNames);
                 home.setAdapter(adapter);
                 away.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             @Override

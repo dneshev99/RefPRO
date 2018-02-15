@@ -20,9 +20,7 @@ public class MatchInfo {
     private String venue;
     private String date;
     private String time;
-    @DBRef
     private Team home;
-    @DBRef
     private Team away;
     private String homeAbbr;
     private String awayAbbr;

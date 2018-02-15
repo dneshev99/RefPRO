@@ -71,4 +71,16 @@ public class PlayerDTO {
     public void setShirtName(String shirtName) {
         this.shirtName = shirtName;
     }
+
+    @Override
+    public String toString() {
+        return "PlayerDTO{" +
+                "team='" + team + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", shirtNumber=" + shirtNumber +
+                ", shirtName='" + shirtName + '\'' +
+                '}';
+    }
 }

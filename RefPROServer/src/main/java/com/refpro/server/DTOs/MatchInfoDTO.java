@@ -17,12 +17,12 @@ public class MatchInfoDTO {
     private String homeAbbr;
     private String awayAbbr;
 
-    private List<Player> homePlayers;
-    private List<Player> awayPlayers;
+    private List<PlayerDTO> homePlayers;
+    private List<PlayerDTO> awayPlayers;
     private int length;
 
-    private List<Player> subsHome;
-    private List<Player> subsAway;
+    private List<PlayerDTO> subsHome;
+    private List<PlayerDTO> subsAway;
 
     public String getCompetition() {
         return competition;
@@ -88,19 +88,19 @@ public class MatchInfoDTO {
         this.awayAbbr = awayAbbr;
     }
 
-    public List<Player> getHomePlayers() {
+    public List<PlayerDTO> getHomePlayers() {
         return homePlayers;
     }
 
-    public void setHomePlayers(List<Player> homePlayers) {
+    public void setHomePlayers(List<PlayerDTO> homePlayers) {
         this.homePlayers = homePlayers;
     }
 
-    public List<Player> getAwayPlayers() {
+    public List<PlayerDTO> getAwayPlayers() {
         return awayPlayers;
     }
 
-    public void setAwayPlayers(List<Player> awayPlayers) {
+    public void setAwayPlayers(List<PlayerDTO> awayPlayers) {
         this.awayPlayers = awayPlayers;
     }
 
@@ -112,19 +112,19 @@ public class MatchInfoDTO {
         this.length = length;
     }
 
-    public List<Player> getSubsHome() {
+    public List<PlayerDTO> getSubsHome() {
         return subsHome;
     }
 
-    public void setSubsHome(List<Player> subsHome) {
+    public void setSubsHome(List<PlayerDTO> subsHome) {
         this.subsHome = subsHome;
     }
 
-    public List<Player> getSubsAway() {
+    public List<PlayerDTO> getSubsAway() {
         return subsAway;
     }
 
-    public void setSubsAway(List<Player> subsAway) {
+    public void setSubsAway(List<PlayerDTO> subsAway) {
         this.subsAway = subsAway;
     }
 }

@@ -23,6 +23,11 @@ public class MatchInfoHandler implements MatchInfoService {
     @Autowired
     private PlayerRepository playerRepository;
 
+    @Autowired
+    private PlayerHandler playerHandler;
+
+
+
     @Override
     public String addMatchInfo(NewMatchInfoDTO newMatchInfoDTO) {
         MatchInfo newEntry = new MatchInfo();
@@ -90,11 +95,11 @@ public class MatchInfoHandler implements MatchInfoService {
         result.setAwayAbbr(awayTeam.getAbbreaviature());
         result.setHome(homeTeam);
         result.setHomeAbbr(homeTeam.getAbbreaviature());
-        result.setAwayPlayers(entry.getAwayPlayers());
-        result.setHomePlayers(entry.getHomePlayers());
+        result.setAwayPlayers(playerHandler.convertEntitiesToDto(entry.getAwayPlayers()));
+        result.setHomePlayers(playerHandler.convertEntitiesToDto(entry.getHomePlayers()));
         result.setLength(entry.getLength());
-        result.setSubsAway(entry.getSubsAway());
-        result.setSubsHome(entry.getSubsHome());
+        result.setSubsAway(playerHandler.convertEntitiesToDto(entry.getSubsAway()));
+        result.setSubsHome(playerHandler.convertEntitiesToDto(entry.getSubsHome()));
 
         return result;
 
@@ -115,20 +120,18 @@ public class MatchInfoHandler implements MatchInfoService {
 
     @Override
     public void addMatchEventToMatch(String id, MatchEventDTO matchEventDTO) throws MatchNotFoundException {
-        MatchInfo entry = matchInfoRepository.findOne(id);
+        MatchInfo matchInfo = matchInfoRepository.findOne(id);
         MatchEvent matchEvent = new MatchEvent();
 
-        if (entry == null) throw new MatchNotFoundException("Match not found");
+        if (matchInfo == null) throw new MatchNotFoundException("Match not found");
 
-        Team team = teamRepository.findByName(matchEventDTO.getTeam());
         matchEvent.setEventType(matchEventDTO.getEventType());
-        matchEvent.setTeam(team);
         matchEvent.setTime(matchEventDTO.getTime());
         matchEvent.setMessage(matchEventDTO.getMessage());
 
-        entry.addEvent(matchEvent);
+        matchInfo.addEvent(matchEvent);
 
-        matchInfoRepository.save(entry);
+        matchInfoRepository.save(matchInfo);
     }
 
     @Override
@@ -138,15 +141,15 @@ public class MatchInfoHandler implements MatchInfoService {
 
         if (entry == null) throw new MatchNotFoundException("Match not found");
 
-        Team team = teamRepository.findByName(playerEventDTO.getTeam());
         Player player = playerRepository.findPlayerByShirtNumberAndShirtName(playerEventDTO.getPlayer().getShirtNumber(),
                                                                              playerEventDTO.getPlayer().getShirtName());
 
+
+
         playerEvent.setEventType(playerEventDTO.getEventType());
-        playerEvent.setTeam(team);
         playerEvent.setTime(playerEventDTO.getTime());
         playerEvent.setMessage(playerEventDTO.getMessage());
-        playerEvent.setPlayer(player);
+        //playerEvent.setPlayer(player);
 
         entry.addEvent(playerEvent);
 

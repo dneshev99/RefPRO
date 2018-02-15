@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <TextView
         android:id="@+id/addMatchText"
@@ -29,7 +30,8 @@
         android:hint="@string/competition"
         android:inputType="textPersonName"
         android:selectAllOnFocus="false"
-        android:singleLine="false" />
+        android:singleLine="false"
+        android:text="Premier League"/>
 
     <EditText
         android:id="@+id/timeForm"
@@ -39,7 +41,8 @@
         android:hint="@string/time"
         android:inputType="time"
         android:layout_below="@+id/venueForm"
-        android:layout_toEndOf="@+id/dateForm" />
+        android:layout_toEndOf="@+id/dateForm"
+        android:text="18:00"/>
 
     <EditText
         android:id="@+id/dateForm"
@@ -49,7 +52,9 @@
         android:hint="@string/date"
         android:inputType="date"
         android:layout_below="@+id/venueForm"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="2018-11-11"
+        />
 
     <AutoCompleteTextView
         android:id="@+id/home"
@@ -60,7 +65,8 @@
         android:ems="10"
         android:layout_below="@+id/timeForm"
         android:layout_alignEnd="@+id/progressBar"
-        android:layout_marginTop="33dp" />
+        android:layout_marginTop="33dp"
+        />
 
     <AutoCompleteTextView
         android:id="@+id/awayTeamForm"
@@ -80,7 +86,8 @@
         android:hint="@string/venue"
         android:inputType="textPersonName"
         android:layout_below="@+id/competitionForm"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="Vasil Levski Stadium"/>
 
     <Button
         android:id="@+id/createMatchButton"
@@ -98,7 +105,8 @@
         android:hint="@string/players"
         android:inputType="number"
         android:layout_above="@+id/numberOfSubsForm"
-        android:layout_alignEnd="@+id/timeForm" />
+        android:layout_alignEnd="@+id/timeForm"
+        android:text="11"/>
 
     <EditText
         android:id="@+id/numberOfSubsForm"
@@ -109,7 +117,8 @@
         android:inputType="number"
         android:textAlignment="viewStart"
         android:layout_above="@+id/halfLengthForm"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="5"/>
 
     <EditText
         android:id="@+id/halfLengthForm"
@@ -120,7 +129,9 @@
         android:inputType="number"
         android:textAlignment="viewStart"
         android:layout_above="@+id/createMatchButton"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="45"
+        />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -130,6 +141,7 @@
         android:layout_below="@+id/halfLengthForm"
         android:layout_centerHorizontal="true"
         android:visibility="invisible"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        />
 
 </RelativeLayout>

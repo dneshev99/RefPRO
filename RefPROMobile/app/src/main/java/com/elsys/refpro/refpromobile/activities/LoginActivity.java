@@ -18,6 +18,12 @@ import com.elsys.refpro.refpromobile.http.HttpDetails;
 import com.elsys.refpro.refpromobile.services.UserService;
 import com.elsys.refpro.refpromobile.dto.UserDTO;
 
+import java.util.Date;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText username, password;
     Button signButton;
     ProgressBar loading;
-
+    private final String TOKEN_PREFIX = "Bearer";
     SharedPreferences preferences;
 
     @Override
@@ -41,8 +47,23 @@ public class LoginActivity extends AppCompatActivity {
 
         initialize();
         final Vibrator vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-
+        String userJwtToken = preferences.getString("token", "N/A");
+        if(!"N/A".equals(userJwtToken)) {
+            userJwtToken=userJwtToken.replace(TOKEN_PREFIX,"");
+            int indexOfLastDot = userJwtToken.lastIndexOf('.');
+            String withoutSignature = userJwtToken.substring(0, indexOfLastDot+1);
+            Jwt<Header,Claims> untrusted = Jwts.parser().parseClaimsJwt(withoutSignature);
+            Claims tokenBody = untrusted.getBody();
+            String userName = tokenBody.getSubject();
+            boolean isTokenValid = tokenBody.getExpiration().after(new Date(System.currentTimeMillis()));
+            Log.d("token", isTokenValid + "");
+            Log.d("token", userName);
+            if(isTokenValid) {
+                Intent app = new Intent(getApplicationContext(), MainActivity.class);
+                app.putExtra("Username", userName);
+                startActivity(app);
+            }
+        }
         signButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

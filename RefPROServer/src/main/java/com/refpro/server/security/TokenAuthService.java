@@ -16,13 +16,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class TokenAuthService {
 
   // 10 d
-  static final long VALIDITY = 864_000_000;
+  static final long VALIDITY = 864000000l;
   static final String KEY = "The_thing_goes_skrrra";
   static final String TOKEN_PREFIX = "Bearer";
   static final String HEADER_STRING = "Authorization";
 
   static void addAuthentication(HttpServletResponse res, String username) {
     String JWT = Jwts.builder().setSubject(username).setExpiration(new Date(System.currentTimeMillis() + VALIDITY))
+            .setIssuedAt(new Date(System.currentTimeMillis()))
         .signWith(SignatureAlgorithm.HS512, KEY).compact();
 
     res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);

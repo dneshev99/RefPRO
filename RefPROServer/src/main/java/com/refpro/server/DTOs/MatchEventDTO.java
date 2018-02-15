@@ -5,7 +5,6 @@ import com.refpro.server.enums.MatchEventTypes;
 public class MatchEventDTO {
     private String time;
     private MatchEventTypes eventType;
-    private String team;
     private String message;
 
     public String getTime() {
@@ -24,13 +23,7 @@ public class MatchEventDTO {
         this.eventType = eventType;
     }
 
-    public String getTeam() {
-        return team;
-    }
 
-    public void setTeam(String team) {
-        this.team = team;
-    }
 
     public String getMessage() {
         return message;
@@ -45,7 +38,6 @@ public class MatchEventDTO {
         return "MatchEventDTO{" +
                 "time='" + time + '\'' +
                 ", eventType=" + eventType +
-                ", team='" + team + '\'' +
                 ", message='" + message + '\'' +
                 '}';
     }

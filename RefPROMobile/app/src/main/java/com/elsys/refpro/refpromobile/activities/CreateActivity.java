@@ -71,11 +71,9 @@ public class CreateActivity extends Fragment implements View.OnClickListener{
         home = (AutoCompleteTextView) createView.findViewById(R.id.home);
         away = (AutoCompleteTextView) createView.findViewById(R.id.awayTeamForm);
 
-        List<String> teamNames = new LinkedList<>();
 
-        Log.d("http",teamNames+"");
+        teamHandler.getAllTeams(home,away,this.getActivity());
 
-        teamHandler.getAllTeams(home,away,this.getContext());
         create = (Button) createView.findViewById(R.id.createMatchButton);
         create.setOnClickListener(this);
 
