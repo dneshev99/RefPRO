@@ -7,7 +7,7 @@ import com.refpro.server.models.MatchInfo;
 import java.util.List;
 
 public interface MatchInfoService {
-    String addMatchInfo(NewMatchInfoDTO newMatchInfoDTO);
+    String addMatchInfo(NewMatchInfoDTO newMatchInfoDTO) throws Exception;
 
     void updateMatchInfo(MatchUpdateDTO matchUpdateDTO) throws MatchNotFoundException;
 

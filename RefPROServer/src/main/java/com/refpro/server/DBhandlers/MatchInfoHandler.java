@@ -29,7 +29,7 @@ public class MatchInfoHandler implements MatchInfoService {
 
 
     @Override
-    public String addMatchInfo(NewMatchInfoDTO newMatchInfoDTO) {
+    public String addMatchInfo(NewMatchInfoDTO newMatchInfoDTO) throws Exception {
         MatchInfo newEntry = new MatchInfo();
 
         newEntry.setActive(newMatchInfoDTO.isActive());
@@ -39,8 +39,11 @@ public class MatchInfoHandler implements MatchInfoService {
         newEntry.setTime(newMatchInfoDTO.getTime());
 
         Team homeTeam = teamRepository.findByName(newMatchInfoDTO.getHome());
-        newEntry.setHome(homeTeam);
         Team awayTeam = teamRepository.findByName(newMatchInfoDTO.getAway());
+        if(homeTeam==null || awayTeam==null)
+            throw new Exception("");
+        newEntry.setHome(homeTeam);
+
         newEntry.setAway(awayTeam);
 
 

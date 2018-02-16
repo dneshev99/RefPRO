@@ -37,7 +37,7 @@ public class MatchInfoController {
     }
 
     @RequestMapping(value = "/create",method = RequestMethod.POST)
-    public ResponseEntity createMatchInfo(@RequestBody NewMatchInfoDTO newMatchInfoDTO) {
+    public ResponseEntity createMatchInfo(@RequestBody NewMatchInfoDTO newMatchInfoDTO) throws Exception {
         String ID = matchInfoHandler.addMatchInfo(newMatchInfoDTO);
         log.log(Level.INFO,"Create matcg Info: "+newMatchInfoDTO);
 

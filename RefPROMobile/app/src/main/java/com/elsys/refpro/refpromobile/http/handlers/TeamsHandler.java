@@ -1,53 +1,58 @@
-package com.elsys.refpro.refpromobile.http;
+package com.elsys.refpro.refpromobile.http.handlers;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
-import com.elsys.refpro.refpromobile.activities.CreateActivity;
 import com.elsys.refpro.refpromobile.dto.TeamDTO;
 import com.elsys.refpro.refpromobile.services.TeamService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
+@Singleton
 public class TeamsHandler {
 
-    private final String token ;
-    OkHttpClient client;
-    Retrofit retrofit ;
-    public TeamsHandler(final String token){
-        this.token=token;
-        client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
-                        .addHeader("Authorization",token)
-                        .build();
-                Log.d("Na sasho tokena",token);
-                return chain.proceed(newRequest);
-            }
-        }).build();
+    //private final String token ;
+   // OkHttpClient client;
 
-        retrofit = new Retrofit.Builder()
-                .client(client)
-                .baseUrl(HttpDetails.getRetrofitUrl())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    Retrofit retrofit ;
+//    public TeamsHandler(final String token){
+//        this.token=token;
+//        client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+//            @Override
+//            public okhttp3.Response intercept(Chain chain) throws IOException {
+//                Request newRequest = chain.request().newBuilder()
+//                        .addHeader("Authorization",token)
+//                        .build();
+//                Log.d("Na sasho tokena",token);
+//                return chain.proceed(newRequest);
+//            }
+//        }).build();
+//
+//        retrofit = new Retrofit.Builder()
+//                .client(client)
+//                .baseUrl(HttpDetails.getRetrofitUrl())
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//    }
+
+
+    //When we can create singletons we`ll have to use @Inject on a constructor
+    @Inject
+    public TeamsHandler(Retrofit retrofit){
+        this.retrofit=retrofit;
     }
     private static final Logger log = Logger.getLogger(TeamsHandler.class.getName());
 

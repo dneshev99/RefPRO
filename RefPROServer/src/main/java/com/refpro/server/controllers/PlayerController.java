@@ -40,7 +40,7 @@ public class PlayerController {
     @RequestMapping(value = "/create",method = RequestMethod.POST)
     public ResponseEntity createNewPlayers(@RequestBody List<PlayerDTO> playersToCreate) {
 
-        log.log(Level.INFO,"Create match Info: "+playersToCreate);
+        log.log(Level.INFO,"createNewPlayers: "+playersToCreate);
         List<String> ids=playerHandler.createPlayer(playersToCreate);
         return  new ResponseEntity<>( ids,HttpStatus.OK);
     }
@@ -48,7 +48,7 @@ public class PlayerController {
     @RequestMapping(value = "/getPlayersByTeam/{name}",method = RequestMethod.GET)
     public ResponseEntity getPlayersByTeam(@PathVariable("name") String name) {
         List<PlayerDTO> result = playerHandler. getPlayersByTeam(name);
-
+        log.debug("getPlayersByTeam "+name);
         return new ResponseEntity<>(result,HttpStatus.OK);
     }
 

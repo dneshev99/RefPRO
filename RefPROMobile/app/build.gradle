@@ -34,6 +34,10 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.2.0.Final'
     compile ('io.jsonwebtoken:jjwt:0.9.0')
     testCompile 'junit:junit:4.12'
+    compile 'com.google.dagger:dagger:2.11'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    compile 'com.google.dagger:dagger-android-support:2.11'
+    compile 'com.jackandphantom.android:circularimageview:1.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

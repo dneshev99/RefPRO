@@ -9,6 +9,6 @@ import retrofit2.http.POST;
 
 public interface CreateMatchService {
 
-    @POST("/MatchInfo/CreateActivity")
+    @POST("/matchInfo/create")
     Call<ResponseBody> create(@Body NewMatchInfoDTO body);
 }

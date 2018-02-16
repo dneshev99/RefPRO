@@ -25,7 +25,9 @@ public class MatchInfo {
     private String homeAbbr;
     private String awayAbbr;
 
+    @Indexed
     private List<Player> homePlayers= new ArrayList<>();
+    @Indexed
     private List<Player> awayPlayers=new ArrayList<>();
     private int length;
 

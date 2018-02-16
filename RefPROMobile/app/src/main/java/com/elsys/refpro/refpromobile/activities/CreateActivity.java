@@ -8,26 +8,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.elsys.refpro.refpromobile.application.DIApplication;
 import com.elsys.refpro.refpromobile.database.LocalDatabase;
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.dto.NewMatchInfoDTO;
-import com.elsys.refpro.refpromobile.dto.TeamDTO;
-import com.elsys.refpro.refpromobile.http.TeamsHandler;
+import com.elsys.refpro.refpromobile.http.handlers.TeamsHandler;
 import com.elsys.refpro.refpromobile.services.CreateMatchService;
 import com.elsys.refpro.refpromobile.http.HttpDetails;
 import com.elsys.refpro.refpromobile.controllers.MatchValidator;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+
+import javax.inject.Inject;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -49,17 +47,25 @@ public class CreateActivity extends Fragment implements View.OnClickListener{
     ProgressBar loading;
 
     LocalDatabase db;
+
+    @Inject
     SharedPreferences preferences;
 
-    private TeamsHandler teamHandler;
+    @Inject
+    Retrofit retrofit;
+
+    @Inject
+    TeamsHandler teamHandler;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        ((DIApplication)this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
 
+        Log.d("Inject",(retrofit==null)+"=client");
         createView = inflater.inflate(R.layout.activity_create, container, false);
-        preferences = getActivity().getSharedPreferences("RefPRO" , 0);
-        teamHandler=new TeamsHandler(preferences.getString("token", "N/A"));
+
+        Log.d("Inject",(preferences==null)+"=preferences");
         // region INITIALIZE
         competition = (EditText) createView.findViewById(R.id.competitionForm);
         venue = (EditText) createView.findViewById(R.id.venueForm);
