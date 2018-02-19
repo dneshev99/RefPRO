@@ -6,17 +6,24 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.elsys.refpro.refpromobile.adapters.PlayersAdapter;
+import com.elsys.refpro.refpromobile.adapters.PlayersAdapterAssigned;
 import com.elsys.refpro.refpromobile.application.DIApplication;
 import com.elsys.refpro.refpromobile.database.LocalDatabase;
 import com.elsys.refpro.refpromobile.R;
@@ -63,6 +70,44 @@ public class MatchInfoActivity extends Fragment {
 
     @Inject
     PlayersHandler playersHandler;
+    final ArrayList<PlayerDTO> homePlayersAssignedDtos = new ArrayList<>();
+
+    class MyDragListener implements View.OnDragListener {
+
+        @Override
+        public boolean onDrag(View receiverView, DragEvent event) {
+            int action = event.getAction();
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    // do nothing
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    //v.setBackgroundDrawable(enterShape);
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    //v.setBackgroundDrawable(normalShape);
+                    break;
+                case DragEvent.ACTION_DROP:
+                    // Dropped, reassign View to ViewGroup
+                    View view = (View) event.getLocalState();
+                    ViewGroup owner = (ViewGroup) view.getParent().getParent();
+                    PlayersAdapter adapt = (PlayersAdapter) ((ListView)view.getParent()).getAdapter();
+                    //.getPlayerByName(((RelativeLayout) view).getChildAt(0).getText());
+
+                    TextView textView = ((TextView)(((RelativeLayout) view).getChildAt(0)));
+                    homePlayersAssignedDtos.add(adapt.getPlayerByName(textView.getText().toString()));
+                    PlayersAdapterAssigned adapterReceiver = (PlayersAdapterAssigned) ((ListView) receiverView).getAdapter();
+                    adapterReceiver.notifyDataSetChanged();
+                    view.setVisibility(View.VISIBLE);
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                   // v.setBackgroundDrawable(normalShape);
+                default:
+                    break;
+            }
+            return true;
+        }
+    }
 
     @Nullable
     @Override
@@ -72,6 +117,12 @@ public class MatchInfoActivity extends Fragment {
         createView = inflater.inflate(R.layout.activity_info, container, false);
         loading = (ProgressBar) createView.findViewById(R.id.progressBar);
         ListView playersDrawer = (ListView) createView.findViewById(R.id.right_drawer);
+        ListView homePlayersAssigned = (ListView) createView.findViewById(R.id.home_players_assigned);
+        homePlayersAssigned.setOnDragListener(new MyDragListener());
+
+        PlayersAdapterAssigned homePlayersAdapter = new PlayersAdapterAssigned(homePlayersAssignedDtos,this.getActivity()
+        );
+        homePlayersAssigned.setAdapter(homePlayersAdapter);
 
 
         SharedPreferences preferences;

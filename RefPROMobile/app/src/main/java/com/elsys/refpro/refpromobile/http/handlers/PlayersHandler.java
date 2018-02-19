@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.elsys.refpro.refpromobile.R;
+import com.elsys.refpro.refpromobile.adapters.PlayersAdapter;
 import com.elsys.refpro.refpromobile.dto.PlayerDTO;
 import com.elsys.refpro.refpromobile.dto.TeamDTO;
 import com.elsys.refpro.refpromobile.services.PlayersService;
@@ -45,8 +46,8 @@ public class PlayersHandler {
                         playerName.add(eachPlayerDto.getShirtName());
                 }
                 Log.d("HttpCall","playerName="+playerName+"");
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
-                        android.R.layout.simple_list_item_1, playerName);
+                PlayersAdapter adapter = new PlayersAdapter(response.body(),context
+                );
                 playersDrawer.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
 

@@ -20,6 +20,14 @@
             android:orientation="vertical"
             android:weightSum="1">
 
+            <ListView
+                android:id="@+id/home_players_assigned"
+                android:layout_width="match_parent"
+                android:layout_height="200px"
+                android:background="#f91203"
+
+                />
+
             <TextView
                 android:id="@+id/matchNameInformation"
                 android:layout_width="match_parent"
@@ -135,6 +143,13 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:background="#111"/>
+        android:background="#FFFFFF">
+
+
+    </ListView>
+
+
+
+
 
 </android.support.v4.widget.DrawerLayout>
