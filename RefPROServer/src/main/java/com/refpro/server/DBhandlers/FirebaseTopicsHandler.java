@@ -37,8 +37,7 @@ public class FirebaseTopicsHandler {
             throw new Exception("User with not found");
 
         Query query = new Query();
-        Criteria criteria = new Criteria();
-        criteria.where("subscribedUsers.$id").is(userName);
+        Criteria criteria = Criteria.where("subscribedUsers").is(user);
         query.addCriteria(criteria);
         List<FirbaseTopics> topicsForUser = mongoTemplate.find(query, FirbaseTopics.class);
         List<FirebaseTopicDTO> topicsForUserDto = new LinkedList<>();

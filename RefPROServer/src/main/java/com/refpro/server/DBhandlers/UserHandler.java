@@ -72,8 +72,8 @@ public class UserHandler implements UserDetailsService {
 
     public List<User> findAllUsersByUsernames(Collection<String> userNames){
         Query query1 = new Query();
-        Criteria criteria = new Criteria();
-        criteria.where("username").in(userNames);
+
+        Criteria criteria = Criteria.where("username").in(userNames);
 
         query1.addCriteria(criteria);
         List<User> userTest1 = mongoTemplate.find(query1, User.class);

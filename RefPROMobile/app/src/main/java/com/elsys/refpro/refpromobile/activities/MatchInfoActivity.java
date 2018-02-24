@@ -109,9 +109,16 @@ public class MatchInfoActivity extends Fragment {
         }
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        ((DIApplication) this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
+        createView = inflater.inflate(R.layout.activity_info_v2, container, false);
+        return createView;
+    }
+
+    @Nullable
+
+    public View onCreateView_old(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         ((DIApplication)this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
 
         createView = inflater.inflate(R.layout.activity_info, container, false);
