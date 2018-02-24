@@ -9,8 +9,9 @@ import java.util.Set;
 public class FirebaseTopicDTO {
 
     private String topicName;
-        private Set<UserDTO> subscribedUsers = new LinkedHashSet<>();
+    private Set<UserDTO> subscribedUsers = new LinkedHashSet<>();
 
+    public FirebaseTopicDTO(){}
     public FirebaseTopicDTO(FirbaseTopics firebaseTopic) {
         this.topicName=firebaseTopic.getTopicName();
     }
