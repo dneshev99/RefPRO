@@ -5,13 +5,19 @@ import com.refpro.server.enums.DeviceType;
 import com.refpro.server.models.User;
 import com.refpro.server.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -21,6 +27,9 @@ public class UserHandler implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -59,5 +68,15 @@ public class UserHandler implements UserDetailsService {
         UserDTO resultDto = new UserDTO(user.getUsername(),tokens);
 
         return resultDto;
+    }
+
+    public List<User> findAllUsersByUsernames(Collection<String> userNames){
+        Query query1 = new Query();
+        Criteria criteria = new Criteria();
+        criteria.where("username").in(userNames);
+
+        query1.addCriteria(criteria);
+        List<User> userTest1 = mongoTemplate.find(query1, User.class);
+        return userTest1;
     }
 }

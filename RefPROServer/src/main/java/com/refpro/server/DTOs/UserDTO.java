@@ -36,4 +36,20 @@ public class UserDTO {
     public Map<DeviceType, String> getTokens() {
         return tokens;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserDTO userDTO = (UserDTO) o;
+
+        return username != null ? username.equals(userDTO.username) : userDTO.username == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return username != null ? username.hashCode() : 0;
+    }
 }

@@ -1,7 +1,9 @@
 package com.refpro.server.controllers;
 
+import com.refpro.server.DBhandlers.FirebaseTopicsHandler;
 import com.refpro.server.DBhandlers.UserHandler;
 import com.refpro.server.DTOs.ErrorDto;
+import com.refpro.server.DTOs.FirebaseTopicDTO;
 import com.refpro.server.DTOs.UserDTO;
 import com.refpro.server.enums.DeviceType;
 import com.refpro.server.models.User;
@@ -17,12 +19,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserHandler userHandler;
 
+    @Autowired
+    private FirebaseTopicsHandler firebaseTopicsHandler;
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public static ResponseEntity handleTypeMismatchException() {
@@ -56,6 +62,13 @@ public class UserController {
         String userName = auth.getName();
         UserDTO userDto = userHandler.getFCMtokenForUser(userName);
         return new ResponseEntity<>(userDto,HttpStatus.OK);
+    }
+    @RequestMapping(value = "/getTopic",method = RequestMethod.GET)
+    public  HttpEntity getTopicsForUser() throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userName = auth.getName();
+        List<FirebaseTopicDTO> topicsForUser = firebaseTopicsHandler.getTopicsForUsername(userName);
+        return new ResponseEntity<>(topicsForUser,HttpStatus.OK);
     }
 
 }
