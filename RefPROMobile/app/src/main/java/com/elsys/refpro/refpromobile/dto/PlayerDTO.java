@@ -54,4 +54,28 @@ public class PlayerDTO {
     public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PlayerDTO playerDTO = (PlayerDTO) o;
+
+        if (shirtNumber != playerDTO.shirtNumber) return false;
+        if (!shirtName.equals(playerDTO.shirtName)) return false;
+        if (!firstName.equals(playerDTO.firstName)) return false;
+        if (!lastName.equals(playerDTO.lastName)) return false;
+        return birthday != null ? birthday.equals(playerDTO.birthday) : playerDTO.birthday == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = shirtNumber;
+        result = 31 * result + shirtName.hashCode();
+        result = 31 * result + firstName.hashCode();
+        result = 31 * result + lastName.hashCode();
+        result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
+        return result;
+    }
 }

@@ -23,7 +23,7 @@ public class TokenAuthService {
 
   static void addAuthentication(HttpServletResponse res, String username) {
     String JWT = Jwts.builder().setSubject(username).setExpiration(new Date(System.currentTimeMillis() + VALIDITY))
-            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setIssuedAt(new Date(System.currentTimeMillis())).claim("userId","1")
         .signWith(SignatureAlgorithm.HS512, KEY).compact();
 
     res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);

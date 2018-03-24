@@ -1,20 +1,26 @@
 package com.elsys.refpro.refpromobile.activities;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -22,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.elsys.refpro.refpromobile.adapters.PlayerHeadAdapter;
 import com.elsys.refpro.refpromobile.adapters.PlayersAdapter;
 import com.elsys.refpro.refpromobile.adapters.PlayersAdapterAssigned;
 import com.elsys.refpro.refpromobile.application.DIApplication;
@@ -30,13 +37,16 @@ import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.dto.MatchUpdateDTO;
 import com.elsys.refpro.refpromobile.dto.PlayerDTO;
 import com.elsys.refpro.refpromobile.http.handlers.PlayersHandler;
+import com.elsys.refpro.refpromobile.models.Player;
 import com.elsys.refpro.refpromobile.services.FirebaseService;
 import com.elsys.refpro.refpromobile.http.HttpDetails;
 import com.elsys.refpro.refpromobile.services.UpdateMatchService;
 import com.elsys.refpro.refpromobile.dto.NotificationDTO;
+import com.jackandphantom.circularimageview.CircleImage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -59,10 +69,10 @@ public class MatchInfoActivity extends Fragment {
     EditText number, name;
     int match_id;
     LocalDatabase db;
-    ArrayList<PlayerDTO> homePlayers = new ArrayList<>();
-    ArrayList<PlayerDTO> awayPlayers = new ArrayList<>();
-    ArrayList<PlayerDTO> homeSubs = new ArrayList<>();
-    ArrayList<PlayerDTO> awaySubs = new ArrayList<>();
+    List<PlayerDTO> homePlayers = new ArrayList<>();
+    List<PlayerDTO> awayPlayers = new ArrayList<>();
+    List<PlayerDTO> homeSubs = new ArrayList<>();
+    List<PlayerDTO> awaySubs = new ArrayList<>();
 
     int counter = 0;
 
@@ -71,7 +81,7 @@ public class MatchInfoActivity extends Fragment {
     @Inject
     PlayersHandler playersHandler;
     final ArrayList<PlayerDTO> homePlayersAssignedDtos = new ArrayList<>();
-
+    final ArrayList<PlayerDTO> a = new ArrayList<PlayerDTO>();
     class MyDragListener implements View.OnDragListener {
 
         @Override
@@ -85,24 +95,44 @@ public class MatchInfoActivity extends Fragment {
                     //v.setBackgroundDrawable(enterShape);
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    //v.setBackgroundDrawable(normalShape);
+
                     break;
                 case DragEvent.ACTION_DROP:
-                    // Dropped, reassign View to ViewGroup
-                    View view = (View) event.getLocalState();
-                    ViewGroup owner = (ViewGroup) view.getParent().getParent();
-                    PlayersAdapter adapt = (PlayersAdapter) ((ListView)view.getParent()).getAdapter();
-                    //.getPlayerByName(((RelativeLayout) view).getChildAt(0).getText());
+                    if(receiverView instanceof ImageView){
+                        // Dropped, reassign View to ViewGroup
+                        CircleImage draggedView = (CircleImage) event.getLocalState();
+                        ImageView receiverViewImage = (ImageView) receiverView;
 
-                    TextView textView = ((TextView)(((RelativeLayout) view).getChildAt(0)));
-                    homePlayersAssignedDtos.add(adapt.getPlayerByName(textView.getText().toString()));
-                    PlayersAdapterAssigned adapterReceiver = (PlayersAdapterAssigned) ((ListView) receiverView).getAdapter();
-                    adapterReceiver.notifyDataSetChanged();
-                    view.setVisibility(View.VISIBLE);
+                        GridView owner = (GridView) draggedView.getParent();
+                        ConstraintLayout relativeLayoutTerrain = (ConstraintLayout) receiverView.getParent();
+
+                        int draggedOverIndex = relativeLayoutTerrain.indexOfChild(receiverView);
+
+
+                        PlayerHeadAdapter adapter = (PlayerHeadAdapter) owner.getAdapter();
+                        PlayerDTO assignedPlayer = ((PlayerHeadAdapter.PlayerHeadViewHolder) draggedView.getTag()).player;
+                        adapter.remove(assignedPlayer);
+                        adapter.notifyDataSetChanged();
+
+
+                        receiverView.setTag(assignedPlayer);
+                        receiverViewImage.setImageDrawable(draggedView.getDrawable());
+                        relativeLayoutTerrain.refreshDrawableState();
+                    }
+
+                    if(receiverView instanceof ConstraintLayout){
+                        CircleImage img = (CircleImage) event.getLocalState();
+                         img.setVisibility(View.VISIBLE);
+                    }
+
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                    // v.setBackgroundDrawable(normalShape);
+                    break;
+
                 default:
+//                    CircleImage img = (CircleImage) event.getLocalState();
+//                    img.setVisibility(View.VISIBLE);
                     break;
             }
             return true;
@@ -110,9 +140,84 @@ public class MatchInfoActivity extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         ((DIApplication) this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
         createView = inflater.inflate(R.layout.activity_info_v2, container, false);
+        GridView playersDrawer = (GridView) createView.findViewById(R.id.right_drawer);
+       ConstraintLayout c = (ConstraintLayout) createView.findViewById(R.id.awayTeamTeam);
+
+
+        a.add(new PlayerDTO(1,"22"));
+        a.add(new PlayerDTO(1,"24"));
+        a.add(new PlayerDTO(1,"21"));
+        a.add(new PlayerDTO(1,"25"));
+        a.add(new PlayerDTO(1,"27"));
+        a.add(new PlayerDTO(1,"29"));
+        a.add(new PlayerDTO(1,"200"));
+        a.add(new PlayerDTO(1,"256"));
+
+
+        PlayerHeadAdapter adapter = new PlayerHeadAdapter(this.getActivity(), a);
+        playersDrawer.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        createView.findViewById(R.id.circleImage).setOnDragListener(new MyDragListener());
+        createView.findViewById(R.id.circleImage12).setOnDragListener(new MyDragListener());
+        c.setOnDragListener(new MyDragListener());
+
+
+        db = new LocalDatabase(this.getActivity());
+        final Cursor data = db.getRow(match_id);
+        data.moveToFirst();
+
+        Button b = (Button) createView.findViewById(R.id.button2);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count = ((ConstraintLayout) createView.findViewById(R.id.awayTeamTeam)).getChildCount();
+                for(int i=0;i<count;i++){
+                    Toast.makeText(getContext(), "Count"+((PlayerDTO)((ConstraintLayout) createView.findViewById(R.id.awayTeamTeam)).getChildAt(i).getTag()).getShirtName(), Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        //playersHandler.setHomePlayersForDrawer("Team Gosho",playersDrawer);
         return createView;
     }
 
@@ -136,7 +241,7 @@ public class MatchInfoActivity extends Fragment {
         preferences = getActivity().getSharedPreferences("RefPRO" , 0);
         final String WatchFCMToken = preferences.getString("WatchFCMToken", "N/A");
 
-        db = new LocalDatabase(this.getActivity());
+
 
 
         //region INITIALIZE
@@ -149,7 +254,7 @@ public class MatchInfoActivity extends Fragment {
         SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
         match_id = mPrefs.getInt("matchId", 0);
 
-
+        db = new LocalDatabase(this.getActivity());
        final Cursor data = db.getRow(match_id);
 
        data.moveToFirst();

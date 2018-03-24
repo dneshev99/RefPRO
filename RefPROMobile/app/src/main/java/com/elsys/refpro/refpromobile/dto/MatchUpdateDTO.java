@@ -1,16 +1,17 @@
 package com.elsys.refpro.refpromobile.dto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MatchUpdateDTO {
 
     private String matchId;
-    private ArrayList<PlayerDTO> playersHome;
-    private ArrayList<PlayerDTO> playersAway;
-    private ArrayList<PlayerDTO> subsHome;
-    private ArrayList<PlayerDTO> subsAway;
+    private List<PlayerDTO> playersHome;
+    private List<PlayerDTO> playersAway;
+    private List<PlayerDTO> subsHome;
+    private List<PlayerDTO> subsAway;
 
-    public MatchUpdateDTO(String matchId, ArrayList<PlayerDTO> playersHome, ArrayList<PlayerDTO> playersAway, ArrayList<PlayerDTO> subsHome, ArrayList<PlayerDTO> subsAway) {
+    public MatchUpdateDTO(String matchId, List<PlayerDTO> playersHome, List<PlayerDTO> playersAway, List<PlayerDTO> subsHome, List<PlayerDTO> subsAway) {
         this.matchId = matchId;
         this.playersHome = playersHome;
         this.playersAway = playersAway;
@@ -29,35 +30,35 @@ public class MatchUpdateDTO {
         this.matchId = matchId;
     }
 
-    public ArrayList<PlayerDTO> getPlayersHome() {
+    public List<PlayerDTO> getPlayersHome() {
         return playersHome;
     }
 
-    public void setPlayersHome(ArrayList<PlayerDTO> playersHome) {
+    public void setPlayersHome(List<PlayerDTO> playersHome) {
         this.playersHome = playersHome;
     }
 
-    public ArrayList<PlayerDTO> getPlayersAway() {
+    public List<PlayerDTO> getPlayersAway() {
         return playersAway;
     }
 
-    public void setPlayersAway(ArrayList<PlayerDTO> playersAway) {
+    public void setPlayersAway(List<PlayerDTO> playersAway) {
         this.playersAway = playersAway;
     }
 
-    public ArrayList<PlayerDTO> getSubsHome() {
+    public List<PlayerDTO> getSubsHome() {
         return subsHome;
     }
 
-    public void setSubsHome(ArrayList<PlayerDTO> subsHome) {
+    public void setSubsHome(List<PlayerDTO> subsHome) {
         this.subsHome = subsHome;
     }
 
-    public ArrayList<PlayerDTO> getSubsAway() {
+    public List<PlayerDTO> getSubsAway() {
         return subsAway;
     }
 
-    public void setSubsAway(ArrayList<PlayerDTO> subsAway) {
+    public void setSubsAway(List<PlayerDTO> subsAway) {
         this.subsAway = subsAway;
     }
 }
