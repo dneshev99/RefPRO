@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Locale;
 
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity
         TextView getUserName = (TextView) navView.findViewById(R.id.refereeName);
         String refName= getIntent().getExtras().getString("Username");
         getUserName.setText(refName);
+
+        FirebaseMessaging.getInstance().subscribeToTopic("testtopic");
     }
 
     @Override
