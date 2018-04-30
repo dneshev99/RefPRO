@@ -7,15 +7,15 @@ public class MatchEventDTO {
     private String time;
     private String eventType;
     private String team;
-    private String message;
+    private String player;
 
+    public MatchEventDTO(String id, String time, String eventType, String team, String player) {
 
-    public MatchEventDTO(String id, String time, String eventType, String team, String message) {
         this.id = id;
         this.time = time;
         this.eventType = eventType;
         this.team = team;
-        this.message = message;
+        this.player = player;
     }
 
     public String getId() {
@@ -46,18 +46,18 @@ public class MatchEventDTO {
         this.team = team;
     }
 
-    public String getMessage() {
-        return message;
+    public String getPlayer() {
+        return player;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setPlayer(String message) {
+        this.player = message;
     }
 
 
     @Override
     public String toString() {
 
-        return time + eventType + team + message;
+        return time + eventType + team + player;
     }
 }

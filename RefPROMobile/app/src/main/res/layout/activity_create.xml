@@ -98,40 +98,17 @@
         android:text="@string/create_match" />
 
     <EditText
-        android:id="@+id/numberOfPlayersForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/players"
-        android:inputType="number"
-        android:layout_above="@+id/numberOfSubsForm"
-        android:layout_alignEnd="@+id/timeForm"
-        android:text="11"/>
-
-    <EditText
-        android:id="@+id/numberOfSubsForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/subs"
-        android:inputType="number"
-        android:textAlignment="viewStart"
-        android:layout_above="@+id/halfLengthForm"
-        android:layout_alignParentStart="true"
-        android:text="5"/>
-
-    <EditText
         android:id="@+id/halfLengthForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="106dp"
         android:ems="10"
         android:hint="@string/length"
         android:inputType="number"
-        android:textAlignment="viewStart"
-        android:layout_above="@+id/createMatchButton"
-        android:layout_alignParentStart="true"
         android:text="45"
-        />
+        android:textAlignment="viewStart" />
 
     <ProgressBar
         android:id="@+id/progressBar"

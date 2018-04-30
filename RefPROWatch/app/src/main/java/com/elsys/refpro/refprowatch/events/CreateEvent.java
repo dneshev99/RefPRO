@@ -37,23 +37,23 @@ public class CreateEvent {
     }
 
 
-    public ArrayList<MatchEventDTO> addEvent(String time, String eventType, String team, String message, boolean escape) {
+    public ArrayList<MatchEventDTO> addEvent(String time, String eventType, String team, String player, boolean escape) {
 
         MatchEventDTO newEvent;
 
         if (!escape) {
 
-            newEvent = new MatchEventDTO(id, time + "   ", eventType + " - ", team + "  - ", message);
+            newEvent = new MatchEventDTO(id, time + "   ", eventType + " - ", team + "  - ", player);
         }
         else {
 
-            newEvent = new MatchEventDTO(id, time, eventType, team, message);
+            newEvent = new MatchEventDTO(id, time, eventType, team, player);
         }
 
         events.add(newEvent);
 
-        if (events.size() != 1)
-            sendEvent(newEvent);
+        //if (events.size() != 1)
+        //    sendEvent(newEvent);
 
         return events;
     }
@@ -105,9 +105,7 @@ public class CreateEvent {
                 Toast.makeText(context, "FAILURE-EVENT",
                         Toast.LENGTH_SHORT).show();
                 android.util.Log.d("Error:",t.getMessage());
-
             }
-
         });
     }
 
@@ -115,7 +113,6 @@ public class CreateEvent {
     public void addState(boolean isActive, ArrayList<MatchEventDTO> log) {
 
         MatchStateDTO newEvent;
-
 
         newEvent = new MatchStateDTO(id, isActive, log);
         sendState(newEvent);
@@ -168,9 +165,7 @@ public class CreateEvent {
                 Toast.makeText(context, "FAILURE-STATE",
                         Toast.LENGTH_SHORT).show();
                 android.util.Log.d("Error:",t.getMessage());
-
             }
-
         });
     }
 }

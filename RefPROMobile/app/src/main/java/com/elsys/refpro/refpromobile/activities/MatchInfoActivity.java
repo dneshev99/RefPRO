@@ -179,7 +179,8 @@ public class MatchInfoActivity extends Fragment {
         ((DIApplication) this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
         createView = inflater.inflate(R.layout.activity_info_v2, container, false);
         GridView playersDrawer = (GridView) createView.findViewById(R.id.right_drawer);
-       ConstraintLayout c = (ConstraintLayout) createView.findViewById(R.id.awayTeamTeam);
+       final ConstraintLayout awayTeamLayout = (ConstraintLayout) createView.findViewById(R.id.awayTeam);
+        final ConstraintLayout homeTeamLayout = (ConstraintLayout) createView.findViewById(R.id.homeTeam);
 
 
         a.add(new PlayerDTO(1,"22"));
@@ -198,20 +199,36 @@ public class MatchInfoActivity extends Fragment {
 
         createView.findViewById(R.id.circleImage).setOnDragListener(new MyDragListener());
         createView.findViewById(R.id.circleImage12).setOnDragListener(new MyDragListener());
-        c.setOnDragListener(new MyDragListener());
+        awayTeamLayout.setOnDragListener(new MyDragListener());
 
 
         db = new LocalDatabase(this.getActivity());
         final Cursor data = db.getRow(match_id);
         data.moveToFirst();
 
+        final ArrayList<PlayerDTO> assignedHomePlayers = new ArrayList<PlayerDTO>();
+        final ArrayList<PlayerDTO> assignedAwayPlayers = new ArrayList<PlayerDTO>();
+        final ArrayList<PlayerDTO> assignedHomeSubs = new ArrayList<PlayerDTO>();
+        final ArrayList<PlayerDTO> assignedAwaySubs = new ArrayList<PlayerDTO>();
+
         Button b = (Button) createView.findViewById(R.id.button2);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int count = ((ConstraintLayout) createView.findViewById(R.id.awayTeamTeam)).getChildCount();
+                int count = ((ConstraintLayout) createView.findViewById(R.id.awayTeam)).getChildCount();
                 for(int i=0;i<count;i++){
-                    Toast.makeText(getContext(), "Count"+((PlayerDTO)((ConstraintLayout) createView.findViewById(R.id.awayTeamTeam)).getChildAt(i).getTag()).getShirtName(), Toast.LENGTH_LONG).show();
+
+                    if (count < 11)
+                    {
+                        PlayerDTO playerDTO = (PlayerDTO) awayTeamLayout.getChildAt(i).getTag();
+                        assignedAwayPlayers.add(playerDTO);
+                        playerDTO = (PlayerDTO) homeTeamLayout.getChildAt(i).getTag();
+                        assignedAwayPlayers.add(playerDTO);
+                    }
+                    else
+                    {
+
+                    }
                 }
 
             }

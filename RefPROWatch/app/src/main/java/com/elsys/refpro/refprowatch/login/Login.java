@@ -1,4 +1,4 @@
-package com.elsys.refpro.refprowatch;
+package com.elsys.refpro.refprowatch.login;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +13,19 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.elsys.refpro.refprowatch.R;
+import com.elsys.refpro.refprowatch.http.DeviceType;
 import com.elsys.refpro.refprowatch.http.LoginService;
-import com.elsys.refpro.refprowatch.http.dto.AccountDto;
+import com.elsys.refpro.refprowatch.http.UserService;
+import com.elsys.refpro.refprowatch.http.dto.UserDTO;
 import com.elsys.refpro.refprowatch.main.MainActivity;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,16 +60,22 @@ public class Login extends WearableActivity {
             @Override
             public void onClick(View v) {
 
+
                 final String userString = username.getText().toString().trim();
                 final String passString = password.getText().toString().trim();
 
                 if (userString.isEmpty() || passString.isEmpty()) {
 
+                    Intent app = new Intent(getApplicationContext(), MainActivity.class);
+                    app.putExtra("Username", userString);
+                    app.putExtra("Password", passString);
+                    startActivity(app);
+
                     vibrator.vibrate(300);
                 } else {
 
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://10.0.2.2:8080")
+                            .baseUrl("http://10.19.9.30:8082")
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
@@ -69,7 +84,7 @@ public class Login extends WearableActivity {
                     loading.setVisibility(View.VISIBLE);
                     signButton.setVisibility(View.INVISIBLE);
 
-                    service.login(new AccountDto(userString,passString)).enqueue(new Callback<ResponseBody>() {
+                    service.login(new UserDTO(userString,passString)).enqueue(new Callback<ResponseBody>() {
 
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -79,6 +94,10 @@ public class Login extends WearableActivity {
                                 SharedPreferences.Editor prefsEditor = preferences.edit();
                                 prefsEditor.putString("token", response.headers().get("authorization"));
                                 prefsEditor.apply();
+
+                                final String jwtToken = response.headers().get("authorization");
+                                final String fcmToken = FirebaseInstanceId.getInstance().getToken();
+                                updateCurrentUserFcmToken(jwtToken,fcmToken, DeviceType.WEAR);
 
                                 Intent app = new Intent(getApplicationContext(), MainActivity.class);
                                 app.putExtra("Username", userString);
@@ -108,6 +127,39 @@ public class Login extends WearableActivity {
 
                     vibrator.vibrate(300);
                 }
+            }
+        });
+    }
+
+    private void updateCurrentUserFcmToken(final String jwtToken,final String fcmToken,final DeviceType deviceType){
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder()
+                        .addHeader("Authorization", jwtToken)
+                        .addHeader("DeviceType", deviceType.toString())
+                        .build();
+
+                return chain.proceed(newRequest);
+            }
+        }).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.19.9.30:8082")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserService service = retrofit.create(UserService.class);
+        service.addFcmTokenForUser(fcmToken).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.d("asd",response.message());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("asd",t.getMessage());
             }
         });
     }
