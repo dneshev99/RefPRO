@@ -17,6 +17,8 @@ public class Player {
     private int shirtNumber;
     private String shirtName;
 
+    private String picture_id;
+
     public String getId() {
         return id;
     }
@@ -71,5 +73,13 @@ public class Player {
 
     public void setShirtName(String shirtName) {
         this.shirtName = shirtName;
+    }
+
+    public String getPicture_id() {
+        return picture_id;
+    }
+
+    public void setPicture_id(String picture_id) {
+        this.picture_id = picture_id;
     }
 }
