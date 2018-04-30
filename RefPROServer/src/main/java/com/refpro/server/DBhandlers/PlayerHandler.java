@@ -1,17 +1,29 @@
 package com.refpro.server.DBhandlers;
 
 
+import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
 import com.refpro.server.DTOs.PlayerDTO;
+import com.refpro.server.exception.AbstractRestException;
+import com.refpro.server.exception.InvalidInputException;
 import com.refpro.server.exception.PlayerNotFoundExeption;
 import com.refpro.server.models.Player;
 import com.refpro.server.models.Team;
 import com.refpro.server.repositories.PlayerRepository;
 import com.refpro.server.repositories.TeamRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.IOUtils;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
+
 import org.springframework.stereotype.Component;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,7 +33,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Component
-public class PlayerHandler {
+public class PlayerHandler implements PlayerService {
 
     @Autowired
     private PlayerRepository playerRepository;
@@ -34,8 +46,9 @@ public class PlayerHandler {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    GridFS gfsPhoto = new GridFS(mongoTemplate.getDb(), "photos");
+    public static final String PLAYERS_ICONS_BUCKET_NAME = "playersIcons";
 
+    @Override
     public List<String> createPlayer(List<PlayerDTO> players ){
         List<String> createdIds = new LinkedList<>();
         if(players==null)
@@ -57,6 +70,7 @@ public class PlayerHandler {
         return createdIds;
     }
 
+    @Override
     public List<PlayerDTO> getPlayersByTeam(String name) {
         List<PlayerDTO> result = new ArrayList<>();
 
@@ -80,22 +94,57 @@ public class PlayerHandler {
         return result;
     }
 
-    public void setPictureForPlayer(PlayerDTO playerDTO, MultipartFile file) throws IOException, PlayerNotFoundExeption {
+    @Override
+    public void addPlayerIcon(String playerId, MultipartFile file) throws IOException, AbstractRestException {
 
-        Player player = playerRepository.findPlayerByShirtNumberAndShirtName(playerDTO.getShirtNumber(),playerDTO.getShirtName());
+        if(StringUtils.isBlank(playerId)){
+            throw new InvalidInputException("Player id can not be null or empty!");
+        }
+
+        Player player = playerRepository.findPlayerById(playerId);
+
+        if (player == null) {
+            throw new PlayerNotFoundExeption("Player not found.");
+        }
+        GridFS gfsPhoto = new GridFS(mongoTemplate.getDb(), PLAYERS_ICONS_BUCKET_NAME);
+        GridFSInputFile gfsFile = gfsPhoto.createFile(file.getBytes());
+        gfsFile.setChunkSize(4096*1024);
+        ObjectId id = new ObjectId();
+        gfsFile.setFilename(id.toString());
+        gfsFile.setId(id);
+        gfsFile.save();
+
+        player.setPictureId(gfsFile.getId().toString());
+        playerRepository.save(player);
+
+    }
+
+    @Override
+    public ByteArrayResource getPlayerIcon(String playerId) throws AbstractRestException,IOException{
+        if(StringUtils.isBlank(playerId)){
+            throw new InvalidInputException("Player id can not be null or empty!");
+        }
+
+        Player player = playerRepository.findPlayerById(playerId);
 
         if (player == null) {
             throw new PlayerNotFoundExeption("Player not found.");
         }
 
-        GridFSInputFile gfsFile = gfsPhoto.createFile(file.getBytes());
-        gfsFile.setFilename(player.getTeam() + "_" + player.getShirtName());
-        gfsFile.setChunkSize(4096*1024);
-        gfsFile.save();
+        String pictureId = player.getPictureId();
 
-        player.setPicture_id(gfsFile.getId().toString());
-        playerRepository.save(player);
+        if(player.getPictureId()!=null){
+            GridFS gfsPhoto = new GridFS(mongoTemplate.getDb(), PLAYERS_ICONS_BUCKET_NAME);
 
+            List<GridFSDBFile> pics = gfsPhoto.find(pictureId);
+            if(pics.size()>0){
+                byte[] picAsBytes = IOUtils.toByteArray(pics.get(0).getInputStream());
+                ByteArrayResource resource = new ByteArrayResource(picAsBytes );
+                return resource;
+            }
+
+        }
+       return null;
     }
 
 }

@@ -10,4 +10,5 @@ import java.util.List;
 public interface PlayerRepository extends MongoRepository<Player,String> {
     List<Player> findAllByTeam(Team team);
     Player findPlayerByShirtNumberAndShirtName(int shirtNumber, String shirtName);
+    Player findPlayerById(String id);
 }

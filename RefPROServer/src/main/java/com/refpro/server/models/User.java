@@ -1,10 +1,14 @@
 package com.refpro.server.models;
 
+import com.refpro.server.enums.UserRole;
 import org.springframework.data.annotation.Id;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class User implements UserDetails{
     @Id
@@ -14,6 +18,7 @@ public class User implements UserDetails{
     private String password;
     private String watchFCMtoken;
     private String mobileFCMtoken;
+    private UserRole role;
 
     public User(String username, String password, String watchFCMtoken, String mobileFCMtoken) {
         this.username = username;
@@ -59,7 +64,11 @@ public class User implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+
+        list.add(new SimpleGrantedAuthority(role.toString()));
+
+        return list;
     }
 
     public String getPassword() {
