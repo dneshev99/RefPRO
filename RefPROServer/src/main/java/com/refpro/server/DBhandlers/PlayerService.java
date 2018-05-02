@@ -15,7 +15,7 @@ import java.util.List;
 public interface PlayerService {
     List<String> createPlayer(List<PlayerDTO> players) throws AbstractRestException;
 
-    List<PlayerDTO> getPlayersByTeam(String name);
+    List<PlayerDTO> getPlayersByTeam(String name) throws Exception;
 
     void addPlayerIcon(String playerId, MultipartFile file) throws IOException, PlayerNotFoundExeption, AbstractRestException;
 

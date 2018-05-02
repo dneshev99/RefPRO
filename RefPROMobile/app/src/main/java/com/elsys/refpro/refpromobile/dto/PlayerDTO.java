@@ -7,12 +7,21 @@ public class PlayerDTO {
     private String firstName;
     private String lastName;
     private String birthday;
-
+    private String pictureId;
+    private String playerId;
     public PlayerDTO(){}
 
     public PlayerDTO(int shirtNumber, String shirtName) {
         this.shirtNumber = shirtNumber;
         this.shirtName = shirtName;
+    }
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
     public int getShirtNumber() {
@@ -53,6 +62,14 @@ public class PlayerDTO {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday;
+    }
+
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
     }
 
     @Override

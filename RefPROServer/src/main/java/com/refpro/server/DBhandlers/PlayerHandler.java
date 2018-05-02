@@ -83,14 +83,14 @@ public class PlayerHandler implements PlayerService {
                 createdIds.add(newPlayer.getId());
             }else{
                 log.debug("Validation error : {}",validationResult.stream().map(s->s.getMessage()).toArray() );
-                
+
             }
         }
         return createdIds;
     }
 
     @Override
-    public List<PlayerDTO> getPlayersByTeam(String name) {
+    public List<PlayerDTO> getPlayersByTeam(String name) throws Exception {
         List<PlayerDTO> result = new ArrayList<>();
 
         Team team = teamRepository.findByName(name);
@@ -143,7 +143,7 @@ public class PlayerHandler implements PlayerService {
         if(StringUtils.isBlank(playerId)){
             throw new InvalidInputException("Player id can not be null or empty!");
         }
-
+        log.debug("playerId:{}",playerId);
         Player player = playerRepository.findPlayerById(playerId);
 
         if (player == null) {

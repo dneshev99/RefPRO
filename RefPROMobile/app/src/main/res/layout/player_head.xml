@@ -8,5 +8,9 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         />
+    <TextView
+        android:id="@+id/playerHeadText"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
 </android.support.v7.widget.LinearLayoutCompat>

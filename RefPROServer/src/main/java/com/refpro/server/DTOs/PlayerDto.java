@@ -19,6 +19,8 @@ public class PlayerDTO {
     private int shirtNumber;
     @NotNull(message = "Shirt name must not be null")
     private String shirtName;
+    private String pictureId;
+    private String playerId;
 
     public PlayerDTO(){}
 
@@ -29,6 +31,8 @@ public class PlayerDTO {
         this.birthday = player.getBirthday();
         this.shirtNumber = player.getShirtNumber();
         this.shirtName = player.getShirtName();
+        this.pictureId = player.getPictureId();
+        this.playerId = player.getId();
     }
 
     public String getTeam() {
@@ -77,6 +81,22 @@ public class PlayerDTO {
 
     public void setShirtName(String shirtName) {
         this.shirtName = shirtName;
+    }
+
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
+    }
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
     @Override

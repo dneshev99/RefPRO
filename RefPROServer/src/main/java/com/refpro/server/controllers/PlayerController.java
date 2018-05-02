@@ -55,7 +55,7 @@ public class PlayerController {
     }
 
     @RequestMapping(value = "/getPlayersByTeam/{name}",method = RequestMethod.GET)
-    public ResponseEntity getPlayersByTeam(@PathVariable("name") String name) {
+    public ResponseEntity getPlayersByTeam(@PathVariable("name") String name) throws Exception {
         List<PlayerDTO> result = playerSericeHandler. getPlayersByTeam(name);
         log.debug("getPlayersByTeam "+name);
         return new ResponseEntity<>(result,HttpStatus.OK);

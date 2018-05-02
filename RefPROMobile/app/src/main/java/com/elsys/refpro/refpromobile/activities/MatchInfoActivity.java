@@ -159,7 +159,7 @@ public class MatchInfoActivity extends Fragment {
         playersHandler.setHomePlayersForDrawer(data.getString(4),adapter);
 
 
-        
+
         awayTeamLayout.setOnDragListener(new TerrainDragListener());
         homeTeamLayout.setOnDragListener(new TerrainDragListener());
         setDragListenerToIcons(awayTeamLayout);
