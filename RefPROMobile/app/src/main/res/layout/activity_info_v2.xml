@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/awayTeamTeam"
+            android:id="@+id/awayTeam"
             >
 
 
@@ -31,7 +31,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="8dp"
 
                 android:src="@drawable/logo"
                 app:add_shadow="true"
@@ -39,10 +39,401 @@
                 app:border_width="3dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.135"
+                app:layout_constraintHorizontal_bias="0.33"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.28"
+                app:layout_constraintVertical_bias="0.0"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.025"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.229"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.22"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.229"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage4"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.427"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.229"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.616"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.229"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage6"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.025"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.591"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage7"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.22"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.591"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage8"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.427"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.591"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage9"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.616"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.591"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage10"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.22"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.963"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage11"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.427"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.963"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage23"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage24"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.229"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage25"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.458"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage26"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.688"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage27"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.917"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage28"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.817"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage29"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.817"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.229"
                 app:shadow_color="#a10909"
                 app:shadow_radius="20" />
 
@@ -260,26 +651,418 @@
 
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="15dp"
                 android:src="@drawable/logo"
                 app:add_shadow="true"
                 app:border_color="#FFFFFF"
                 app:border_width="3dp"
                 app:shadow_color="#a10909"
+                app:shadow_radius="20"
+                tools:layout_editor_absoluteX="117dp"
+                tools:layout_editor_absoluteY="227dp" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage13"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.025"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.715"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage14"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.232"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.711"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage15"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.443"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.711"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage16"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.625"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.711"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage17"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.025"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.353"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage18"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.232"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.353"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage19"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.443"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.353"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage20"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.625"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.353"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage21"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.232"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage22"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.443"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage30"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage31"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.229"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage32"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.458"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage33"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.688"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage34"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.917"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage35"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.817"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.683"
+                app:shadow_color="#a10909"
+                app:shadow_radius="20" />
+
+            <com.jackandphantom.circularimageview.CircleImage
+                android:id="@+id/circleImage36"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/logo"
+                app:add_shadow="true"
+                app:border_color="#FFFFFF"
+                app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.817"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.912"
+                app:shadow_color="#a10909"
                 app:shadow_radius="20" />
 
             <Button
                 android:id="@+id/button2"
-                android:layout_width="65dp"
+                android:layout_width="78dp"
                 android:layout_height="48dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Button"
+                android:text="Start"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.028"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0" />

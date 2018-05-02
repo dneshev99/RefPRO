@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -15,52 +16,54 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.elsys.refpro.refprowatch.http.DeviceType;
+import com.elsys.refpro.refprowatch.http.UserService;
+import com.elsys.refpro.refprowatch.http.dto.MatchInfoDTO;
+import com.elsys.refpro.refprowatch.models.Buttons;
+import com.elsys.refpro.refprowatch.models.Event;
+import com.elsys.refpro.refprowatch.models.Match;
+import com.elsys.refpro.refprowatch.models.Player;
 import com.elsys.refpro.refprowatch.R;
+import com.elsys.refpro.refprowatch.models.Team;
 import com.elsys.refpro.refprowatch.events.CreateEvent;
 import com.elsys.refpro.refprowatch.http.dto.MatchEventDTO;
-import com.elsys.refpro.refprowatch.http.dto.MatchStateDTO;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends WearableActivity implements View.OnClickListener {
 
-    //region INSTANTIATE
-    ArrayList<String> info  = new ArrayList<>();        // MatchInformation - REPLACE WITH STRING FROM MOBILE
-    ArrayList<String>  homePlayers = new ArrayList<>(); // MatchInformation - REPLACE WITH STRING FROM MOBILE
-    ArrayList<String>  awayPlayers = new ArrayList<>(); // MatchInformation - REPLACE WITH STRING FROM MOBILE
-    ArrayList<String>  homeSubs = new ArrayList<>();    // MatchInformation - REPLACE WITH STRING FROM MOBILE
-    ArrayList<String>  awaySubs = new ArrayList<>();    // MatchInformation - REPLACE WITH STRING FROM MOBILE
-    ArrayList<Integer> intInfo = new ArrayList<>();     // MatchInformation - REPLACE WITH STRING FROM MOBILE
+    Team homeTeam = new Team(true, "FC Barcelona", "BAR", new ArrayList<Player>(), new ArrayList<Player>());
+    Team awayTeam = new Team(false, "Real Madrid CF", "RMA", new ArrayList<Player>(), new ArrayList<Player>());
 
-    String subName, playerToSub;
-    String lastClickedPlayer;
+    Match match = new Match("La liga", "Camp nou", "19:45", "2018-01-25", 45, 11, 7, homeTeam, awayTeam);
 
-    TextView homeAbbr, awayAbbr, bigTimer, smallTimer, abbreviation, log, Half, halfTeam, homeResultField, awayResultField, clock;
-    int homeResult = 0, awayResult = 0, homePlayersRedCards = 0, awayPlayersRedCards = 0;
+    com.elsys.refpro.refprowatch.models.Timer timers = new com.elsys.refpro.refprowatch.models.Timer();
+    Buttons buttonManager = new Buttons();
 
-    int bigSeconds = 0, smallSeconds = 0, bigMinutes = 0, smallMinutes = 0;
-    int type = 0; // 0 GOAL, 1 SUB, 2 YELLOW, 3 RED
-    int undoType = 0; // 1 GOAL, 2 SUB. 3 YELLOW, 4 RED, 5 HALF
-    int extraTimeType = 0;
-    String setTime = "00:00", logText = "";
+    TextView homeAbbr, awayAbbr, bigTimer, smallTimer, abbreviation, log, halfText, halfTeamMenuText, homeResultField, awayResultField, clock;
 
-    ImageButton startButton;
-    Button  terminateButton, extraTimeButton, teamBackButton, settingsBackButton, goalButton, yellowCardButton, redCardButton, logButton, logBack, endHalf, subButton, undoButton;
-    ArrayList<Button> playerButtons = new ArrayList<>();
-    ArrayList<Button> subsButtons = new ArrayList<>();
-    boolean isStarted = false, smallT = false, isHome = true, vibrator = false;
+    boolean isHome = true, vibrator = false;
 
     RelativeLayout mainLayout, teamLayout, timerLayout, settingsLayout;
     LinearLayout playersLayout, playersView, logLayout, subsLayout, subsView;
 
-    int half = 0; // 0 FH, 1 HT, 2 SH, 3 FT
-
     ArrayList<MatchEventDTO> events = new ArrayList<>();
     String id = "";
     CreateEvent newEvent;
-    boolean ownGoal = false;
 
     //endregion
 
@@ -72,47 +75,33 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         setAmbientEnabled();
 
         SharedPreferences clear = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        clear.edit().clear().apply();               // CLEARS all information about yellow and red cards
+        clear.edit().clear().apply();               // CLEARS all information about yellow and red cards4
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        id = preferences.getString("matchId", "N/A");
 
-        //region BasicInfo REPLACE WITH STRING FROM MOBILE
+        ArrayList<Player> homePlayer = new ArrayList<>();
+        ArrayList<Player> awayPlayer = new ArrayList<>();
+        ArrayList<Player> homeSubstitutes = new ArrayList<>();
+        ArrayList<Player> awaySubstitutes = new ArrayList<>();
 
-        id = "nz";
+        for (int count = 0; count < 11; count++) {
+            Player defaultPlayer = new Player(1, "Alexander Verbovskiy" + count);
+            homePlayer.add(defaultPlayer);
+            Player defaultPlayer2 = new Player(2, "Dimitur Neshev" + count);
+            awayPlayer.add(defaultPlayer2);
+        }
+        for (int count = 0; count < 7; count++) {
+            Player defaultPlayer = new Player(3, "Valentin Varbanov" + count);
+            homeSubstitutes.add(defaultPlayer);
+            Player defaultPlayer2 = new Player(4, "Chikata" + count);
+            awaySubstitutes.add(defaultPlayer2);
+        }
+        match.getHome().setPlayers(homePlayer);
+        match.getHome().setSubstitutes(homeSubstitutes);
+        match.getAway().setPlayers(awayPlayer);
+        match.getAway().setSubstitutes(awaySubstitutes);
 
-        info.add("La Liga");
-        info.add("Camp Nou");
-        info.add("FC Barcelona");
-        info.add("Real Madrid C.F.");
-        info.add("BAR");
-        info.add("RMA");
-        info.add("19:45");
-        info.add("25.12.17");
-
-        intInfo.add(11);
-        intInfo.add(7);
-        intInfo.add(45);
-
-        awayPlayers.add("1.Keylor Navas"); homePlayers.add("1.Marc-André ter Stegen");
-        awayPlayers.add("4.Sergio Ramos"); homePlayers.add("3.Gerard Piqué");
-        awayPlayers.add("5.Raphael Varane"); homePlayers.add("4.Ivan Rakitic");
-        awayPlayers.add("7.Cristiano Ronaldo"); homePlayers.add("5.Sergio Busquets");
-        awayPlayers.add("8.Toni Kroos"); homePlayers.add("8.Andrés Iniesta");
-        awayPlayers.add("9.Karim Benzema"); homePlayers.add("9.Luis Suárez");
-        awayPlayers.add("10.Luca Modric"); homePlayers.add("10.Lionel Messi");
-        awayPlayers.add("12.Marcelo"); homePlayers.add("15.Paulinho Bezerra");
-        awayPlayers.add("14.Casemiro"); homePlayers.add("18.Jordi Alba");
-        awayPlayers.add("19.Achraf"); homePlayers.add("19.Lucas Digne");
-        awayPlayers.add("22.Isco"); homePlayers.add("23.Samuel Umtiti");
-
-        awaySubs.add("13.Kiko Casilla"); homeSubs.add("6.Denis Suarez");
-        awaySubs.add("2.Carvajal"); homeSubs.add("7.Arda Turan");
-        awaySubs.add("6.Nacho Fernandez"); homeSubs.add("11.Ousmane Dembele");
-        awaySubs.add("20.Marco Asensio"); homeSubs.add("12.Rafinha");
-        awaySubs.add("22.Mateo Kovacic"); homeSubs.add("13.Jasper Cillessen");
-        awaySubs.add("11.Gareth Bale"); homeSubs.add("14.Javier Mascherano");
-        awaySubs.add("17.Lucas Vazquez"); homeSubs.add("20.Sergi Roberto");
-        //endregion
-
-        Initialize(); // Initialization of all TextViews, Buttons, Layout variables
+        initialize(); // Initialization of all TextViews, Buttons, Layout variables
 
         timerLayout.setOnLongClickListener(new View.OnLongClickListener() { // STARTS settingsLayout OnLongClick
             @Override
@@ -124,21 +113,57 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             }
         });
 
+        timers.setMainTimer((TextView) findViewById(R.id.currentTimeTimer));
+        timers.setExtraTimer((TextView) findViewById(R.id.extraTimeTimer));
+        createTimers(); // CREATES mainTimer and extraTimer
+
+        listPlayers();
+        listSubs();
 
         newEvent = new CreateEvent(id, getApplicationContext());
-        events = newEvent.addEvent("", "", "", info.get(0) + "\n" + info.get(1) + "\n" + info.get(6) + "\n" + info.get(7) + "\n"
-                + info.get(2) + " vs. " + info.get(3) + "\n\n", true);
-
-        //addEvent("", "", "",  info.get(0) + "\n" + info.get(1) + "\n" + info.get(6) + "\n" + info.get(7) + "\n"
-          //      + info.get(2) + " vs. " + info.get(3) + "\n\n", true);
-
-        ListPlayers(); // CREATES Buttons for all players
-        ListSubs();    // CREATES Buttons for all substitutes
-
-        CreateTimers(); // CREATES bigTimer and smallTimer
+        events = newEvent.addEvent("", "", "", match.getCompetition() + "\n" + match.getVenue() + "\n" + match.getDate()
+                + "\n" + match.getTime() + "\n" + match.getHome().getName() + " vs. " + match.getAway().getName() + "\n\n", true);
     }
 
-    private void CreateTimers() {
+    private void getMatchInformation(final String jwtToken, final String id,final DeviceType deviceType){
+
+       final OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder()
+                        .addHeader("Authorization", jwtToken)
+                        .addHeader("DeviceType", deviceType.toString())
+                        .build();
+
+                return chain.proceed(newRequest);
+            }
+        }).build();
+
+       Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.19.9.30:8082")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserService service = retrofit.create(UserService.class);
+        service.getMatchInformation(id).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void createTimers() {
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -148,40 +173,46 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (isStarted) { // STARTS if CurrentMatch is started
+                        if (match.isStarted()) { // STARTS if CurrentMatch is started
 
-                            bigMinutes = TimerFormat(bigSeconds, bigMinutes);
-                            if (bigMinutes == intInfo.get(2) && !vibrator) {  //VIBRATES if bigMinutes == HalfLength
+                            timers.MainTimerFormat();
+
+                            if (timers.getMainTimerMinutes() == match.getHalfLength() && !vibrator) {  //VIBRATES if bigMinutes == HalfLength
 
                                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                                 v.vibrate(1000);
                                 vibrator = true;
                             }
 
-                            bigTimer.setText(setTime);
-                            if (bigSeconds == 60)
-                                bigSeconds = 0;
-                            bigSeconds++;
+                            timers.setMainTimerText();
                         }
 
-                        if (smallT && isStarted) { // STARTS if timerLayout is clicked and CurrentMatch is started
+                        if (timers.isExtraTimerStarted() && match.isStarted()) { // STARTS if timerLayout is clicked and CurrentMatch is started
 
-                            smallMinutes = TimerFormat(smallSeconds, smallMinutes);
-                            smallTimer.setText(setTime);
-                            if (smallSeconds == 60)
-                                smallSeconds = 0;
-                            smallSeconds++;
+                            timers.ExtraTimerFormat();
+                            timers.setExtraTimerText();
                         }
                     }
                 });
             }
         }, 1000, 1000);
-    }  // CREATES bigTimer and smallTimer
+    }  // CREATES mainTimer and extraTimer    --------
 
-    private void ListSubs() {
+    public void startTimer(View v) {
 
-        for(int counter = 0; counter < intInfo.get(1); counter++) {
+        if (match.isStarted() && !timers.isExtraTimerStarted()) {
 
+            timers.setExtraTimerStarted(true);
+        }
+        else if (match.isStarted() && timers.isExtraTimerStarted()) {
+
+            timers.setExtraTimerStarted(false);
+        }
+    } //CHECKS if mainTimer is started and starts extraTimer  --------
+
+    private void listSubs() {
+
+        for(int counter = 0; counter < match.getSubstitutesNumber(); counter++) {
 
             final Button newSub = new Button(this);
             newSub.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -195,34 +226,36 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                     String team;
 
-                    if (isHome) {
-                        team = info.get(4);
+                    if (match.isHomeTeamPressed()) {
+                        team = match.getHome().getName();
                     }
                     else {
-                        team = info.get(5);
+                        team = match.getAway().getName();
                     }
 
-                    String playerName = newSub.getText().toString();
-                    subName = playerName;
-                    Replace(playerToSub, subName); // REPLACES Player with Substitute
+                    String elements = newSub.getText().toString();
+                    String split[] = elements.split("\\.");
+                    Player playerName = new Player(Integer.parseInt(split[0]), split[1]);
+                    match.setSubstituteName(playerName);
+                    match.replace(match.getPlayerForSubstitution(), match.getSubstituteName()); // REPLACES Player with Substitute
                     subsLayout.setEnabled(false);
                     mainLayout.setEnabled(true);
 
-                    events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, getResources().getString(R.string.substitutionEvent), team, playerToSub + "/" + playerName, false);
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), getResources().getString(R.string.substitutionEvent), team, match.getPlayerForSubstitution().getName() + "/" + playerName.getName(), false);
                     //addEvent(bigMinutes + ":" + bigSeconds, getResources().getString(R.string.substitutionEvent), team, playerToSub + "/" + playerName, false);
 
                     subsLayout.setVisibility(View.INVISIBLE);
                     mainLayout.setVisibility(View.VISIBLE);
                 }
             });
-            subsButtons.add(newSub);  // ADD current substitute to List of Buttons
+            buttonManager.subsButtons.add(newSub);  // ADD current substitute to List of Buttons
             subsView.addView(newSub); // CREATE Button for current substitute
         }
     }   // CREATES Buttons for all substitutes
 
-    private void ListPlayers() {
+    private void listPlayers() {
 
-        for(int counter = 0; counter < intInfo.get(0); counter++) {
+        for(int counter = 0; counter < match.getPlayersNumber(); counter++) {
 
             final Button newPlayer = new Button(this);
             newPlayer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -234,30 +267,29 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 @Override
                 public void onClick(View v) {
 
-                    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
+                    String elements = newPlayer.getText().toString();
+                    String split[] = elements.split("\\.");
 
-                    final String playerName = newPlayer.getText().toString();
-                    lastClickedPlayer = playerName;
-                    int yellowCard = pref.getInt(playerName, 0);
-                    int redCard = pref.getInt(playerName + "R", 0); // GETS yellow and red cards of ClickedPlayer
+                    Player playerName = new Player(Integer.parseInt(split[0]), split[1]);
+                    match.setLastClickedPlayer(playerName);
                     final String team;
+                    int index;
 
-                    if (isHome) {
-                        team = info.get(4);
+                    if (match.isHomeTeamPressed()) {
+                        team = match.getHome().getName();
+                        index = match.getHome().getPlayers().indexOf(playerName);
+                        playerName = match.getHome().getPlayers().get(index);
                     }
                     else {
-                        team = info.get(5);
+                        team = match.getAway().getName();
+                        index = match.getAway().getPlayers().indexOf(playerName);
+                        playerName = match.getAway().getPlayers().get(index);
                     }
 
 
-                    if (yellowCard == 2)  // IF player has 2 Yellow Cards => Disable player button
-                        newPlayer.setEnabled(false);
-                    else
-                        newPlayer.setEnabled(true);
+                    if (match.getEventType() == 0) {    // IF GOAL Button is clicked
 
-
-                    if (type == 0) {    // IF GOAL Button is clicked
+                        final Player playerNameString = playerName;
 
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setMessage("GOAL").setCancelable(true)
@@ -265,18 +297,19 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        ownGoal = false;
-                                        changeResult(ownGoal);
-                                        events = newEvent.addEvent(bigMinutes + ":" + bigSeconds + " / " + homeResult + ":" + awayResult, getResources().getString(R.string.goalEvent), team, playerName, false);
+                                        playerNameString.setGoals(playerNameString.getGoals() + 1);
+                                        match.setOwnGoal(false);
+                                        changeResult(match.isOwnGoal());
+                                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), Event.GOAL.toString(), team, playerNameString.getName(), false);
                                     }
                                 })
                                 .setNegativeButton("OWN GOAL", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        ownGoal = true;
-                                        changeResult(ownGoal);
-                                        events = newEvent.addEvent(bigMinutes + ":" + bigSeconds + " / " + homeResult + ":" + awayResult, getResources().getString(R.string.ownGoalEvent), team, playerName, false);
+                                        match.setOwnGoal(true);
+                                        changeResult(match.isOwnGoal());
+                                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), Event.OWNGOAL.toString(), team, playerNameString.getName(), false);
                                     }
                                 });
 
@@ -284,37 +317,43 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                         al.setTitle("GOAL");
                         alert.show();
 
-                        undoType = 1;
+                        playerName = playerNameString;
+
+                        match.setUndoType(1);
                     }
-                    else if (type == 1) { // IF SUBSTITUTION Button is clicked
+                    else if (match.getEventType() == 1) { // IF SUBSTITUTION Button is clicked
 
                         playersLayout.setVisibility(View.INVISIBLE);
                         subsLayout.setVisibility(View.VISIBLE);
                         setSubsNames();
-                        playerToSub = playerName;
+                        match.setPlayerForSubstitution(playerName);
 
-                        undoType = 2;
+                        match.setUndoType(2);
                     }
-                    else if (type == 2){ // IF YELLOW CARD Button is clicked
+                    else if (match.getEventType() == 2){ // IF YELLOW CARD Button is clicked
 
-                        events = newEvent.addEvent(bigMinutes + ":" + bigSeconds,  getResources().getString(R.string.yellowCardEvent), team, playerName, false);
-                        yellowCard++;
-                        editor.putInt(playerName, yellowCard);
-                        editor.apply(); // SAVE new YellowCard to player
+                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(),  getResources().getString(R.string.yellowCardEvent), team, playerName.getName(), false);
+                        playerName.setYellowCards(playerName.getYellowCards() + 1);
+                        Log.d("Yellow cards:" , String.valueOf(playerName.getYellowCards()));
 
-                        undoType = 3;
+                        if (isHome)
+                            match.getHome().setYellowCards(match.getHome().getYellowCards() + 1);
+                        else
+                            match.getAway().setYellowCards(match.getHome().getYellowCards() + 1);
 
-                        if (yellowCard == 2 || redCard == 1) { // IF player has 2 Yellow or 1 Red Card => Disable his button
+                        match.setUndoType(3);
 
-                            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, getResources().getString(R.string.redCardEvent), team, playerName, false);
+                        if (playerName.getYellowCards() == 2 || playerName.getRedCards() == 1) { // IF player has 2 Yellow or 1 Red Card => Disable his button
+
+                            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), getResources().getString(R.string.redCardEvent), team, playerName.getName(), false);
                             newPlayer.setEnabled(false);
 
                             if (isHome)
-                                homePlayersRedCards++;
+                                match.getHome().setRedCards(match.getHome().getRedCards() + 1);
                             else
-                                awayPlayersRedCards++;
+                                match.getAway().setRedCards(match.getHome().getRedCards() + 1);
 
-                            if (homePlayersRedCards >=4 || awayPlayersRedCards >=4)
+                            if (match.getHome().getRedCards()  >=4 || match.getAway().getRedCards() >=4)
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.redCardsWarning),
                                         Toast.LENGTH_SHORT).show();
                         }
@@ -322,50 +361,49 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     }
                     else { // IF RED CARD Button is clicked
 
-                        events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, getResources().getString(R.string.redCardEvent), team, playerName, false);
-                        redCard++;
+                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), getResources().getString(R.string.redCardEvent), team, playerName.getName(), false);
+                        playerName.setRedCards(playerName.getRedCards() + 1);
+                        Log.d("Red cards:" , String.valueOf(playerName.getRedCards()));
 
-                        if (isHome)
-                            homePlayersRedCards++;
+                        if (match.isHomeTeamPressed())
+                            match.getHome().setRedCards(match.getHome().getRedCards() + 1);
                         else
-                            awayPlayersRedCards++;
+                            match.getAway().setRedCards(match.getHome().getRedCards() + 1);
 
-                        if (homePlayersRedCards >=4 || awayPlayersRedCards >=4)
+                        if (match.getHome().getRedCards()  >=4 || match.getAway().getRedCards() >=4)
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.redCardsWarning),
                                     Toast.LENGTH_SHORT).show();
 
-                        editor.putInt(playerName + "R", redCard);
-                        editor.commit();
                         newPlayer.setEnabled(false); // SAVE RedCard to player and Disable his button
 
-                        undoType = 4;
+                        match.setUndoType(4);
                     }
 
-                    if (type != 1) { // IF GOAL, YELLOW or RED CARD is clicked => RETURN to mainLayout
+                    if (match.getEventType() != 1) { // IF GOAL, YELLOW or RED CARD is clicked => RETURN to mainLayout
                         playersLayout.setVisibility(View.INVISIBLE);
                         mainLayout.setVisibility(View.VISIBLE);
                     }
                 }
             });
 
-            playerButtons.add(newPlayer); // ADD current player to List of Buttons
+            buttonManager.playerButtons.add(newPlayer); // ADD current player to List of Buttons
             playersView.addView(newPlayer); // CREATE Button for current player
         }
     } // CREATES Buttons for all players
 
-    private void Initialize() {
+    private void initialize() {
 
         log = (TextView) findViewById(R.id.displayLog);                // Prints LOG in LogLayout
-        Half = (TextView) findViewById(R.id.displayHalf);              // ?!?
-        halfTeam = (TextView) findViewById(R.id.displayHalfTeamLayout);      // Prints HALF in teamLayout
+        halfText = (TextView) findViewById(R.id.displayHalf);              // ?!?
+        halfTeamMenuText = (TextView) findViewById(R.id.displayHalfTeamLayout);      // Prints HALF in teamLayout
         homeResultField = (TextView) findViewById(R.id.homeResult);  // Prints Home Team Result
         awayResultField = (TextView) findViewById(R.id.awayResult);  // Prints Away Team Result
         clock = (TextView) findViewById(R.id.textClock);
 
         homeAbbr = (TextView) findViewById(R.id.homeAbbr);      // Prints Home Team Abbreaviation in mainLayout
-        homeAbbr.setText(info.get(4));
+        homeAbbr.setText(match.getHome().getAbbreaviature());
         awayAbbr = (TextView) findViewById(R.id.awayAbbr);      // Prints Away Team Abbreaviation in mainLayout
-        awayAbbr.setText(info.get(5));
+        awayAbbr.setText(match.getAway().getAbbreaviature());
 
         smallTimer = (TextView) findViewById(R.id.extraTimeTimer);  // smallTimer for ExtraTime
         bigTimer = (TextView) findViewById(R.id.currentTimeTimer);      // bigTimer for Time
@@ -383,119 +421,39 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         playersView = (LinearLayout) findViewById(R.id.listPlayersView);        // Layout which Lists player names
         subsView = (LinearLayout) findViewById(R.id.listSubsView);              // Layout which Lists substitute names
 
-        startButton = (ImageButton) findViewById(R.id.startMatchButton);                // Starts Match and Timers
-        startButton.setOnClickListener(this);
-        teamBackButton = (Button) findViewById(R.id.teamLayoutBackButton);              // Returns from teamLayout to mainLayout
-        teamBackButton.setOnClickListener(this);
-        settingsBackButton = (Button) findViewById(R.id.settingsBackButton);  // Returns from settingsLayout to mainLayout
-        settingsBackButton.setOnClickListener(this);
-        goalButton = (Button) findViewById(R.id.goalButton);                  // Starts GOAL menu
-        goalButton.setOnClickListener(this);
-        yellowCardButton = (Button) findViewById(R.id.yellowCardButton);          // Starts YELLOW CARD menu
-        yellowCardButton.setOnClickListener(this);
-        redCardButton = (Button) findViewById(R.id.redCardButton);                // Starts RED CARD menu
-        redCardButton.setOnClickListener(this);
-        subButton = (Button) findViewById(R.id.substituteButton);             // Starts SUBSTITUTION menu
-        subButton.setOnClickListener(this);
-        logButton = (Button) findViewById(R.id.logButton);              // Starts LOGLayout
-        logButton.setOnClickListener(this);
-        logBack = (Button) findViewById(R.id.logBackButton);                  // Returns from LogLayout to mainLayout
-        logBack.setOnClickListener(this);
-        endHalf = (Button) findViewById(R.id.endHalfButton);                  // END HALF, START SECOND HALF and FULL TIME
-        endHalf.setOnClickListener(this);
-        undoButton = (Button) findViewById(R.id.undoButton);
-        undoButton.setOnClickListener(this);
-        extraTimeButton = (Button) findViewById(R.id.extraTimeButton);
-        extraTimeButton.setOnClickListener(this);
-        extraTimeButton.setEnabled(false);
-        terminateButton = (Button) findViewById(R.id.terminateButton);
-        terminateButton.setOnClickListener(this);
-    } // Initialization of all TextView, Button, Layout variables
 
-    public void Replace(String playerNameString, String subNameString) {
+        Buttons setButtons = new Buttons(
+                (ImageButton) findViewById(R.id.startMatchButton),
+                (Button) findViewById(R.id.teamLayoutBackButton),
+                (Button) findViewById(R.id.settingsBackButton),
+                (Button) findViewById(R.id.goalButton),
+                (Button) findViewById(R.id.yellowCardButton),
+                (Button) findViewById(R.id.redCardButton),
+                (Button) findViewById(R.id.substituteButton),
+                (Button) findViewById(R.id.logButton),
+                (Button) findViewById(R.id.logBackButton),
+                (Button) findViewById(R.id.endHalfButton),
+                (Button) findViewById(R.id.undoButton),
+                (Button) findViewById(R.id.extraTimeButton),
+                (Button) findViewById(R.id.terminateButton));
 
-        int PlayerID = 0, SubID = 0;
-        String PlayerName = "", SubName = "";
+        buttonManager = setButtons;
 
-        if (isHome) { // IF it's HomeTeam Menu => GET index of given player and substitute and make SUBSTITUTION
-            for (int counter = 0; counter < intInfo.get(0); counter++) {
-
-                if (homePlayers.get(counter).contains(playerNameString)) {
-                    PlayerID = counter;
-                    PlayerName = homePlayers.get(counter);
-                }
-            }
-
-            for (int counter = 0; counter < intInfo.get(1); counter++) {
-
-                if (homeSubs.get(counter).contains(subNameString)) {
-                    SubID = counter;
-                    SubName = homeSubs.get(counter);
-                }
-            }
-
-            homePlayers.set(PlayerID, SubName);
-            homeSubs.set(SubID, PlayerName);
-        }
-        else { // IF it's AwayTeam Menu => GET index of given player and substitute and make SUBSTITUTION
-
-            for (int counter = 0; counter < intInfo.get(0); counter++) {
-
-                if (awayPlayers.get(counter).contains(playerNameString)) {
-                    PlayerID = counter;
-                    PlayerName = awayPlayers.get(counter);
-                }
-            }
-
-            for (int counter = 0; counter < intInfo.get(1); counter++) {
-
-                if (awaySubs.get(counter).contains(subNameString)) {
-                    SubID = counter;
-                    SubName = awaySubs.get(counter);
-                }
-            }
-
-            awayPlayers.set(PlayerID, SubName);
-            awaySubs.set(SubID, PlayerName);
-        }
-    } // REPLACES Player with Substitute
-
-    public void setPlayerNames() {
-
-        for (int counter = 0; counter < intInfo.get(0); counter++) {
-
-            if (isHome) {
-
-                playerButtons.get(counter).setText(homePlayers.get(counter));
-            } else
-
-                playerButtons.get(counter).setText(awayPlayers.get(counter));
-
-            playerButtons.get(counter).setEnabled(true);
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-
-            String playerName =  ((String) playerButtons.get(counter).getText());
-            int yellowCard =  pref.getInt(playerName, 0);
-            int redCard = pref.getInt(playerName + "R", 0);
-
-            if (yellowCard == 2 || redCard == 1)
-                playerButtons.get(counter).setEnabled(false);// ENABLE all buttons, check for YELLOW or RED CARDS and Disable buttons
-
-        }
-    } // SETS names of all players
-
-    public void setSubsNames() {
-
-        for (int counter = 0; counter < intInfo.get(1); counter++) {
-
-            if (isHome) {
-
-                subsButtons.get(counter).setText(homeSubs.get(counter)); // SETS Text for every Home Substitute
-            } else
-
-                subsButtons.get(counter).setText(awaySubs.get(counter)); // SETS Text for every Away Substitute
-        }
-    } // SETS names of all substitutes
+        buttonManager.startButton.setOnClickListener(this);
+        buttonManager.teamBackButton.setOnClickListener(this);
+        buttonManager.settingsBackButton.setOnClickListener(this);
+        buttonManager.goalButton.setOnClickListener(this);
+        buttonManager.yellowCardButton.setOnClickListener(this);
+        buttonManager.redCardButton.setOnClickListener(this);
+        buttonManager.subButton.setOnClickListener(this);
+        buttonManager.logButton.setOnClickListener(this);
+        buttonManager.logBack.setOnClickListener(this);
+        buttonManager.endHalf.setOnClickListener(this);
+        buttonManager.undoButton.setOnClickListener(this);
+        buttonManager.extraTimeButton.setOnClickListener(this);
+        buttonManager.extraTimeButton.setEnabled(false);
+        buttonManager.terminateButton.setOnClickListener(this);
+    } // Initialization of all TextView, Button, Layout variables   --------
 
     @Override
     public void onClick(View v) {
@@ -505,8 +463,8 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 bigTimer.setVisibility(View.VISIBLE);
                 smallTimer.setVisibility(View.VISIBLE);
-                isStarted = true;
-                startButton.setVisibility(View.INVISIBLE);
+                match.setStarted(true);
+                buttonManager.startButton.setVisibility(View.INVISIBLE);
 
                 Toast.makeText(this, getResources().getString(R.string.matchStartedText),
                         Toast.LENGTH_SHORT).show();
@@ -524,55 +482,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 settingsLayout.setVisibility(View.INVISIBLE);
                 mainLayout.setVisibility(View.VISIBLE);
-                changeHalfString(Half);
-                break;
-
-            case R.id.goalButton:
-
-                teamLayout.setVisibility(View.INVISIBLE);
-                playersLayout.setVisibility(View.VISIBLE);
-                type = 0;
-                setPlayerNames();
-                break;
-
-            case R.id.substituteButton:
-
-                teamLayout.setVisibility(View.INVISIBLE);
-                playersLayout.setVisibility(View.VISIBLE);
-                type = 1;
-                setPlayerNames();
-                break;
-
-            case R.id.yellowCardButton:
-
-                teamLayout.setVisibility(View.INVISIBLE);
-                playersLayout.setVisibility(View.VISIBLE);
-                type = 2;
-                setPlayerNames();
-                break;
-
-            case R.id.redCardButton:
-
-                teamLayout.setVisibility(View.INVISIBLE);
-                playersLayout.setVisibility(View.VISIBLE);
-                type = 3;
-                setPlayerNames();
-                break;
-
-            case R.id.logButton:
-
-                settingsLayout.setVisibility(View.INVISIBLE);
-                logLayout.setVisibility(View.VISIBLE);
-
-                logText = "";
-
-                for(int counter = 0; counter <= events.size() - 1; counter++){
-
-                    logText += events.get(counter).toString();
-                    logText += "\n\n";
-                }
-
-                log.setText(logText);
+                changeHalfString(halfText);
                 break;
 
             case R.id.logBackButton:
@@ -581,81 +491,40 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 settingsLayout.setVisibility(View.VISIBLE);
                 break;
 
-            case R.id.extraTimeButton:
+            case R.id.logButton:
 
-                if (half < 3) {
+                settingsLayout.setVisibility(View.INVISIBLE);
+                logLayout.setVisibility(View.VISIBLE);
 
-                    extraTimeType++;
-                    extraTime(extraTimeType);
+                match.setLogText("");
+
+                for(int counter = 0; counter <= events.size() - 1; counter++)
+                    match.setLogText(match.getLogText() + events.get(counter).toString() + "\n\n");
+
+                log.setText(match.getLogText());
+                break;
+
+             case R.id.extraTimeButton:
+
+                if (match.getHalf() < 3) {
+
+                    match.setExtraTime(match.getExtraTime() + 1);
+                    extraTime();
                 }
                 break;
 
             case R.id.terminateButton:
 
-                if (half < 3) {
-                    half = 3;
-                    isStarted = false;
-                    events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.matchTerminatedText), true);
+                if (match.getHalf() < 3) {
+                    match.setHalf(3);
+                    match.setStarted(false);
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.TERMINATED, true);
                     newEvent.addState(false, events);
                     Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.matchTerminatedText),
                             Toast.LENGTH_SHORT).show();
                 }
 
                 break;
-
-            case R.id.undoButton:
-
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-
-                if (undoType == 1) {
-
-                    if ((homePlayers.contains(lastClickedPlayer) && !ownGoal) || (awayPlayers.contains(lastClickedPlayer) && ownGoal)) {
-                        homeResult--;
-                        homeResultField.setText(Integer.toString(homeResult));
-                    }
-                    else {
-                        awayResult--;
-                        awayResultField.setText(Integer.toString(awayResult));
-                    }
-
-                    events = newEvent.addEvent(bigMinutes + ":" + bigSeconds + " / " + homeResult + ":" + awayResult, "", "", " - " + getResources().getString(R.string.goalEvent) + getResources().getString(R.string.canceledEvent), true);
-                }
-                else if (undoType == 2){
-
-                    events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.substitutionEvent) + getResources().getString(R.string.canceledEvent), true);
-
-                    Replace(subName, playerToSub);
-                }
-                else if (undoType == 3) {
-
-                    events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.yellowCardEvent) + getResources().getString(R.string.canceledEvent), true);
-
-                    int yellowCard = pref.getInt(lastClickedPlayer, 0);
-                    yellowCard--;
-                    editor.putInt(lastClickedPlayer, yellowCard);
-                    editor.apply(); // SAVE new YellowCard to player
-                }
-                else if (undoType == 4) {
-
-                    events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.redCardEvent) + getResources().getString(R.string.canceledEvent), true);
-
-                    int red = pref.getInt(lastClickedPlayer + "R", 0);
-                    red--;
-                    editor.putInt(lastClickedPlayer + "R", red);
-                    editor.commit(); // SAVE new RedCard to player
-                }
-
-                if (undoType == 0)
-                    Toast.makeText(this,  getResources().getString(R.string.removeEventError),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this,  getResources().getString(R.string.removeEventSuccess),
-                            Toast.LENGTH_SHORT).show();
-
-                undoType = 0;
-                break;
-
             case R.id.endHalfButton:
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -682,42 +551,124 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 alert.show();
 
                 break;
+            case R.id.goalButton:
+
+                teamLayout.setVisibility(View.INVISIBLE);
+                playersLayout.setVisibility(View.VISIBLE);
+                match.setEventType(0);
+                setPlayerNames();
+                break;
+
+            case R.id.substituteButton:
+
+                teamLayout.setVisibility(View.INVISIBLE);
+                playersLayout.setVisibility(View.VISIBLE);
+                match.setEventType(1);
+                setPlayerNames();
+                break;
+
+            case R.id.yellowCardButton:
+
+                teamLayout.setVisibility(View.INVISIBLE);
+                playersLayout.setVisibility(View.VISIBLE);
+                match.setEventType(2);
+                setPlayerNames();
+                break;
+
+            case R.id.redCardButton:
+
+                teamLayout.setVisibility(View.INVISIBLE);
+                playersLayout.setVisibility(View.VISIBLE);
+                match.setEventType(3);
+                setPlayerNames();
+                break;
+
+             case R.id.undoButton:
+
+                if (match.getUndoType() == 1) {
+
+                    if ((match.getHome().getPlayers().contains(match.getLastClickedPlayer()) && !match.isOwnGoal()) || (match.getAway().getPlayers().contains(match.getLastClickedPlayer()) && match.isOwnGoal())) {
+                        match.getHome().setGoals(match.getHome().getGoals() - 1);
+                        homeResultField.setText(Integer.toString(match.getHome().getGoals()));
+                    }
+                    else {
+                        match.getAway().setGoals(match.getAway().getGoals() - 1);
+                        awayResultField.setText(Integer.toString(match.getAway().getGoals()));
+                    }
+
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), "", "", " - " + getResources().getString(R.string.goalEvent) + getResources().getString(R.string.canceledEvent), true);
+                }
+                else if (match.getUndoType() == 2){
+
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + getResources().getString(R.string.substitutionEvent) + getResources().getString(R.string.canceledEvent), true);
+
+                    match.replace(match.getSubstituteName(), match.getPlayerForSubstitution());
+                }
+                else if (match.getUndoType() == 3) {
+
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + getResources().getString(R.string.yellowCardEvent) + getResources().getString(R.string.canceledEvent), true);
+
+                    match.undoYellowCard();
+                }
+                else if (match.getUndoType() == 4) {
+
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + getResources().getString(R.string.redCardEvent) + getResources().getString(R.string.canceledEvent), true);
+
+                    match.undoRedCard();
+                }
+
+                if (match.getUndoType() == 0)
+                    Toast.makeText(this,  getResources().getString(R.string.removeEventError),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this,  getResources().getString(R.string.removeEventSuccess),
+                            Toast.LENGTH_SHORT).show();
+
+                 match.setUndoType(0);
+                break;
+
         }
     } // CHECKS which button was pressed
 
+    public void changeHalfString(TextView halfText) {
+
+        match.checkHalf(getApplicationContext());
+        halfText.setText(match.getHalfName());
+    } // CHECKS which halfText is and SETS HalfText  -------
+
     private void changeHalf() {
 
-        if (half < 5)
-            half++;
+        if (match.getHalf() < 5)
+            match.setHalf(match.getHalf() + 1);
 
-        if (half == 1 && isStarted) { // IF it's FIRST HALF
+        if (match.getHalf() == 1 && match.isStarted()) { // IF it's FIRST HALF
 
-            endHalf.setText(getResources().getString(R.string.secondHalfText));
+            buttonManager.endHalf.setText(getResources().getString(R.string.secondHalfText));
 
-            isStarted = false;
-            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.firstHalfEnd), true);
+            match.setStarted(false);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.HALFTIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.firstHalfEnd),
                     Toast.LENGTH_SHORT).show();
-        } else if (half == 2) { // IF it's HALF TIME
+        } else if (match.getHalf() == 2) { // IF it's HALF TIME
 
-            endHalf.setText(getResources().getString(R.string.fullTimeText));
+            buttonManager.endHalf.setText(getResources().getString(R.string.fullTimeText));
 
-            extraTimeButton.setEnabled(true);
-            isStarted = true;
-            bigMinutes = intInfo.get(2);
-            bigSeconds = 0;
-            smallMinutes = 0;
-            smallSeconds = 0;
+            buttonManager.extraTimeButton.setEnabled(true);
+            match.setStarted(true);
+            timers.setMainTimerMinutes(match.getHalfLength());
+            timers.setMainTimerSeconds(0);
+            timers.setExtraTimerMinutes(0);
+            timers.setExtraTimerSeconds(0);
 
-            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.secondHalfStart), true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.SECONDHALF, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.secondHalfStart),
                     Toast.LENGTH_SHORT).show();
 
             vibrator = false;
-        } else if (half == 3 && isStarted) { // IF it's SECOND HALF
+        } else if (match.getHalf() == 3 && match.isStarted()) { // IF it's SECOND HALF
 
-            isStarted = false;
-            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.fullTimeText), true);
+            match.setStarted(false);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.FULLTIME, true);
             newEvent.addState(false, events);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.fullTimeText),
                     Toast.LENGTH_SHORT).show();
@@ -726,161 +677,135 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         }
     }
 
-    public void extraTime(int extraTimetype) {
+    public void extraTime() {
 
         vibrator = true;
 
-        if (extraTimetype == 1) {
+        if (match.getExtraTime() == 1) {
 
-            endHalf.setEnabled(false);
-            isStarted = false;
+            buttonManager.endHalf.setEnabled(false);
+            match.setStarted(false);
 
-            extraTimeButton.setText(getResources().getString(R.string.startExtraTimeButton));
+            buttonManager.extraTimeButton.setText(getResources().getString(R.string.startExtraTimeButton));
         }
-        else if (extraTimetype == 2) {
+        else if (match.getExtraTime() == 2) {
 
-            bigMinutes = intInfo.get(2) * 2;
-            bigSeconds = 0;
-            smallMinutes = 0;
-            smallSeconds = 0;
-            isStarted = true;
-            extraTimeButton.setText(getResources().getString(R.string.endExtraTimeButton));
+            timers.setMainTimerMinutes(match.getHalfLength() * 2);
+            timers.setMainTimerSeconds(0);
+            timers.setExtraTimerMinutes(0);
+            timers.setExtraTimerSeconds(0);
+            match.setStarted(true);
+            buttonManager.extraTimeButton.setText(getResources().getString(R.string.endExtraTimeButton));
 
-            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.extraTimeButton), true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.EXTRATIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.extraTimeButton),
                     Toast.LENGTH_SHORT).show();
         }
-        else if (extraTimetype == 3) {
+        else if (match.getExtraTime() == 3) {
 
-            extraTimeButton.setText(getResources().getString(R.string.secondExtraTimeButton));
-            isStarted = false;
+            buttonManager.extraTimeButton.setText(getResources().getString(R.string.secondExtraTimeButton));
+            match.setStarted(false);
 
-            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.endExtraTimeButton), true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.EXTRATIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.endExtraTimeButton),
                     Toast.LENGTH_SHORT).show();
         }
-        else  if (extraTimetype == 4) {
+        else  if (match.getExtraTime() == 4) {
 
-            bigMinutes = intInfo.get(2) * 2 + 15;
-            bigSeconds = 0;
-            smallMinutes = 0;
-            smallSeconds = 0;
-            isStarted = true;
-            extraTimeButton.setText(getResources().getString(R.string.penaltiesButton));
-            endHalf.setEnabled(true);
+            timers.setMainTimerMinutes(match.getHalfLength() * 2 + 15);
+            timers.setMainTimerSeconds(0);
+            timers.setExtraTimerMinutes(0);
+            timers.setExtraTimerSeconds(0);
+            match.setStarted(true);
+            buttonManager.extraTimeButton.setText(getResources().getString(R.string.penaltiesButton));
+            buttonManager.endHalf.setEnabled(true);
 
-            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.endExtraTimeButton), true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.EXTRATIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.secondExtraTimeButton),
                     Toast.LENGTH_SHORT).show();
         }
         else {
 
-            bigMinutes = 0;
-            bigSeconds = 0;
-            smallMinutes = 0;
-            smallSeconds = 0;
+            timers.setMainTimerMinutes(0);
+            timers.setMainTimerSeconds(0);
+            timers.setExtraTimerMinutes(0);
+            timers.setExtraTimerSeconds(0);
 
-            events = newEvent.addEvent(bigMinutes + ":" + bigSeconds, "", "", " - " + getResources().getString(R.string.penaltiesButton), true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.PENALTIES, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.penaltiesButton),
                     Toast.LENGTH_SHORT).show();
 
-            extraTimeButton.setEnabled(false);
+            buttonManager.extraTimeButton.setEnabled(false);
         }
     }
-
-    public void changeResult(boolean ownGoal){
-
-        if (ownGoal)
-            isHome = !isHome;
-
-        if (isHome) {
-
-            homeResult++;
-            homeResultField.setText(Integer.toString(homeResult));
-        }
-        else {
-
-            awayResult++;
-            awayResultField.setText(Integer.toString(awayResult));
-        }
-    } // CHANGES Home or Away Team result
-
-    public void changeHalfString(TextView halfText) {
-
-        if (half == 0)
-            halfText.setText(getResources().getString(R.string.displayHalf));
-        else if (half == 1)
-            halfText.setText(getResources().getString(R.string.halfTimeTextShort));
-        else if (half == 2 && extraTimeType == 0)
-            halfText.setText(getResources().getString(R.string.secondHalfTextShort));
-        else if ((half == 2 && extraTimeType == 1) || (half == 2 && extraTimeType == 2))
-            halfText.setText(getResources().getString(R.string.extraTimeTextShort));
-        else if ((half == 2 && extraTimeType == 3) || (half == 2 && extraTimeType == 4))
-            halfText.setText(getResources().getString(R.string.extraTimeTextShort));
-        else if ((half == 2 && extraTimeType == 5))
-            halfText.setText(getResources().getString(R.string.penaltiesTimeTextShort));
-        else
-            halfText.setText(getResources().getString(R.string.fullTimeTextShort));
-
-    } // CHECKS which Half is and SETS HalfText
-
-    public void startTimer(View v) {
-
-        if (isStarted) {
-
-            smallT = !smallT;
-        }
-    } //CHECKS if bigTimer is started and starts smallTimer
 
     public void changeFragment(View v) {
 
         String tag = v.getResources().getResourceEntryName(v.getId());
 
-        if (isStarted) {
+        if (match.isStarted()) {
 
             if (tag.equals("homeLayout")) {
 
-                isHome = true;
-                abbreviation.setText(info.get(4));  // CHECKS if it's Home or Away Team menu and GETS TeamName
+                match.setHomeTeamPressed(true);
+                abbreviation.setText(match.getHome().getAbbreaviature());  // CHECKS if it's Home or Away Team menu and GETS TeamName
                 teamLayout.setVisibility(View.VISIBLE);
                 mainLayout.setVisibility(View.INVISIBLE);
-                changeHalfString(halfTeam);   // CHECKS which Half is and SETS HalfText
+                changeHalfString(halfTeamMenuText);   // CHECKS which halfText is and SETS HalfText
             } else if (tag.equals("awayLayout")) {
 
-                isHome = false;
-                abbreviation.setText(info.get(5)); // CHECKS if it's Home or Away Team menu and GETS TeamName
+                match.setHomeTeamPressed(false);
+                abbreviation.setText(match.getAway().getAbbreaviature()); // CHECKS if it's Home or Away Team menu and GETS TeamName
                 teamLayout.setVisibility(View.VISIBLE);
                 mainLayout.setVisibility(View.INVISIBLE);
-                changeHalfString(halfTeam);   // CHECKS which Half is and SETS HalfText
+                changeHalfString(halfTeamMenuText);   // CHECKS which halfText is and SETS HalfText
             }
         }
-    } // STARTS teamLayout for Home or Away team
+    } // STARTS teamLayout for Home or Away team                   -------------
 
-    public int TimerFormat(int seconds, int minutes) {
+    public void changeResult(boolean ownGoal){
 
-        if (seconds >= 60) {
+        if (ownGoal)
+            match.setHomeTeamPressed(!match.isHomeTeamPressed());
 
-            minutes++;
-            seconds = 0;
+        match.addGoal();
+
+        if (match.isHomeTeamPressed())
+            homeResultField.setText(Integer.toString(match.getHome().getGoals()));
+        else
+            awayResultField.setText(Integer.toString(match.getAway().getGoals()));
+
+    } // CHANGES Home or Away Team result
+
+    public void setPlayerNames() {
+
+        for (int counter = 0; counter < match.getPlayersNumber(); counter++) {
+
+            buttonManager.playerButtons.get(counter).setEnabled(true);
+
+            if (match.isHomeTeamPressed()) {
+                buttonManager.playerButtons.get(counter).setText(match.getHome().getPlayers().get(counter).getNumberAndName());
+
+                if (match.getHome().getPlayers().get(counter).isPlayerSuspended())
+                    buttonManager.playerButtons.get(counter).setEnabled(false);// check for YELLOW or RED CARDS and Disable buttons
+            } else {
+                buttonManager.playerButtons.get(counter).setText(match.getAway().getPlayers().get(counter).getNumberAndName());
+
+                if (match.getAway().getPlayers().get(counter).isPlayerSuspended())
+                    buttonManager.playerButtons.get(counter).setEnabled(false);// check for YELLOW or RED CARDS and Disable buttons
+            }
         }
+    } // SETS names of all players
 
-        if (minutes == 0) {
-            if (seconds < 10)
-                setTime = "00:0" + seconds;
-            else
-                setTime = "00:" + seconds;
-        } else if (minutes < 10) {
-            if (seconds < 10)
-                setTime = "0" + minutes + ":0" + seconds;
-            else
-                setTime = "0" + minutes + ":" + seconds;
-        } else {
-            if (seconds < 10)
-                setTime = minutes + ":0" + seconds;
-            else
-                setTime = minutes + ":" + seconds;
+    public void setSubsNames() {
+
+        for (int counter = 0; counter < match.getSubstitutesNumber(); counter++) {
+
+            if (match.isHomeTeamPressed()) {
+                buttonManager.subsButtons.get(counter).setText(match.getHome().getSubstitutes().get(counter).getNumberAndName()); // SETS Text for every Home Substitute
+            } else
+                buttonManager.subsButtons.get(counter).setText(match.getAway().getSubstitutes().get(counter).getNumberAndName()); // SETS Text for every Away Substitute
         }
+    } // SETS names of all substitutes
 
-        return minutes;
-    } // GETS minutes and seconds of all timers and change them to format HH:mm
 }

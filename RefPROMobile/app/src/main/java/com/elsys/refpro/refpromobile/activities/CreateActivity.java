@@ -40,7 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CreateActivity extends Fragment implements View.OnClickListener{
 
     View createView;
-    EditText competition, venue, players, subs, length, time, date;
+    EditText competition, venue, length, time, date;
     AutoCompleteTextView home, away;
 
     Button create;
@@ -69,8 +69,6 @@ public class CreateActivity extends Fragment implements View.OnClickListener{
         // region INITIALIZE
         competition = (EditText) createView.findViewById(R.id.competitionForm);
         venue = (EditText) createView.findViewById(R.id.venueForm);
-        players = (EditText) createView.findViewById(R.id.numberOfPlayersForm);
-        subs = (EditText) createView.findViewById(R.id.numberOfSubsForm);
         length = (EditText) createView.findViewById(R.id.halfLengthForm);
         time = (EditText) createView.findViewById(R.id.timeForm);
         date = (EditText) createView.findViewById(R.id.dateForm);
@@ -99,7 +97,7 @@ public class CreateActivity extends Fragment implements View.OnClickListener{
         MatchValidator match = new MatchValidator(competition.getText().toString(), venue.getText().toString(), date.getText().toString(),
                 time.getText().toString(), home.getText().toString(), away.getText().toString(),
                 "da", "da",
-                Integer.parseInt(length.getText().toString()), Integer.parseInt(players.getText().toString()), Integer.parseInt(subs.getText().toString()));
+                Integer.parseInt(length.getText().toString()), 11, 7);
 
 
         if (match.isMatchValidated()) {
