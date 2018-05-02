@@ -13,7 +13,7 @@ import java.util.List;
  * Created by i.ivanov on 30-Apr-18.
  */
 public interface PlayerService {
-    List<String> createPlayer(List<PlayerDTO> players);
+    List<String> createPlayer(List<PlayerDTO> players) throws AbstractRestException;
 
     List<PlayerDTO> getPlayersByTeam(String name);
 

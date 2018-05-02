@@ -19,7 +19,7 @@ import com.elsys.refpro.refpromobile.database.LocalDatabase;
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.dto.NewMatchInfoDTO;
 import com.elsys.refpro.refpromobile.http.handlers.TeamsHandler;
-import com.elsys.refpro.refpromobile.services.CreateMatchService;
+import com.elsys.refpro.refpromobile.services.MatchService;
 import com.elsys.refpro.refpromobile.http.HttpDetails;
 import com.elsys.refpro.refpromobile.controllers.MatchValidator;
 
@@ -126,7 +126,7 @@ public class CreateActivity extends Fragment implements View.OnClickListener{
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
-            CreateMatchService service = retrofit.create(CreateMatchService.class);
+            MatchService service = retrofit.create(MatchService.class);
 
             loading.setVisibility(View.VISIBLE);
             create.setVisibility(View.INVISIBLE);
@@ -170,7 +170,7 @@ public class CreateActivity extends Fragment implements View.OnClickListener{
 
                     } else {
                         Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
-                        Log.i("HERE", String.valueOf(response.code()));
+                        Log.d("HERE", String.valueOf(response.code()));
 
                         loading.setVisibility(View.INVISIBLE);
                         create.setVisibility(View.VISIBLE);

@@ -3,10 +3,13 @@ package com.elsys.refpro.refpromobile.http.handlers;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.elsys.refpro.refpromobile.R;
+import com.elsys.refpro.refpromobile.adapters.PlayerHeadAdapter;
 import com.elsys.refpro.refpromobile.adapters.PlayersAdapter;
 import com.elsys.refpro.refpromobile.dto.PlayerDTO;
 import com.elsys.refpro.refpromobile.dto.TeamDTO;
@@ -35,21 +38,15 @@ public class PlayersHandler {
         this.context=context;
     }
 
-    public void setHomePlayersForDrawer(String teamName ,final ListView playersDrawer){
+    public void setHomePlayersForDrawer(String teamName ,final PlayerHeadAdapter adapter){
         PlayersService service = retrofit.create(PlayersService.class);
         service.getPlayersByTeam(teamName).enqueue(new Callback<List<PlayerDTO>>() {
             @Override
             public void onResponse(Call<List<PlayerDTO>> call, Response<List<PlayerDTO>> response) {
-                List<String>playerName=new ArrayList<String>();
-                for(PlayerDTO eachPlayerDto:response.body()){
-                    if(eachPlayerDto!=null && eachPlayerDto.getShirtName()!=null)
-                        playerName.add(eachPlayerDto.getShirtName());
+                if(response.isSuccessful()){
+                    adapter.addAll(response.body());
+                    adapter.notifyDataSetChanged();
                 }
-                Log.d("HttpCall","playerName="+playerName+"");
-                PlayersAdapter adapter = new PlayersAdapter(response.body(),context
-                );
-                playersDrawer.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
 
             }
 

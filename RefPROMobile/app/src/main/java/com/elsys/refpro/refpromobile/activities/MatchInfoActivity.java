@@ -4,45 +4,38 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.adapters.PlayerHeadAdapter;
-import com.elsys.refpro.refpromobile.adapters.PlayersAdapter;
 import com.elsys.refpro.refpromobile.adapters.PlayersAdapterAssigned;
 import com.elsys.refpro.refpromobile.application.DIApplication;
 import com.elsys.refpro.refpromobile.database.LocalDatabase;
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.dto.MatchUpdateDTO;
 import com.elsys.refpro.refpromobile.dto.PlayerDTO;
+import com.elsys.refpro.refpromobile.http.handlers.MatchHandler;
 import com.elsys.refpro.refpromobile.http.handlers.PlayersHandler;
-import com.elsys.refpro.refpromobile.models.Player;
+import com.elsys.refpro.refpromobile.listeners.PlayerHeadDragListener;
+import com.elsys.refpro.refpromobile.listeners.TerrainDragListener;
 import com.elsys.refpro.refpromobile.services.FirebaseService;
 import com.elsys.refpro.refpromobile.http.HttpDetails;
 import com.elsys.refpro.refpromobile.services.UpdateMatchService;
 import com.elsys.refpro.refpromobile.dto.NotificationDTO;
-import com.jackandphantom.circularimageview.CircleImage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,6 +61,8 @@ public class MatchInfoActivity extends Fragment {
     TextView competition, date, time, teams, player_title;
     EditText number, name;
     int match_id;
+    String homeTeam;
+    String awayTeam;
     LocalDatabase db;
     List<PlayerDTO> homePlayers = new ArrayList<>();
     List<PlayerDTO> awayPlayers = new ArrayList<>();
@@ -80,64 +75,19 @@ public class MatchInfoActivity extends Fragment {
 
     @Inject
     PlayersHandler playersHandler;
+    @Inject
+    SharedPreferences sharedPreferences;
+    @Inject
+    MatchHandler matchHandler;
+
     final ArrayList<PlayerDTO> homePlayersAssignedDtos = new ArrayList<>();
-    final ArrayList<PlayerDTO> a = new ArrayList<PlayerDTO>();
-    class MyDragListener implements View.OnDragListener {
-
-        @Override
-        public boolean onDrag(View receiverView, DragEvent event) {
-            int action = event.getAction();
-            switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    // do nothing
-                    break;
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    //v.setBackgroundDrawable(enterShape);
-                    break;
-                case DragEvent.ACTION_DRAG_EXITED:
-
-                    break;
-                case DragEvent.ACTION_DROP:
-                    if(receiverView instanceof ImageView){
-                        // Dropped, reassign View to ViewGroup
-                        CircleImage draggedView = (CircleImage) event.getLocalState();
-                        ImageView receiverViewImage = (ImageView) receiverView;
-
-                        GridView owner = (GridView) draggedView.getParent();
-                        ConstraintLayout relativeLayoutTerrain = (ConstraintLayout) receiverView.getParent();
-
-                        int draggedOverIndex = relativeLayoutTerrain.indexOfChild(receiverView);
+    final ArrayList<PlayerDTO> allPlayersForDrawer = new ArrayList<PlayerDTO>();
 
 
-                        PlayerHeadAdapter adapter = (PlayerHeadAdapter) owner.getAdapter();
-                        PlayerDTO assignedPlayer = ((PlayerHeadAdapter.PlayerHeadViewHolder) draggedView.getTag()).player;
-                        adapter.remove(assignedPlayer);
-                        adapter.notifyDataSetChanged();
+    private ConstraintLayout awayTeamLayout=null;
+    private ConstraintLayout homeTeamLayout=null;
 
 
-                        receiverView.setTag(assignedPlayer);
-                        receiverViewImage.setImageDrawable(draggedView.getDrawable());
-                        relativeLayoutTerrain.refreshDrawableState();
-                    }
-
-                    if(receiverView instanceof ConstraintLayout){
-                        CircleImage img = (CircleImage) event.getLocalState();
-                         img.setVisibility(View.VISIBLE);
-                    }
-
-                    break;
-                case DragEvent.ACTION_DRAG_ENDED:
-                   // v.setBackgroundDrawable(normalShape);
-                    break;
-
-                default:
-//                    CircleImage img = (CircleImage) event.getLocalState();
-//                    img.setVisibility(View.VISIBLE);
-                    break;
-            }
-            return true;
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -174,44 +124,54 @@ public class MatchInfoActivity extends Fragment {
         super.onDestroyView();
     }
 
+    private void setDragListenerToIcons(ViewGroup viewGroup){
+        for(int i=0;i<viewGroup.getChildCount();i++){
+            viewGroup.getChildAt(i).setOnDragListener(new PlayerHeadDragListener());
+            //viewGroup.getChildAt(i).setOnTouchListener(new TerrainHeadTouchListener());
+        }
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
         ((DIApplication) this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
+
         createView = inflater.inflate(R.layout.activity_info_v2, container, false);
+
         GridView playersDrawer = (GridView) createView.findViewById(R.id.right_drawer);
-       final ConstraintLayout awayTeamLayout = (ConstraintLayout) createView.findViewById(R.id.awayTeam);
-        final ConstraintLayout homeTeamLayout = (ConstraintLayout) createView.findViewById(R.id.homeTeam);
 
+        awayTeamLayout = (ConstraintLayout) createView.findViewById(R.id.awayTeam);
+        homeTeamLayout = (ConstraintLayout) createView.findViewById(R.id.homeTeam);
 
-        a.add(new PlayerDTO(1,"22"));
-        a.add(new PlayerDTO(1,"24"));
-        a.add(new PlayerDTO(1,"21"));
-        a.add(new PlayerDTO(1,"25"));
-        a.add(new PlayerDTO(1,"27"));
-        a.add(new PlayerDTO(1,"29"));
-        a.add(new PlayerDTO(1,"200"));
-        a.add(new PlayerDTO(1,"256"));
+        int matchId = this.getArguments().getInt("matchId");
+        db = new LocalDatabase(this.getActivity());
+        final Cursor data = db.getRow(matchId);
 
+        data.moveToFirst();
+        String mongoId=data.getString(10);
 
-        PlayerHeadAdapter adapter = new PlayerHeadAdapter(this.getActivity(), a);
+        PlayerHeadAdapter adapter = new PlayerHeadAdapter(this.getActivity(), allPlayersForDrawer);
         playersDrawer.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        createView.findViewById(R.id.circleImage).setOnDragListener(new MyDragListener());
-        createView.findViewById(R.id.circleImage12).setOnDragListener(new MyDragListener());
-        awayTeamLayout.setOnDragListener(new MyDragListener());
+        playersHandler.setHomePlayersForDrawer(data.getString(3),adapter);
+        playersHandler.setHomePlayersForDrawer(data.getString(4),adapter);
 
 
-        db = new LocalDatabase(this.getActivity());
-        final Cursor data = db.getRow(match_id);
-        data.moveToFirst();
+        
+        awayTeamLayout.setOnDragListener(new TerrainDragListener());
+        homeTeamLayout.setOnDragListener(new TerrainDragListener());
+        setDragListenerToIcons(awayTeamLayout);
+        setDragListenerToIcons(homeTeamLayout);
+
 
         final ArrayList<PlayerDTO> assignedHomePlayers = new ArrayList<PlayerDTO>();
         final ArrayList<PlayerDTO> assignedAwayPlayers = new ArrayList<PlayerDTO>();
         final ArrayList<PlayerDTO> assignedHomeSubs = new ArrayList<PlayerDTO>();
         final ArrayList<PlayerDTO> assignedAwaySubs = new ArrayList<PlayerDTO>();
 
-        Button b = (Button) createView.findViewById(R.id.button2);
+        FloatingActionButton b = (FloatingActionButton) createView.findViewById(R.id.button2);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,8 +198,27 @@ public class MatchInfoActivity extends Fragment {
         return createView;
     }
 
-    @Nullable
 
+    public  void getHomeAndAwayTeamNames(){
+        //GET current match ID and GET the information about match with it's unique key
+        SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
+        match_id = mPrefs.getInt("matchId", 0);
+
+        db = new LocalDatabase(this.getActivity());
+        final Cursor data = db.getRow(match_id);
+
+        data.moveToFirst();
+        data.moveToFirst();
+
+        //competition.setText(data.getString(1));
+       // date.setText(data.getString(5));
+        //time.setText(data.getString(6));
+        homeTeam=data.getString(3) ;
+        awayTeam=data.getString(4);
+
+    }
+
+    @Nullable
     public View onCreateView_old(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         ((DIApplication)this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
 
@@ -247,7 +226,7 @@ public class MatchInfoActivity extends Fragment {
         loading = (ProgressBar) createView.findViewById(R.id.progressBar);
         ListView playersDrawer = (ListView) createView.findViewById(R.id.right_drawer);
         ListView homePlayersAssigned = (ListView) createView.findViewById(R.id.home_players_assigned);
-        homePlayersAssigned.setOnDragListener(new MyDragListener());
+        homePlayersAssigned.setOnDragListener(new PlayerHeadDragListener());
 
         PlayersAdapterAssigned homePlayersAdapter = new PlayersAdapterAssigned(homePlayersAssignedDtos,this.getActivity()
         );
@@ -291,7 +270,7 @@ public class MatchInfoActivity extends Fragment {
         time.setText(data.getString(6));
         teams.setText("" + data.getString(3) + " vs. " + data.getString(4));
 
-        playersHandler.setHomePlayersForDrawer(data.getString(3),playersDrawer);
+       // playersHandler.setHomePlayersForDrawer(data.getString(3),homePlayersAdapter);
         //endregion
 
         number = (EditText) createView.findViewById(R.id.playerNumberForm);

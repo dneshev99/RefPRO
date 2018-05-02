@@ -1051,7 +1051,7 @@
                 app:shadow_color="#a10909"
                 app:shadow_radius="20" />
 
-            <Button
+            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/button2"
                 android:layout_width="78dp"
                 android:layout_height="48dp"
@@ -1059,7 +1059,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Start"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -1088,15 +1088,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="#FFFFFF"
-        android:choiceMode="singleChoice"
-        android:columnWidth="90dp"
-
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:gravity="center"
-        android:horizontalSpacing="10dp"
-        android:numColumns="auto_fit"
+        android:verticalSpacing="0dp"
+        android:horizontalSpacing="0dp"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp" />
+        android:numColumns="2" />
 
 </android.support.v4.widget.DrawerLayout>

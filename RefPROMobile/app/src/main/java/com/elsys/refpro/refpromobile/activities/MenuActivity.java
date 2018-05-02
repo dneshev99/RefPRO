@@ -95,6 +95,9 @@ public class MenuActivity extends Fragment {
 
                                     MatchInfoActivity matchInfoActivity = new MatchInfoActivity();
                                     android.app.FragmentManager fragmentManager = getFragmentManager();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("matchId",id);
+                                    matchInfoActivity.setArguments(bundle);
                                     fragmentManager.beginTransaction().replace(R.id.content_frame, matchInfoActivity).commit();
                                 }
                             })

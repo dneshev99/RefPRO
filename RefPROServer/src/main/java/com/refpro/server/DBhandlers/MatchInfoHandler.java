@@ -1,11 +1,13 @@
 package com.refpro.server.DBhandlers;
 
 import com.refpro.server.DTOs.*;
+import com.refpro.server.exception.InvalidInputException;
 import com.refpro.server.exception.MatchNotFoundException;
 import com.refpro.server.models.*;
 import com.refpro.server.repositories.MatchInfoRepository;
 import com.refpro.server.repositories.PlayerRepository;
 import com.refpro.server.repositories.TeamRepository;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +28,7 @@ public class MatchInfoHandler implements MatchInfoService {
     @Autowired
     private PlayerHandler playerHandler;
 
-
-
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MatchInfoHandler.class.getName());
     @Override
     public String addMatchInfo(NewMatchInfoDTO newMatchInfoDTO) throws Exception {
         MatchInfo newEntry = new MatchInfo();
@@ -40,8 +41,10 @@ public class MatchInfoHandler implements MatchInfoService {
 
         Team homeTeam = teamRepository.findByName(newMatchInfoDTO.getHome());
         Team awayTeam = teamRepository.findByName(newMatchInfoDTO.getAway());
-        if(homeTeam==null || awayTeam==null)
-            throw new Exception("");
+        if(homeTeam==null || awayTeam==null) {
+            log.error("HomeTeam : {} , AwayTeam:{}",homeTeam,awayTeam);
+            throw new InvalidInputException("Home team or Away team can not be found.");
+        }
         newEntry.setHome(homeTeam);
 
         newEntry.setAway(awayTeam);
@@ -94,9 +97,9 @@ public class MatchInfoHandler implements MatchInfoService {
         result.setVenue(entry.getVenue());
         result.setDate(entry.getDate());
         result.setTime(entry.getTime());
-        result.setAway(awayTeam);
+        result.setAway(new TeamDto(awayTeam));
         result.setAwayAbbr(awayTeam.getAbbreaviature());
-        result.setHome(homeTeam);
+        result.setHome(new TeamDto(homeTeam));
         result.setHomeAbbr(homeTeam.getAbbreaviature());
         result.setAwayPlayers(playerHandler.convertEntitiesToDto(entry.getAwayPlayers()));
         result.setHomePlayers(playerHandler.convertEntitiesToDto(entry.getHomePlayers()));

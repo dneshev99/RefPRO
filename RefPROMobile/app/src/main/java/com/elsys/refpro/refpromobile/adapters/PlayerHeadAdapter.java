@@ -1,6 +1,7 @@
 package com.elsys.refpro.refpromobile.adapters;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MotionEvent;
@@ -12,6 +13,7 @@ import android.widget.GridView;
 
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.dto.PlayerDTO;
+import com.elsys.refpro.refpromobile.listeners.PlayerHeadTouchListener;
 import com.jackandphantom.circularimageview.CircleImage;
 
 import java.util.List;
@@ -64,23 +66,13 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
 
 
 
-    public final class PlayerHeadTouchListener implements View.OnTouchListener {
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
-                        v);
-                v.startDrag(null, shadowBuilder, v, 0);
-                v.setVisibility(View.INVISIBLE);
-                DrawerLayout draweer = (DrawerLayout) v.getParent().getParent();
-                draweer.closeDrawers();
-
-                return true;
-            } else {
-                return false;
+    public void refreshAdapterOnUIThread (){
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
             }
-        }
+        });
     }
 
     public List<PlayerDTO> getItems(){

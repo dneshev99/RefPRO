@@ -47,7 +47,7 @@ public class PlayerController {
     }
 
     @RequestMapping(value = "/create",method = RequestMethod.POST)
-    public ResponseEntity createNewPlayers(@RequestBody List<PlayerDTO> playersToCreate) {
+    public ResponseEntity createNewPlayers(@RequestBody List<PlayerDTO> playersToCreate) throws AbstractRestException {
 
         log.log(Level.INFO,"createNewPlayers: "+playersToCreate);
         List<String> ids=playerSericeHandler.createPlayer(playersToCreate);

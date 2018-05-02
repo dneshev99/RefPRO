@@ -1,7 +1,5 @@
-package com.refpro.server.DTOs;
+package com.elsys.refpro.refpromobile.dto;
 
-import com.refpro.server.models.Player;
-import com.refpro.server.models.Team;
 
 import java.util.List;
 
@@ -11,8 +9,8 @@ public class MatchInfoDTO {
     private String date;
     private String time;
 
-    private TeamDto home;
-    private TeamDto away;
+    private TeamDTO home;
+    private TeamDTO away;
 
     private String homeAbbr;
     private String awayAbbr;
@@ -56,19 +54,19 @@ public class MatchInfoDTO {
         this.time = time;
     }
 
-    public TeamDto getHome() {
+    public TeamDTO getHome() {
         return home;
     }
 
-    public void setHome(TeamDto home) {
+    public void setHome(TeamDTO home) {
         this.home = home;
     }
 
-    public TeamDto getAway() {
+    public TeamDTO getAway() {
         return away;
     }
 
-    public void setAway(TeamDto away) {
+    public void setAway(TeamDTO away) {
         this.away = away;
     }
 

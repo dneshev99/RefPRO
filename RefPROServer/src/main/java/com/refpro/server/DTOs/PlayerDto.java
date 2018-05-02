@@ -1,16 +1,23 @@
 package com.refpro.server.DTOs;
 
 import com.refpro.server.models.Player;
+import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 public class PlayerDTO {
 
     private String team;
 
+    @NotNull(message = "First name must not be null")
     private String firstName;
+    @NotNull(message = "Last name must not be null")
     private String lastName;
+    @NotNull(message = "Birthday must not be null")
     private String birthday;
-
+    @DecimalMin(value="1",inclusive = true)
     private int shirtNumber;
+    @NotNull(message = "Shirt name must not be null")
     private String shirtName;
 
     public PlayerDTO(){}
