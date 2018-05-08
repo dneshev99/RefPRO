@@ -1,0 +1,78 @@
+.bodyBackground {
+
+  font-family: Agency FB;
+}
+
+#name {
+
+  padding-top: 3%;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  font-size: 150%;
+}
+
+#mark {
+
+  font-weight: bolder;
+  font-size: 200%;
+  color: green;
+  text-align: center;
+}
+
+#refImage {
+
+  text-align: center;
+  height: 300px;
+  width: 240px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  border: outset;
+}
+
+#refImage:hover, #mark:hover, #name:hover {
+
+  -ms-transform: scale(1.1); /* IE 9 */
+  -webkit-transform: scale(1.1); /* Safari 3-8 */
+  transform: scale(1.1);
+}
+
+#refInformation {
+
+  padding-top: 5%;
+  text-align: center;
+  color: white;
+  font-family:  sans-serif;
+}
+
+#addMark {
+
+  padding-top: 10%;
+  text-align: center;
+  color: black;
+  font-family:  Agency FB;
+  font-weight: bold;
+}
+
+th, td {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+input {
+
+  color: green;
+  font-weight: bold;
+}
+
+tr:hover {background-color: darkgray;}
+
+table {
+
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+

@@ -1,0 +1,98 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+body {
+
+  background:
+
+    linear-gradient(
+      rgba(153, 153, 255, 0.75),
+      rgba(153, 153, 255, 0.75)
+    ),
+
+    url(assets/images/background.jpg);
+
+}
+
+body {
+
+  font-size: 28px;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+}
+
+li {
+  float: left;
+}
+
+li#sign {
+  float: right;
+}
+
+li a {
+
+  font-size: 75%;
+  font-family: "Agency FB";
+  font-weight: bold;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #111;
+}
+
+h1 {
+
+  text-align: center;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 150%;
+}
+h2 {
+
+  text-align: center;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: lighter;
+}
+
+.bodyBackground {
+
+  background-color: rgba(10,10,10,.60);
+  width: 80%;
+  height: 200%;
+  min-height: 1000px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table {
+
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+

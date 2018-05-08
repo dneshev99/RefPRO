@@ -1,0 +1,39 @@
+ul.information {
+
+  color: white;
+  background-color: transparent;
+  margin-top: 2%;
+}
+
+.matchRow {
+
+  padding-top: 1%;
+  margin-left: 10%;
+  width: 100%;
+}
+
+.matchRow:hover {
+
+  color: darkgray;
+}
+
+h1 {
+
+  padding-top: 3%;
+  font-weight: bold;
+}
+
+h2 {
+
+  padding-bottom: 3%;
+}
+
+.bodyBackground {
+
+  font-family: "Agency FB";
+  font-size: 100%;
+  font-weight: bold;
+}
+
+
+

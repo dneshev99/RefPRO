@@ -1,0 +1,41 @@
+#homeLogo {
+
+  height: 120px;
+  width: 160px;
+  margin-top: 10%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+  -webkit-animation: fadein 3s;
+}
+
+#homeLogo:hover {
+  -ms-transform: scale(1.1); /* IE 9 */
+  -webkit-transform: scale(1.1); /* Safari 3-8 */
+  transform: scale(1.1);
+}
+
+@keyframes leaves {
+  From {
+    -webkit-transform: scale(1.0);
+  }
+  To {
+    -webkit-transform: scale(1.1);
+  }
+}
+
+h1,h2 {
+
+  margin-top: 2%;
+  -webkit-animation: fadein 3s;
+}
+
+@-webkit-keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+app-login {
+
+}
