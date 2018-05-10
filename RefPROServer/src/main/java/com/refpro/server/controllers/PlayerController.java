@@ -1,24 +1,19 @@
 package com.refpro.server.controllers;
 
 
-import com.refpro.server.DBhandlers.PlayerHandler;
 import com.refpro.server.DBhandlers.PlayerService;
 import com.refpro.server.DTOs.ErrorDto;
 import com.refpro.server.DTOs.PlayerDTO;
 import com.refpro.server.exception.AbstractRestException;
-import com.refpro.server.exception.PlayerNotFoundExeption;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;

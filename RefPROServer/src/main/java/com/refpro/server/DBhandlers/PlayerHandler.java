@@ -1,14 +1,13 @@
 package com.refpro.server.DBhandlers;
 
 
-import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
 import com.refpro.server.DTOs.PlayerDTO;
 import com.refpro.server.exception.AbstractRestException;
 import com.refpro.server.exception.InvalidInputException;
-import com.refpro.server.exception.PlayerNotFoundExeption;
+import com.refpro.server.exception.PlayerNotFoundException;
 import com.refpro.server.models.Player;
 import com.refpro.server.models.Team;
 import com.refpro.server.repositories.PlayerRepository;
@@ -17,8 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -33,7 +30,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -123,7 +119,7 @@ public class PlayerHandler implements PlayerService {
         Player player = playerRepository.findPlayerById(playerId);
 
         if (player == null) {
-            throw new PlayerNotFoundExeption("Player not found.");
+            throw new PlayerNotFoundException("Player not found.");
         }
         GridFS gfsPhoto = new GridFS(mongoTemplate.getDb(), PLAYERS_ICONS_BUCKET_NAME);
         GridFSInputFile gfsFile = gfsPhoto.createFile(file.getBytes());
@@ -147,7 +143,7 @@ public class PlayerHandler implements PlayerService {
         Player player = playerRepository.findPlayerById(playerId);
 
         if (player == null) {
-            throw new PlayerNotFoundExeption("Player not found.");
+            throw new PlayerNotFoundException("Player not found.");
         }
 
         String pictureId = player.getPictureId();
