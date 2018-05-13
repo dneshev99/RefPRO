@@ -438,204 +438,6 @@
                 app:shadow_radius="20" />
 
 
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage2"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignTop="@+id/circleImage8"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_toStartOf="@+id/circleImage6"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintBottom_toTopOf="@+id/circleImage4"-->
-                <!--app:layout_constraintTop_toTopOf="parent"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20"-->
-                <!--tools:layout_editor_absoluteX="167dp" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage3"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignParentTop="true"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_marginEnd="8dp"-->
-                <!--android:layout_marginStart="60dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintBottom_toTopOf="@+id/circleImage11"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintStart_toEndOf="@+id/circleImage2"-->
-                <!--app:layout_constraintTop_toTopOf="parent"-->
-                <!--app:layout_constraintVertical_bias="0.647"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage4"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignTop="@+id/circleImage6"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_toEndOf="@+id/circleImage3"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintBottom_toTopOf="@+id/circleImage5"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20"-->
-                <!--tools:layout_editor_absoluteX="167dp" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage5"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignTop="@+id/circleImage9"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_toEndOf="@+id/circleImage4"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20"-->
-                <!--tools:layout_editor_absoluteX="167dp" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage6"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_below="@+id/circleImage3"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_marginEnd="8dp"-->
-                <!--android:layout_marginStart="8dp"-->
-                <!--android:layout_toStartOf="@+id/circleImage3"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--app:layout_constraintEnd_toStartOf="@+id/circleImage5"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage7"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:layout_marginEnd="16dp"-->
-                <!--android:layout_toStartOf="@+id/circleImage8"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20"-->
-                <!--tools:layout_editor_absoluteY="126dp" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage9"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignEnd="@+id/circleImage4"-->
-                <!--android:layout_alignTop="@+id/circleImage8"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_marginEnd="8dp"-->
-                <!--android:layout_marginStart="8dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintHorizontal_bias="0.267"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toTopOf="parent"-->
-                <!--app:layout_constraintVertical_bias="0.614"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage10"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_marginEnd="8dp"-->
-                <!--android:layout_marginStart="8dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_toEndOf="@+id/circleImage9"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintStart_toEndOf="@+id/circleImage5"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/circleImage11"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage11"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:layout_marginEnd="8dp"-->
-                <!--android:layout_toEndOf="@+id/circleImage"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintEnd_toStartOf="@+id/circleImage7"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20"-->
-                <!--tools:layout_editor_absoluteY="100dp" />-->
-
-            <!--<com.jackandphantom.circularimageview.CircleImage-->
-                <!--android:id="@+id/circleImage8"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_marginEnd="8dp"-->
-                <!--android:layout_marginStart="8dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_toStartOf="@+id/circleImage12"-->
-                <!--android:src="@drawable/logo"-->
-                <!--app:add_shadow="true"-->
-                <!--app:border_color="#ed2e2e"-->
-                <!--app:border_width="3dp"-->
-                <!--app:layout_constraintBottom_toTopOf="@+id/circleImage6"-->
-                <!--app:layout_constraintEnd_toStartOf="@+id/circleImage"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toTopOf="parent"-->
-                <!--app:shadow_color="#a10909"-->
-                <!--app:shadow_radius="20" />-->
-
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
@@ -651,14 +453,18 @@
 
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/logo"
                 app:add_shadow="true"
                 app:border_color="#FFFFFF"
                 app:border_width="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:shadow_color="#a10909"
-                app:shadow_radius="20"
-                tools:layout_editor_absoluteX="117dp"
-                tools:layout_editor_absoluteY="227dp" />
+                app:shadow_radius="20" />
 
             <com.jackandphantom.circularimageview.CircleImage
                 android:id="@+id/circleImage13"

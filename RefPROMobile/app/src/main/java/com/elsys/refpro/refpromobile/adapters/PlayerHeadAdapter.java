@@ -94,6 +94,21 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
         });
     }
 
+    public static Bitmap decodeSampledBitmapFromFile(String fileAbsolutePath,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        //BitmapFactory.decodeFile(fileAbsolutePath);
+
+        // Calculate inSampleSize
+        options.inSampleSize = 3;
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(fileAbsolutePath, options);
+    }
+
     public List<PlayerDTO> getItems(){
         return this.players;
     }

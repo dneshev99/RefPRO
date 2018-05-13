@@ -18,17 +18,10 @@
         android:textSize="24dp"
         android:textStyle="bold" />
 
-    <ScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/match_id"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/menu_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-        </LinearLayout>
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
 
 </LinearLayout>
