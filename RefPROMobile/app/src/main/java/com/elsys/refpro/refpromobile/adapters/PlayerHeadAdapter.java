@@ -71,6 +71,7 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
             File directory = mContext.getFilesDir();
             File file = new File(directory, holder.player.getPlayerId());
             if(file.exists()){
+                GlideApp.with(this).load("http://goo.gl/gEgYUd").into(imageView);
                 Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                 imageView.setImageBitmap(myBitmap);
             }

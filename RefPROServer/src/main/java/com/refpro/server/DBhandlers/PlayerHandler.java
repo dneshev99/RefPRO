@@ -143,7 +143,7 @@ public class PlayerHandler implements PlayerService {
         Player player = playerRepository.findPlayerById(playerId);
 
         if (player == null) {
-            throw new PlayerNotFoundException("Player not found.");
+            throw new PlayerNotFoundException("Player not found.","The supplied player id is incorrect");
         }
 
         String pictureId = player.getPictureId();

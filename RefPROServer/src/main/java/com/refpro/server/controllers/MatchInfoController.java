@@ -78,6 +78,7 @@ public class MatchInfoController {
 
     @RequestMapping(value = "/getMatchById",method = RequestMethod.GET)
     public HttpEntity getMatchById(@RequestParam("id") String id) {
+        log.log(Level.INFO,"Passed");
         MatchInfoDTO result;
 
         try {

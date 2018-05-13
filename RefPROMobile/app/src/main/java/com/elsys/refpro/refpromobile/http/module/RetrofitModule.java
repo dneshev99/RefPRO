@@ -23,12 +23,6 @@ import static com.elsys.refpro.refpromobile.http.HttpDetails.WRITE_TIMEOUT_MS;
 @Module
 public class RetrofitModule {
 
-//    @Provides
-//    @Singleton
-//    HttpLoggingInterceptor provideOkHttpInterceptors() {
-//        return new HttpLoggingInterceptor().
-//                setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
-//    }
 
 
     //we create modules, because we have no control over okHttpClient constructor for example, but we need an instance
