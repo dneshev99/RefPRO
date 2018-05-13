@@ -71,8 +71,8 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
             File directory = mContext.getFilesDir();
             File file = new File(directory, holder.player.getPlayerId());
             if(file.exists()){
-                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                imageView.setImageBitmap(myBitmap);
+//                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                imageView.setImageBitmap(decodeSampledBitmapFromFile(file.getAbsolutePath(),1,1));
             }
 
         }
@@ -91,6 +91,21 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
                 notifyDataSetChanged();
             }
         });
+    }
+
+    public static Bitmap decodeSampledBitmapFromFile(String fileAbsolutePath,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        //BitmapFactory.decodeFile(fileAbsolutePath);
+
+        // Calculate inSampleSize
+        options.inSampleSize = 3;
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(fileAbsolutePath, options);
     }
 
     public List<PlayerDTO> getItems(){

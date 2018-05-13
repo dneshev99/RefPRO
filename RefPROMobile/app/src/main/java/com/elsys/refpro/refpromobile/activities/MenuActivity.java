@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.database.LocalDatabase;
+import com.elsys.refpro.refpromobile.models.Item;
 import com.elsys.refpro.refpromobile.services.DeleteService;
 import com.elsys.refpro.refpromobile.enums.DeviceType;
 import com.elsys.refpro.refpromobile.http.HttpDetails;
@@ -25,6 +26,8 @@ import com.elsys.refpro.refpromobile.dto.UserDTO;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -67,109 +70,13 @@ public class MenuActivity extends Fragment {
         db = new LocalDatabase(this.getActivity());
 
         Cursor data = db.getData();
+        final ArrayList<Item> match_info = new ArrayList<Item>();
 
         while (data.moveToNext()) {
 
-            final Button fixture = new Button(this.getActivity());
-            fixture.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            fixture.setId(Integer.parseInt(data.getString(0)));
-            fixture.setText(data.getString(7) + "  " + data.getString(5) + " - " + data.getString(6));
-
-            final int id = Integer.parseInt(data.getString(0));
-
-            fixture.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    //GET the information about match with it's unique key
-                    SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                    prefsEditor.putInt("matchId", id);
-                    prefsEditor.apply();
-
-                    //CREATE AlertDialog with options to OPEN or DELETE current match
-                    AlertDialog.Builder alert = new AlertDialog.Builder(menuView.getContext());
-                    alert.setMessage(R.string.alert_text).setCancelable(true)
-                            .setPositiveButton(R.string.open, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    MatchInfoActivity matchInfoActivity = new MatchInfoActivity();
-                                    android.app.FragmentManager fragmentManager = getFragmentManager();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putInt("matchId",id);
-                                    matchInfoActivity.setArguments(bundle);
-                                    fragmentManager.beginTransaction().replace(R.id.content_frame, matchInfoActivity).commit();
-                                }
-                            })
-                            .setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    final Cursor data = db.getRow(id);
-                                    data.moveToFirst();
-                                    final String mongoID = data.getString(12);
-
-                                    final String token = preferences.getString("token","N/A");
-
-                                    OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-                                        @Override
-                                        public okhttp3.Response intercept(Chain chain) throws IOException {
-                                            Request newRequest = chain.request().newBuilder()
-                                                    .addHeader("Authorization",token)
-                                                    .build();
-                                            Log.d("Na sasho tokena",token);
-                                            return chain.proceed(newRequest);
-                                        }
-                                    }).build();
-
-                                    Retrofit retrofit = new Retrofit.Builder()
-                                            .client(client)
-                                            .baseUrl(HttpDetails.getRetrofitUrl())
-                                            .addConverterFactory(GsonConverterFactory.create())
-                                            .build();
-
-                                    DeleteService service = retrofit.create(DeleteService.class);
-
-                                    service.delete(mongoID).enqueue(new Callback<ResponseBody>() {
-                                        @Override
-                                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                                            if (response.isSuccessful()) {
-
-                                                Toast.makeText(getActivity(), "Success:" + mongoID, Toast.LENGTH_LONG).show();
-
-                                                db.delete(id);
-
-                                                Toast.makeText(getActivity(), R.string.delete_success,
-                                                        Toast.LENGTH_LONG).show();
-
-                                                MenuActivity menu = new MenuActivity();
-                                                android.app.FragmentManager fragmentManager = getFragmentManager();
-                                                fragmentManager.beginTransaction().replace(R.id.content_frame, menu).commit();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-
-                                            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-
-
-                                }
-                    });
-
-                    AlertDialog al = alert.create();
-                    al.setTitle(R.string.options);
-                    alert.show();
-                }
-
-            });
-
-            layout.addView(fixture);
+            final Item current_match = new Item(data.getString(3), data.getString(4), data.getString(5), data.getString(6), data.getString(2), data.getString(10));
         }
+
         return menuView;
     }
 
