@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.elsys.refpro.refpromobile.adapters.PlayerHeadAdapter;
 import com.elsys.refpro.refpromobile.dto.PlayerDTO;
-import com.jackandphantom.circularimageview.CircleImage;
 
 public class PlayerHeadDragListener implements View.OnDragListener {
 
@@ -24,7 +23,7 @@ public class PlayerHeadDragListener implements View.OnDragListener {
             case DragEvent.ACTION_DROP:
                 if(receiverView instanceof ImageView){
                     // Dropped, reassign View to ViewGroup
-                    CircleImage draggedView = (CircleImage) event.getLocalState();
+                    ImageView draggedView = (ImageView) event.getLocalState();
                     ImageView receiverViewImage = (ImageView) receiverView;
 
                     GridView owner = (GridView) draggedView.getParent();

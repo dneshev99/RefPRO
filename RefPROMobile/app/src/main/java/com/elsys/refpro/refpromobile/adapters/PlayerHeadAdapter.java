@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,12 +13,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+//import com.bumptech.glide.Glide;
+//import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.dto.PlayerDTO;
 import com.elsys.refpro.refpromobile.listeners.PlayerHeadTouchListener;
-import com.jackandphantom.circularimageview.CircleImage;
+
 
 import java.io.File;
 import java.util.List;
@@ -34,7 +40,7 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
 
     public  static class PlayerHeadViewHolder {
         public PlayerDTO player;
-        CircleImage imageView;
+        ImageView imageView;
         TextView playerHeadText;
     }
 
@@ -42,18 +48,18 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         PlayerHeadViewHolder holder=null;
-        CircleImage imageView;
+        ImageView imageView;
         TextView playerHeadText;
-        if(convertView==null){
+        if(convertView==null || 1==1){
             holder=new PlayerHeadViewHolder();
             View v=convertView.inflate(mContext,R.layout.player_head,null);
-            imageView = (CircleImage) v.findViewById(R.id.head);
-            holder.imageView= (CircleImage) imageView.findViewById(R.id.head);
+            imageView = (ImageView) v.findViewById(R.id.head);
+            holder.imageView= (ImageView) imageView.findViewById(R.id.head);
             holder.playerHeadText = (TextView) v.findViewById(R.id.playerHeadText);
             convertView=imageView;
             convertView.setTag(holder);
         }else{
-            imageView= (CircleImage) convertView;
+            imageView= (ImageView) convertView;
             holder= (PlayerHeadViewHolder) convertView.getTag();
         }
 
@@ -71,9 +77,11 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
             File directory = mContext.getFilesDir();
             File file = new File(directory, holder.player.getPlayerId());
             if(file.exists()){
-                GlideApp.with(this).load("http://goo.gl/gEgYUd").into(imageView);
-                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                imageView.setImageBitmap(myBitmap);
+                RequestOptions options = new RequestOptions();
+                options.override(100,100);
+                options.circleCrop();
+                Glide.with(mContext).applyDefaultRequestOptions(options).load(file.getAbsolutePath()).into(imageView);
+
             }
 
         }
@@ -111,5 +119,24 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
 
     public List<PlayerDTO> getItems(){
         return this.players;
+    }
+
+    @Override
+    public int getCount() {
+        return players.size();
+    }
+
+    @Override
+    public void remove(@Nullable PlayerDTO object) {
+       players.remove(object);
+       notifyDataSetChanged();
+    }
+
+
+
+    @Nullable
+    @Override
+    public PlayerDTO getItem(int position) {
+        return players.get(position);
     }
 }

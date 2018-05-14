@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.target.ViewTarget;
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.http.HttpDetails;
 import com.elsys.refpro.refpromobile.services.UserService;
@@ -41,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ViewTarget.setTagId(R.id.glide_tag);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);

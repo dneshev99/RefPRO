@@ -78,7 +78,9 @@ public class PlayerHandler implements PlayerService {
                 playerRepository.save(newPlayer);
                 createdIds.add(newPlayer.getId());
             }else{
-                log.debug("Validation error : {}",validationResult.stream().map(s->s.getMessage()).toArray() );
+
+                log.debug("Validation error : {}",validationResult.stream().map(s -> s.getMessage()).toArray() );
+                throw new InvalidInputException("Missing input");
 
             }
         }

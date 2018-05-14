@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//import com.bumptech.glide.request.target.ViewTarget;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.elsys.refpro.refpromobile.adapters.PlayerHeadAdapter;
 import com.elsys.refpro.refpromobile.adapters.PlayersAdapterAssigned;
 import com.elsys.refpro.refpromobile.application.DIApplication;
@@ -139,18 +141,21 @@ public class MatchInfoActivity extends Fragment {
 
         createView = inflater.inflate(R.layout.activity_info_v2, container, false);
 
+
         GridView playersDrawer = (GridView) createView.findViewById(R.id.right_drawer);
 
         awayTeamLayout = (ConstraintLayout) createView.findViewById(R.id.awayTeam);
         homeTeamLayout = (ConstraintLayout) createView.findViewById(R.id.homeTeam);
+       // homeTeamLayout.setTag();
 
         int matchId = this.getArguments().getInt("matchId");
         db = new LocalDatabase(this.getActivity());
         final Cursor data = db.getRow(matchId);
 
         data.moveToFirst();
-        String mongoId=data.getString(10);
-
+//        //String mongoId=data.getString(10);
+//        private static final String COL4 = "home";
+//        private static final String COL5 = "away";
         PlayerHeadAdapter adapter = new PlayerHeadAdapter(this.getActivity(), allPlayersForDrawer);
         playersDrawer.setAdapter(adapter);
         adapter.notifyDataSetChanged();

@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
+import com.elsys.refpro.refpromobile.adapters.MatchItemAdapter;
 import com.elsys.refpro.refpromobile.database.LocalDatabase;
 import com.elsys.refpro.refpromobile.models.Item;
 import com.elsys.refpro.refpromobile.services.DeleteService;
@@ -61,7 +64,7 @@ public class MenuActivity extends Fragment {
 
         //region INITIALIZE
         final SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
-        LinearLayout layout = (LinearLayout) menuView.findViewById(R.id.menu_layout);
+        RecyclerView layout = (RecyclerView) menuView.findViewById(R.id.menu_layout);
 
         //Get last saved match's ID
         matchId = mPrefs.getInt("ID", 0);
@@ -71,11 +74,18 @@ public class MenuActivity extends Fragment {
 
         Cursor data = db.getData();
         final ArrayList<Item> match_info = new ArrayList<Item>();
-
+        MatchItemAdapter mAdapter = new MatchItemAdapter(match_info, this.getActivity().getApplicationContext(),this.getActivity().getFragmentManager());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());
+        layout.setLayoutManager(mLayoutManager);
+        layout.setAdapter(mAdapter);
         while (data.moveToNext()) {
 
             final Item current_match = new Item(data.getString(3), data.getString(4), data.getString(5), data.getString(6), data.getString(2), data.getString(10));
+            current_match.setDbId(Integer.parseInt(data.getString(0)));
+            match_info.add(current_match);
         }
+
+        mAdapter.notifyDataSetChanged();
 
         return menuView;
     }

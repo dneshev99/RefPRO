@@ -4,6 +4,7 @@ public class Item {
 
     private String home, away, date, time, venue;
     private String mongoId;
+    private int dbId;
 
     public Item(String home, String away, String date, String time, String venue, String mongoId) {
 
@@ -16,6 +17,14 @@ public class Item {
     }
 
     public Item() {
+    }
+
+    public int getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(int dbId) {
+        this.dbId = dbId;
     }
 
     public String getHome() {

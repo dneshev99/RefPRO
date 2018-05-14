@@ -2,8 +2,8 @@ package com.elsys.refpro.refpromobile.listeners;
 
 import android.view.DragEvent;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.jackandphantom.circularimageview.CircleImage;
 
 public class TerrainDragListener  implements View.OnDragListener {
 
@@ -17,7 +17,7 @@ public class TerrainDragListener  implements View.OnDragListener {
             case DragEvent.ACTION_DRAG_EXITED:
                 break;
             case DragEvent.ACTION_DROP:
-                CircleImage img = (CircleImage) event.getLocalState();
+                ImageView img = (ImageView) event.getLocalState();
                 img.setVisibility(View.VISIBLE);
                 break;
 

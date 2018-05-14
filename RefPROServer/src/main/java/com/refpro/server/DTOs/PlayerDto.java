@@ -14,7 +14,7 @@ public class PlayerDTO {
     @NotNull(message = "Last name must not be null")
     private String lastName;
     @NotNull(message = "Birthday must not be null")
-    private String birthday;
+        private String birthday;
     @DecimalMin(value="1",inclusive = true)
     private int shirtNumber;
     @NotNull(message = "Shirt name must not be null")
