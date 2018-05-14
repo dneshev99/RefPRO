@@ -45,7 +45,7 @@ public class PlayersHandler {
         this.context=context;
     }
 
-    public void setHomePlayersForDrawer(String teamName ,final PlayerHeadAdapter adapter){
+    public void setPlayersByTeamNameForAdapter(String teamName , final PlayerHeadAdapter adapter){
         PlayersService service = retrofit.create(PlayersService.class);
         service.getPlayersByTeam(teamName).enqueue(new Callback<List<PlayerDTO>>() {
             @Override

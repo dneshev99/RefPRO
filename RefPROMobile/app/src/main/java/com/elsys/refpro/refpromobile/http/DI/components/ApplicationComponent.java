@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 
 import com.elsys.refpro.refpromobile.activities.CreateActivity;
 import com.elsys.refpro.refpromobile.activities.MatchInfoActivity;
+import com.elsys.refpro.refpromobile.activities.MenuActivity;
 import com.elsys.refpro.refpromobile.http.handlers.TeamsHandler;
 import com.elsys.refpro.refpromobile.http.handlers.PlayersHandler;
 import com.elsys.refpro.refpromobile.http.module.ApplicationModule;
@@ -27,6 +28,7 @@ public interface ApplicationComponent {
     //From where it should be available
     void inject(CreateActivity app);
     void inject(MatchInfoActivity app);
+    void inject (MenuActivity app);
     Retrofit provideRetrofitClient();
     OkHttpClient okHttpClient();
     SharedPreferences sharedPreferences();

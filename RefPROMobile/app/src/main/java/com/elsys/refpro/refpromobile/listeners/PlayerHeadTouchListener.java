@@ -13,7 +13,7 @@ public final class PlayerHeadTouchListener implements View.OnTouchListener {
                     v);
             v.startDrag(null, shadowBuilder, v, 0);
             v.setVisibility(View.INVISIBLE);
-            DrawerLayout drawer = (DrawerLayout) v.getParent().getParent();
+            DrawerLayout drawer = (DrawerLayout) v.getParent().getParent().getParent();
             drawer.closeDrawers();
 
             return true;

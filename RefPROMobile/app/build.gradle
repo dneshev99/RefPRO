@@ -53,6 +53,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -74,7 +74,7 @@ public class PlayersAdapter extends ArrayAdapter<PlayerDTO> {
                         v);
                 v.startDrag(null, shadowBuilder, v, 0);
                 v.setVisibility(View.INVISIBLE);
-                DrawerLayout draweer = (DrawerLayout) v.getParent().getParent();
+                DrawerLayout draweer = (DrawerLayout) v.findViewById(R.id.drawer_layout);
                 draweer.closeDrawers();
 
                 return true;

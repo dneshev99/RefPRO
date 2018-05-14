@@ -19,7 +19,9 @@ import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.adapters.MatchItemAdapter;
+import com.elsys.refpro.refpromobile.application.DIApplication;
 import com.elsys.refpro.refpromobile.database.LocalDatabase;
+import com.elsys.refpro.refpromobile.http.handlers.MatchHandler;
 import com.elsys.refpro.refpromobile.models.Item;
 import com.elsys.refpro.refpromobile.services.DeleteService;
 import com.elsys.refpro.refpromobile.enums.DeviceType;
@@ -31,6 +33,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -50,10 +54,13 @@ public class MenuActivity extends Fragment {
     int matchId;
     LocalDatabase db;
 
+    @Inject
+    MatchHandler matchHandler;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-
+        ((DIApplication) this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
         final SharedPreferences preferences;
         preferences = getActivity().getSharedPreferences("RefPRO" , 0);
         menuView = inflater.inflate(R.layout.activity_menu, container, false);
@@ -75,6 +82,7 @@ public class MenuActivity extends Fragment {
         Cursor data = db.getData();
         final ArrayList<Item> match_info = new ArrayList<Item>();
         MatchItemAdapter mAdapter = new MatchItemAdapter(match_info, this.getActivity().getApplicationContext(),this.getActivity().getFragmentManager());
+        mAdapter.setMatchHandler(matchHandler);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());
         layout.setLayoutManager(mLayoutManager);
         layout.setAdapter(mAdapter);

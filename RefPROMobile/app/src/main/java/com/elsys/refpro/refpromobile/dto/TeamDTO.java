@@ -5,7 +5,7 @@ public class TeamDTO {
     private String name;
     private String abbreaviature;
     private String country;
-
+    private String id;
     public TeamDTO() {
 
     }
@@ -41,5 +41,13 @@ public class TeamDTO {
                 ", abbreaviature='" + abbreaviature + '\'' +
                 ", country='" + country + '\'' +
                 '}';
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

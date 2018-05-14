@@ -1,15 +1,19 @@
 package com.elsys.refpro.refpromobile.listeners;
 
 import android.support.constraint.ConstraintLayout;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.elsys.refpro.refpromobile.adapters.PlayerHeadAdapter;
 import com.elsys.refpro.refpromobile.dto.PlayerDTO;
+import com.elsys.refpro.refpromobile.dto.TeamDTO;
 
 public class PlayerHeadDragListener implements View.OnDragListener {
+
 
     @Override
     public boolean onDrag(View receiverView, DragEvent event) {
@@ -29,17 +33,29 @@ public class PlayerHeadDragListener implements View.OnDragListener {
                     GridView owner = (GridView) draggedView.getParent();
                     ConstraintLayout relativeLayoutTerrain = (ConstraintLayout) receiverView.getParent();
 
-                    int draggedOverIndex = relativeLayoutTerrain.indexOfChild(receiverView);
-
                     PlayerHeadAdapter adapter = (PlayerHeadAdapter) owner.getAdapter();
                     PlayerDTO assignedPlayer = ((PlayerHeadAdapter.PlayerHeadViewHolder) draggedView.getTag()).player;
-                    adapter.remove(assignedPlayer);
-                    adapter.notifyDataSetChanged();
+                    TeamDTO teamDTO = (TeamDTO) relativeLayoutTerrain.getTag();
 
+                    if(teamDTO==null && assignedPlayer==null ){
+                        Log.d(this.getClass().getName(),"TeamDto or AssignedPlayerDto is null");
+                        ((ImageView) event.getLocalState()).setVisibility(View.VISIBLE);
+                        return false;
+                    }
 
-                    receiverView.setTag(assignedPlayer);
-                    receiverViewImage.setImageDrawable(draggedView.getDrawable());
-                    relativeLayoutTerrain.refreshDrawableState();
+                    if(teamDTO.getId().equalsIgnoreCase(assignedPlayer.getTeamId())){
+                        adapter.remove(assignedPlayer);
+                        adapter.notifyDataSetChanged();
+                        receiverView.setTag(assignedPlayer);
+                        receiverViewImage.setImageDrawable(draggedView.getDrawable());
+                        relativeLayoutTerrain.refreshDrawableState();
+                    }else{
+                        Toast.makeText(receiverView.getContext(), "Can not assign player to the opposite team",
+                                Toast.LENGTH_SHORT).show();
+                        ((ImageView) event.getLocalState()).setVisibility(View.VISIBLE);
+                        return false;
+                    }
+
                 }
 
                 break;

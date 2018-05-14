@@ -32,10 +32,9 @@ public class RetrofitModule {
 
         return new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-               // .addInterceptor(httpLoggingInterceptor)
                 .connectTimeout(CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS)
-                .writeTimeout(WRITE_TIMEOUT_MS, TimeUnit.SECONDS)
-                .readTimeout(READ_TIMEOUT_MS, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+                .readTimeout(READ_TIMEOUT_MS, TimeUnit.MILLISECONDS)
                 .build();
     }
     @Provides

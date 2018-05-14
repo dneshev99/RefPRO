@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.bumptech.glide.request.target.ViewTarget;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.elsys.refpro.refpromobile.adapters.PlayerHeadAdapter;
 import com.elsys.refpro.refpromobile.adapters.PlayersAdapterAssigned;
 import com.elsys.refpro.refpromobile.application.DIApplication;
@@ -41,10 +40,13 @@ import com.elsys.refpro.refpromobile.dto.NotificationDTO;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -63,8 +65,7 @@ public class MatchInfoActivity extends Fragment {
     TextView competition, date, time, teams, player_title;
     EditText number, name;
     int match_id;
-    String homeTeam;
-    String awayTeam;
+    String homeTeamName,awayTeamName, mongoId;
     LocalDatabase db;
     List<PlayerDTO> homePlayers = new ArrayList<>();
     List<PlayerDTO> awayPlayers = new ArrayList<>();
@@ -138,30 +139,33 @@ public class MatchInfoActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         ((DIApplication) this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
-
+        ButterKnife.bind(this.getActivity());
         createView = inflater.inflate(R.layout.activity_info_v2, container, false);
 
 
         GridView playersDrawer = (GridView) createView.findViewById(R.id.right_drawer);
-
+        GridView playersDrawerAway = (GridView) createView.findViewById(R.id.right_drawer_away);
         awayTeamLayout = (ConstraintLayout) createView.findViewById(R.id.awayTeam);
         homeTeamLayout = (ConstraintLayout) createView.findViewById(R.id.homeTeam);
        // homeTeamLayout.setTag();
-
         int matchId = this.getArguments().getInt("matchId");
-        db = new LocalDatabase(this.getActivity());
-        final Cursor data = db.getRow(matchId);
+        getHomeAndAwayTeamNames(matchId);
 
-        data.moveToFirst();
+        matchHandler.getMatchInfoById(mongoId,homeTeamLayout,awayTeamLayout);
+
+
 //        //String mongoId=data.getString(10);
 //        private static final String COL4 = "home";
 //        private static final String COL5 = "away";
-        PlayerHeadAdapter adapter = new PlayerHeadAdapter(this.getActivity(), allPlayersForDrawer);
+        PlayerHeadAdapter adapter = new PlayerHeadAdapter(this.getActivity(), homePlayers);
         playersDrawer.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
-        playersHandler.setHomePlayersForDrawer(data.getString(3),adapter);
-        playersHandler.setHomePlayersForDrawer(data.getString(4),adapter);
+        PlayerHeadAdapter adapterAway = new PlayerHeadAdapter(this.getActivity(), awayPlayers);
+        playersDrawerAway.setAdapter(adapterAway);
+
+
+        playersHandler.setPlayersByTeamNameForAdapter(homeTeamName,adapter);
+        playersHandler.setPlayersByTeamNameForAdapter(awayTeamName,adapterAway);
 
 
 
@@ -170,56 +174,66 @@ public class MatchInfoActivity extends Fragment {
         setDragListenerToIcons(awayTeamLayout);
         setDragListenerToIcons(homeTeamLayout);
 
-
-        final ArrayList<PlayerDTO> assignedHomePlayers = new ArrayList<PlayerDTO>();
-        final ArrayList<PlayerDTO> assignedAwayPlayers = new ArrayList<PlayerDTO>();
-        final ArrayList<PlayerDTO> assignedHomeSubs = new ArrayList<PlayerDTO>();
-        final ArrayList<PlayerDTO> assignedAwaySubs = new ArrayList<PlayerDTO>();
-
-        FloatingActionButton b = (FloatingActionButton) createView.findViewById(R.id.button2);
-        b.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) createView.findViewById(R.id.button2);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int count = ((ConstraintLayout) createView.findViewById(R.id.awayTeam)).getChildCount();
-                for(int i=0;i<count;i++){
+                ArrayList<PlayerDTO> assignedHomePlayers = new ArrayList<PlayerDTO>();
+                ArrayList<PlayerDTO> assignedAwayPlayers = new ArrayList<PlayerDTO>();
+                ArrayList<PlayerDTO> assignedHomeSubs = new ArrayList<PlayerDTO>();
+                ArrayList<PlayerDTO> assignedAwaySubs = new ArrayList<PlayerDTO>();
 
-                    if (count < 11)
-                    {
-                        PlayerDTO playerDTO = (PlayerDTO) awayTeamLayout.getChildAt(i).getTag();
-                        assignedAwayPlayers.add(playerDTO);
-                        playerDTO = (PlayerDTO) homeTeamLayout.getChildAt(i).getTag();
-                        assignedAwayPlayers.add(playerDTO);
+                List<ConstraintLayout> layouts = new LinkedList<>();
+                layouts.add(awayTeamLayout);
+                layouts.add(homeTeamLayout);
+
+
+                for (int i = 0; i < awayTeamLayout.getChildCount(); i++) {
+                    PlayerHeadAdapter.PlayerHeadViewHolder tag = ((PlayerHeadAdapter.PlayerHeadViewHolder) awayTeamLayout.getChildAt(i).getTag());
+                    PlayerDTO dto = null;
+                    if (tag != null) {
+                        dto = tag.player;
                     }
-                    else
-                    {
-
+                    if (dto != null) {
+                        assignedAwayPlayers.add(dto);
                     }
                 }
 
+                for (int i = 0; i < homeTeamLayout.getChildCount(); i++) {
+                    PlayerHeadAdapter.PlayerHeadViewHolder tag = ((PlayerHeadAdapter.PlayerHeadViewHolder) homeTeamLayout.getChildAt(i).getTag());
+                    PlayerDTO dto = null;
+                    if (tag != null) {
+                        dto = tag.player;
+                    }
+                    if (dto != null) {
+                        assignedHomePlayers.add(dto);
+                    }
+                }
+
+
+
+
+                if(assignedHomePlayers.size()<11 || assignedAwayPlayers.size()<11){
+                    Toast.makeText(v.getContext(), "Missing team members",Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 
-        //playersHandler.setHomePlayersForDrawer("Team Gosho",playersDrawer);
         return createView;
     }
 
 
-    public  void getHomeAndAwayTeamNames(){
-        //GET current match ID and GET the information about match with it's unique key
-        SharedPreferences mPrefs = this.getActivity().getPreferences(MODE_PRIVATE);
-        match_id = mPrefs.getInt("matchId", 0);
 
+
+    public  void getHomeAndAwayTeamNames(int match_id){
         db = new LocalDatabase(this.getActivity());
         final Cursor data = db.getRow(match_id);
-
         data.moveToFirst();
-        data.moveToFirst();
+        homeTeamName =data.getString(3) ;
+        awayTeamName =data.getString(4);
+        mongoId = data.getString(10);
 
-        //competition.setText(data.getString(1));
-       // date.setText(data.getString(5));
-        //time.setText(data.getString(6));
-        homeTeam=data.getString(3) ;
-        awayTeam=data.getString(4);
 
     }
 
@@ -275,7 +289,7 @@ public class MatchInfoActivity extends Fragment {
         time.setText(data.getString(6));
         teams.setText("" + data.getString(3) + " vs. " + data.getString(4));
 
-       // playersHandler.setHomePlayersForDrawer(data.getString(3),homePlayersAdapter);
+       // playersHandler.setPlayersByTeamNameForAdapter(data.getString(3),homePlayersAdapter);
         //endregion
 
         number = (EditText) createView.findViewById(R.id.playerNumberForm);

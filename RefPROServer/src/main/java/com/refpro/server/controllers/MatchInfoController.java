@@ -77,10 +77,10 @@ public class MatchInfoController {
     }
 
     @RequestMapping(value = "/getMatchById",method = RequestMethod.GET)
-    public HttpEntity getMatchById(@RequestParam("id") String id) {
+    public HttpEntity getMatchById(@RequestParam("id") String id) throws InterruptedException {
         log.log(Level.INFO,"Passed");
         MatchInfoDTO result;
-
+        Thread.sleep(1*1000L);
         try {
             result = matchInfoHandler.getMatchById(id);
         } catch (MatchNotFoundException e) {

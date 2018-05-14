@@ -8,7 +8,7 @@ public class TeamDto {
     private String name;
     private String abbreaviature;
     private String country;
-
+    private String id;
 
     private PlayerDTO coach;
 
@@ -16,6 +16,7 @@ public class TeamDto {
         this.name=team.getName();
         this.abbreaviature=team.getAbbreaviature();
         this.country=team.getCountry();
+        this.id = team.getId();
     }
 
     public TeamDto(){}
@@ -50,5 +51,13 @@ public class TeamDto {
 
     public void setCoach(PlayerDTO coach) {
         this.coach = coach;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 public class PlayerDTO {
 
     private String team;
-
     @NotNull(message = "First name must not be null")
     private String firstName;
     @NotNull(message = "Last name must not be null")
@@ -21,6 +20,7 @@ public class PlayerDTO {
     private String shirtName;
     private String pictureId;
     private String playerId;
+    private String teamId;
 
     public PlayerDTO(){}
 
@@ -33,6 +33,7 @@ public class PlayerDTO {
         this.shirtName = player.getShirtName();
         this.pictureId = player.getPictureId();
         this.playerId = player.getId();
+        this.teamId = player.getTeam().getId();
     }
 
     public String getTeam() {
@@ -97,6 +98,14 @@ public class PlayerDTO {
 
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
     }
 
     @Override

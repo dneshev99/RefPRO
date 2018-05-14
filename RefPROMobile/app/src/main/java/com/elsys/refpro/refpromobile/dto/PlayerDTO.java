@@ -11,6 +11,7 @@ public class PlayerDTO {
     private String birthday;
     private String pictureId;
     private String playerId;
+    private String teamId;
     public PlayerDTO(){}
 
     public PlayerDTO(int shirtNumber, String shirtName) {
@@ -72,6 +73,14 @@ public class PlayerDTO {
 
     public void setPictureId(String pictureId) {
         this.pictureId = pictureId;
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
     }
 
     @Override

@@ -49,19 +49,24 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
     public View getView(int position, View convertView, ViewGroup parent) {
         PlayerHeadViewHolder holder=null;
         ImageView imageView;
-        TextView playerHeadText;
-        if(convertView==null || 1==1){
+        View resultView=null;
+        if(convertView==null ){
             holder=new PlayerHeadViewHolder();
-            View v=convertView.inflate(mContext,R.layout.player_head,null);
-            imageView = (ImageView) v.findViewById(R.id.head);
+            resultView=convertView.inflate(mContext,R.layout.player_head,null);
+            imageView = (ImageView) resultView.findViewById(R.id.head);
             holder.imageView= (ImageView) imageView.findViewById(R.id.head);
-            holder.playerHeadText = (TextView) v.findViewById(R.id.playerHeadText);
+            holder.playerHeadText = (TextView) resultView.findViewById(R.id.playerHeadText);
             convertView=imageView;
             convertView.setTag(holder);
         }else{
             imageView= (ImageView) convertView;
             holder= (PlayerHeadViewHolder) convertView.getTag();
+            resultView = convertView;
+            if(imageView.getVisibility()==View.INVISIBLE){
+                imageView .setVisibility(View.VISIBLE);
+            }
         }
+
 
 
         int width = 80;
@@ -71,7 +76,7 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
 //        imageView.setLayoutParams(parms);
 //        imageView.getLayoutParams().height=160;
 //        imageView.getLayoutParams().height=160;
-        View v =convertView.inflate(mContext,R.layout.player_head,null);
+
         holder.player=players.get(position);
         if(holder.player.getPlayerId()!=null){
             File directory = mContext.getFilesDir();
@@ -81,7 +86,6 @@ public class PlayerHeadAdapter extends ArrayAdapter<PlayerDTO> {
                 options.override(100,100);
                 options.circleCrop();
                 Glide.with(mContext).applyDefaultRequestOptions(options).load(file.getAbsolutePath()).into(imageView);
-
             }
 
         }
