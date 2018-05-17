@@ -43,6 +43,8 @@
     <string name="away_players">Away players</string>
     <string name="home_subs">Home substitutes</string>
     <string name="away_subs">Away substitutes</string>
+    <string name="home_team">Home</string>
+    <string name="away_team">Away</string>
 
     <string name="players_name_form">Number/Name (10.Harry Kane) </string>
 

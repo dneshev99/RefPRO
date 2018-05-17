@@ -42,6 +42,8 @@
     <string name="away_players">Гост(играчи)</string>
     <string name="home_subs">Домакин(резерви)</string>
     <string name="away_subs">Гост(резерви)</string>
+    <string name="home_team">Домакин</string>
+    <string name="away_team">Гост</string>
 
     <string name="players_number">Номер(10) </string>
     <string name="players_name_form">Име(Ивелин Попов) </string>

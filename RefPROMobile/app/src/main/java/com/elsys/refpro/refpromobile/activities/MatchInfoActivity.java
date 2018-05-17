@@ -194,8 +194,11 @@ public class MatchInfoActivity extends Fragment {
                     if (tag != null) {
                         dto = tag.player;
                     }
-                    if (dto != null) {
+                    if (dto != null && i < 11) {
                         assignedAwayPlayers.add(dto);
+                    }
+                    else {
+                        assignedAwaySubs.add(dto);
                     }
                 }
 
@@ -205,17 +208,17 @@ public class MatchInfoActivity extends Fragment {
                     if (tag != null) {
                         dto = tag.player;
                     }
-                    if (dto != null) {
+                    if (dto != null  && i < 11) {
                         assignedHomePlayers.add(dto);
+                    }
+                    else {
+                        assignedHomeSubs.add(dto);
                     }
                 }
 
+                if(assignedHomePlayers.size()<11 || assignedAwayPlayers.size()<11 || assignedHomeSubs.size()<7 || assignedAwaySubs.size()<7){
 
-
-
-                if(assignedHomePlayers.size()<11 || assignedAwayPlayers.size()<11){
                     Toast.makeText(v.getContext(), "Missing team members",Toast.LENGTH_SHORT).show();
-
                 }
             }
         });
@@ -224,17 +227,14 @@ public class MatchInfoActivity extends Fragment {
     }
 
 
-
-
     public  void getHomeAndAwayTeamNames(int match_id){
+
         db = new LocalDatabase(this.getActivity());
         final Cursor data = db.getRow(match_id);
         data.moveToFirst();
         homeTeamName =data.getString(3) ;
         awayTeamName =data.getString(4);
         mongoId = data.getString(10);
-
-
     }
 
     @Nullable

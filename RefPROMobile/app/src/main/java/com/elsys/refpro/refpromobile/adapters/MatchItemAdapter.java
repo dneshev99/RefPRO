@@ -64,9 +64,9 @@ public class MatchItemAdapter extends RecyclerView.Adapter<MatchItemAdapter.Matc
         holder.matchInfoDbId = matchData.getDbId();
         holder.matchInfoMongoId = matchData.getMongoId();
         holder.homeTeamName.setText(matchData.getHome());
-        holder.date.setText(matchData.getDate());
-        holder.time.setText(matchData.getTime());
-        holder.venue.setText(matchData.getVenue());
+        holder.date.setText(" Date: " + matchData.getDate());
+        holder.time.setText(" Time: " + matchData.getTime());
+        holder.venue.setText(" Venue: " + matchData.getVenue());
     }
 
     @Override

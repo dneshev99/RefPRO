@@ -3,8 +3,8 @@ package com.elsys.refpro.refpromobile.http;
 
 public class HttpDetails {
 
-    public static final String httpAddress="10.19.9.30";
-    public static final String httpPort="8082";
+    public static final String httpAddress="api2.tues.dreamix.eu";
+    public static final String httpPort="80";
     public static final String protocolType="http";
     public static final long CONNECT_TIMEOUT_MS=10*1000L;
     public static final long WRITE_TIMEOUT_MS=10*1000L;

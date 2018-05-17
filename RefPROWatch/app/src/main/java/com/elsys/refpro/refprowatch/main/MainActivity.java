@@ -46,8 +46,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends WearableActivity implements View.OnClickListener {
 
-    Team homeTeam = new Team(true, "FC Barcelona", "BAR", new ArrayList<Player>(), new ArrayList<Player>());
-    Team awayTeam = new Team(false, "Real Madrid CF", "RMA", new ArrayList<Player>(), new ArrayList<Player>());
+    Team homeTeam;
+    Team awayTeam;
 
     Match match = new Match("La liga", "Camp nou", "19:45", "2018-01-25", 45, 11, 7, homeTeam, awayTeam);
 
@@ -125,7 +125,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 + "\n" + match.getTime() + "\n" + match.getHome().getName() + " vs. " + match.getAway().getName() + "\n\n", true);
     }
 
-    private void getMatchInformation(final String jwtToken, final String id,final DeviceType deviceType){
+    private void getMatchInformation(final String jwtToken, final String id, final DeviceType deviceType){
 
        final OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -140,7 +140,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         }).build();
 
        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.19.9.30:8082")
+                .baseUrl("http://api2.tues.dreamix.eu:80")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -152,7 +152,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 if (response.isSuccessful()) {
 
-
+                    //MatchInfoDTO body = response.getClass();
                 }
             }
 
@@ -469,7 +469,6 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 Toast.makeText(this, getResources().getString(R.string.matchStartedText),
                         Toast.LENGTH_SHORT).show();
                 events = newEvent.addEvent(clock.getText().toString(), "", "",  " - " +  "MATCH STARTED", true);
-                newEvent.addState(true, events);
                 break;
 
             case R.id.teamLayoutBackButton:
@@ -519,7 +518,6 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     match.setHalf(3);
                     match.setStarted(false);
                     events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.TERMINATED, true);
-                    newEvent.addState(false, events);
                     Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.matchTerminatedText),
                             Toast.LENGTH_SHORT).show();
                 }
@@ -669,7 +667,6 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
             match.setStarted(false);
             events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.FULLTIME, true);
-            newEvent.addState(false, events);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.fullTimeText),
                     Toast.LENGTH_SHORT).show();
 

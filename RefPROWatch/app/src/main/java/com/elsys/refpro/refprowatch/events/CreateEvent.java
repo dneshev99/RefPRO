@@ -1,6 +1,7 @@
 package com.elsys.refpro.refprowatch.events;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import com.elsys.refpro.refprowatch.http.EventService;
@@ -26,6 +27,7 @@ public class CreateEvent {
     private ArrayList<MatchEventDTO> events = new ArrayList<>();
     private String id;
     Context context;
+    SharedPreferences preferences = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
 
     public CreateEvent(String id, Context context) {
 
@@ -52,16 +54,15 @@ public class CreateEvent {
 
         events.add(newEvent);
 
-        //if (events.size() != 1)
-        //    sendEvent(newEvent);
+        if (events.size() != 1)
+            sendEvent(newEvent);
 
         return events;
     }
 
     private void sendEvent(MatchEventDTO newEvent) {
 
-        //final String token = preferences.getString("token","N/A");
-        final String token = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTUxNDM4NDIyMX0";
+        final String token = preferences.getString("token","N/A");
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -77,7 +78,7 @@ public class CreateEvent {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl("http://api2.tues.dreamix.eu:80")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -93,7 +94,7 @@ public class CreateEvent {
                             Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(context, "NZ MA NE RABOTI",
+                    Toast.makeText(context, "FAILURE-EVENT",
                             Toast.LENGTH_SHORT).show();
                     android.util.Log.d("Error:", response.toString());
                 }
@@ -103,66 +104,6 @@ public class CreateEvent {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
                 Toast.makeText(context, "FAILURE-EVENT",
-                        Toast.LENGTH_SHORT).show();
-                android.util.Log.d("Error:",t.getMessage());
-            }
-        });
-    }
-
-
-    public void addState(boolean isActive, ArrayList<MatchEventDTO> log) {
-
-        MatchStateDTO newEvent;
-
-        newEvent = new MatchStateDTO(id, isActive, log);
-        sendState(newEvent);
-    }
-
-    private void sendState(MatchStateDTO newEvent) {
-
-        //final String token = preferences.getString("token","N/A");
-        final String token = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTUxNDM4NDIyMX0";
-
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
-                        .addHeader("Authorization", token)
-                        .build();
-                android.util.Log.i("HERE:", newRequest.toString());
-                android.util.Log.i("HERE:", newRequest.header("Authorization"));
-                return chain.proceed(newRequest);
-            }
-        }).build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .client(client)
-                .baseUrl("http://10.0.2.2:8080")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-
-        StateService service = retrofit.create(StateService.class);
-
-        service.send(newEvent).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                if (response.isSuccessful()) {
-                    Toast.makeText(context, "SUCCESS",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(context, "NZ MA NE RABOTI",
-                            Toast.LENGTH_SHORT).show();
-                    android.util.Log.d("Error:", response.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                Toast.makeText(context, "FAILURE-STATE",
                         Toast.LENGTH_SHORT).show();
                 android.util.Log.d("Error:",t.getMessage());
             }
