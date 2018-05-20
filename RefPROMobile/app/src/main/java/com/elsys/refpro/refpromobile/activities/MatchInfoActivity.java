@@ -189,36 +189,43 @@ public class MatchInfoActivity extends Fragment {
 
 
                 for (int i = 0; i < awayTeamLayout.getChildCount(); i++) {
-                    PlayerHeadAdapter.PlayerHeadViewHolder tag = ((PlayerHeadAdapter.PlayerHeadViewHolder) awayTeamLayout.getChildAt(i).getTag());
-                    PlayerDTO dto = null;
-                    if (tag != null) {
-                        dto = tag.player;
-                    }
+                    PlayerDTO dto = (PlayerDTO) awayTeamLayout.getChildAt(i).getTag();
+
                     if (dto != null && i < 11) {
                         assignedAwayPlayers.add(dto);
                     }
-                    else {
+                    else if( dto!=null && i>=11){
                         assignedAwaySubs.add(dto);
                     }
                 }
 
                 for (int i = 0; i < homeTeamLayout.getChildCount(); i++) {
-                    PlayerHeadAdapter.PlayerHeadViewHolder tag = ((PlayerHeadAdapter.PlayerHeadViewHolder) homeTeamLayout.getChildAt(i).getTag());
-                    PlayerDTO dto = null;
-                    if (tag != null) {
-                        dto = tag.player;
+                    PlayerDTO dto = (PlayerDTO) homeTeamLayout.getChildAt(i).getTag();
+                    if (dto == null) {
+                       //TODO
+                        continue;
                     }
-                    if (dto != null  && i < 11) {
+                    if ( i < 11) {
                         assignedHomePlayers.add(dto);
                     }
-                    else {
+                    else if( dto!=null && i>=11){
                         assignedHomeSubs.add(dto);
                     }
                 }
 
-                if(assignedHomePlayers.size()<11 || assignedAwayPlayers.size()<11 || assignedHomeSubs.size()<7 || assignedAwaySubs.size()<7){
-
+                MatchUpdateDTO matchInfoUpdateDto = new MatchUpdateDTO();
+                matchInfoUpdateDto.setMatchId(mongoId);
+                matchInfoUpdateDto.setPlayersAway(assignedAwayPlayers);
+                matchInfoUpdateDto.setPlayersHome(assignedHomePlayers);
+                matchInfoUpdateDto.setSubsAway(assignedAwaySubs);
+                matchInfoUpdateDto.setSubsHome(assignedHomeSubs);
+                matchHandler.updateMatchInfoById(mongoId,matchInfoUpdateDto);
+                //|| assignedHomeSubs.size()<7 || assignedAwaySubs.size()<7
+                if(1==1 || assignedHomePlayers.size()<=11 || assignedAwayPlayers.size()<=11 ){
                     Toast.makeText(v.getContext(), "Missing team members",Toast.LENGTH_SHORT).show();
+
+                }else{
+
                 }
             }
         });

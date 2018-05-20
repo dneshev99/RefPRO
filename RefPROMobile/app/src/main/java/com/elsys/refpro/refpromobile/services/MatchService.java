@@ -1,6 +1,7 @@
 package com.elsys.refpro.refpromobile.services;
 
 import com.elsys.refpro.refpromobile.dto.MatchInfoDTO;
+import com.elsys.refpro.refpromobile.dto.MatchUpdateDTO;
 import com.elsys.refpro.refpromobile.dto.NewMatchInfoDTO;
 
 import java.util.List;
@@ -14,9 +15,14 @@ import retrofit2.http.Query;
 
 public interface MatchService {
 
-    @POST("/matchInfo/create")
+    String MATCH_INFO_ENDPOINT = "matchInfo";
+
+    @POST("/"+MATCH_INFO_ENDPOINT+"/create")
     Call<ResponseBody> create(@Body NewMatchInfoDTO body);
 
-    @GET("/matchInfo/getMatchById")
+    @GET("/"+MATCH_INFO_ENDPOINT+"/getMatchById")
     Call<MatchInfoDTO> getMatchById(@Query("id") String id);
+
+    @POST("/"+MATCH_INFO_ENDPOINT+"/update")
+    Call<ResponseBody> updateMatchInfo(@Body MatchUpdateDTO dto);
 }

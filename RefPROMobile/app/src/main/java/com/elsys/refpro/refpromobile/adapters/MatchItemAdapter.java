@@ -49,6 +49,11 @@ public class MatchItemAdapter extends RecyclerView.Adapter<MatchItemAdapter.Matc
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
     public MatchItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
        View matchRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.match_row,parent,false);
        matchRow.setOnClickListener(new MatchItemOnClick());

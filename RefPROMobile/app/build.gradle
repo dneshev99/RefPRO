@@ -54,6 +54,7 @@ dependencies {
     }
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    compile "com.android.support:cardview-v7:$support"
 }
 
 apply plugin: 'com.google.gms.google-services'
