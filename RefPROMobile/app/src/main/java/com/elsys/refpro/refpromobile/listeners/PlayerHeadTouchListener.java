@@ -4,6 +4,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.elsys.refpro.refpromobile.R;
+
 public final class PlayerHeadTouchListener implements View.OnTouchListener {
 
     @Override
@@ -13,7 +15,8 @@ public final class PlayerHeadTouchListener implements View.OnTouchListener {
                     v);
             v.startDrag(null, shadowBuilder, v, 0);
             v.setVisibility(View.INVISIBLE);
-            DrawerLayout drawer = (DrawerLayout) v.getParent().getParent().getParent();
+            DrawerLayout drawer = (DrawerLayout) v.getParent().getParent().getParent().getParent();
+
             drawer.closeDrawers();
 
             return true;
