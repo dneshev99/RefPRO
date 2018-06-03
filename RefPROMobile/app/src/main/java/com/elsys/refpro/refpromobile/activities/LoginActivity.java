@@ -22,12 +22,14 @@ import com.elsys.refpro.refpromobile.http.RetrofitHookBack;
 import com.elsys.refpro.refpromobile.http.handlers.LoginHandler;
 import com.elsys.refpro.refpromobile.services.UserService;
 import com.elsys.refpro.refpromobile.dto.UserDTO;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Date;
 
 import javax.inject.Inject;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
@@ -44,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     Button signButton;
     ProgressBar loading;
     private final String TOKEN_PREFIX = "Bearer";
+    private static final String LOG_TAG = LoginActivity.class.getName();
 
     @Inject
     SharedPreferences preferences;
@@ -53,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG,"Mobile token: "+ FirebaseInstanceId.getInstance().getToken());
         ViewTarget.setTagId(R.id.glide_tag);
 
         super.onCreate(savedInstanceState);
@@ -119,23 +123,28 @@ public class LoginActivity extends AppCompatActivity {
 
     private void skipLoginIfTokenExists() {
 
-        String userJwtToken = preferences.getString("token", "N/A");
-        if(!"N/A".equals(userJwtToken)) {
-            userJwtToken=userJwtToken.replace(TOKEN_PREFIX,"");
-            int indexOfLastDot = userJwtToken.lastIndexOf('.');
-            String withoutSignature = userJwtToken.substring(0, indexOfLastDot+1);
-            Jwt<Header,Claims> untrusted = Jwts.parser().parseClaimsJwt(withoutSignature);
-            Claims tokenBody = untrusted.getBody();
-            String userName = tokenBody.getSubject();
-            boolean isTokenValid = tokenBody.getExpiration().after(new Date(System.currentTimeMillis()));
-            Log.d("token", isTokenValid + "");
-            Log.d("token", userName);
-            if(isTokenValid) {
-                Intent app = new Intent(getApplicationContext(), MainActivity.class);
-                app.putExtra("Username", userName);
-                startActivity(app);
+        try{
+            String userJwtToken = preferences.getString("token", "N/A");
+            if(!"N/A".equals(userJwtToken)) {
+                userJwtToken=userJwtToken.replace(TOKEN_PREFIX,"");
+                int indexOfLastDot = userJwtToken.lastIndexOf('.');
+                String withoutSignature = userJwtToken.substring(0, indexOfLastDot+1);
+                Jwt<Header,Claims> untrusted = Jwts.parser().parseClaimsJwt(withoutSignature);
+                Claims tokenBody = untrusted.getBody();
+                String userName = tokenBody.getSubject();
+                boolean isTokenValid = tokenBody.getExpiration().after(new Date(System.currentTimeMillis()));
+                Log.d("token", isTokenValid + "");
+                Log.d("token", userName);
+                if(isTokenValid) {
+                    Intent app = new Intent(getApplicationContext(), MainActivity.class);
+                    app.putExtra("Username", userName);
+                    startActivity(app);
+                }
             }
+        }catch (ExpiredJwtException e){
+            Log.d(LOG_TAG,"Jwt token has expired");
         }
+
     }
 }
 

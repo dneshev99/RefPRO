@@ -8,6 +8,8 @@ import com.google.firebase.messaging.RemoteMessage;
 
 
 public class MessagingService extends FirebaseMessagingService {
+
+    private static final String LOG_TAG = MessagingService.class.getName();
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d("Message id",remoteMessage.getMessageId());
@@ -18,7 +20,7 @@ public class MessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d("FBase", "Message data payload: " + remoteMessage.getData());
-            Toast.makeText(getBaseContext(), "FCM message: " + remoteMessage.getData(), Toast.LENGTH_LONG).show();
+            Log.d( LOG_TAG,"FCM message: " + remoteMessage.getData());
 //
 //            if (/* Check if data needs to be processed by long running job */ true) {
 //                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.

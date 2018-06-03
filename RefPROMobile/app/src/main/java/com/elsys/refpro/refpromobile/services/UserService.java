@@ -6,6 +6,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 public interface UserService {
@@ -14,7 +15,7 @@ public interface UserService {
     Call<ResponseBody> login(@Body UserDTO body);
 
     @POST("/user/updateUserToken")
-    Call<Void> addFcmTokenForUser(@Body String token);
+    Call<Void> addFcmTokenForUser(@Header("DeviceType") String deviceType,@Body String token);
 
     @GET("/user/getTokensForUser")
     Call<UserDTO> getFcmTokenForUser();

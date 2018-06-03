@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -74,8 +75,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         setAmbientEnabled();
 
-        SharedPreferences clear = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        clear.edit().clear().apply();               // CLEARS all information about yellow and red cards4
+
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         id = preferences.getString("matchId", "N/A");
         String token = getIntent().getExtras().getString("token");
@@ -105,6 +105,9 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         newEvent = new CreateEvent(id, getApplicationContext());
         events = newEvent.addEvent("", "", "", match.getCompetition() + "\n" + match.getVenue() + "\n" + match.getDate()
                 + "\n" + match.getTime() + "\n" + match.getHome().getName() + " vs. " + match.getAway().getName() + "\n\n", true);
+
+        SharedPreferences clear = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        clear.edit().clear().apply();               // CLEARS all information about yellow and red cards4
     }
 
     private void getMatchInformation(final String jwtToken, final String id, final DeviceType deviceType){
@@ -131,15 +134,16 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         service.getMatchInformation(id).enqueue(new Callback<MatchInfoDTO>() {
             @Override
             public void onResponse(Call<MatchInfoDTO> call, Response<MatchInfoDTO> response) {
-
+                Log.d("dd",""+response.code());
                 if (response.isSuccessful()) {
 
                     MatchInfoDTO body = response.body();
-                    homeTeam.setPlayers(body.getHomePlayers());
-                    homeTeam.setSubstitutes(body.getSubsHome());
-                    awayTeam.setPlayers(body.getAwayPlayers());
-                    awayTeam.setSubstitutes(body.getSubsAway());
-                    match = new Match(body.getCompetition(), body.getVenue(), body.getTime(), body.getDate(), body.getLength(), 11, 7, body.getHome(), body.getAway());
+                    homeTeam.setPlayersFromDto(body.getHomePlayers());
+                    homeTeam.setSubstitutesFromDto(body.getSubsHome());
+                    awayTeam.setPlayersFromDto(body.getAwayPlayers());
+                    awayTeam.setSubstitutesFromDto(body.getSubsAway());
+                    match = new Match(body.getCompetition(), body.getVenue(), body.getTime(), body.getDate(), body.getLength(), 11, 7, homeTeam, awayTeam);
+
                 }
                 else {
 
@@ -149,7 +153,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
             @Override
             public void onFailure(Call<MatchInfoDTO> call, Throwable t) {
-
+                Log.e("dd","",t);
                 match = new Match("Default competition", "Default venue", "00:00", "2000-01-01", 45, 11, 7, homeTeam, awayTeam);
             }
         });

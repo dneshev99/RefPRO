@@ -1,6 +1,8 @@
 package com.elsys.refpro.refprowatch.models;
 
 
+import com.elsys.refpro.refprowatch.http.dto.PlayerDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +78,11 @@ public class Team {
     public void setPlayers(List<Player> players) {
         this.players = players;
     }
+    public void setPlayersFromDto(List<PlayerDTO> dtos) {
+       for(PlayerDTO each : dtos){
+           this.players.add(new Player(each));
+       }
+    }
 
     public List<Player> getSubstitutes() {
         return substitutes;
@@ -83,6 +90,12 @@ public class Team {
 
     public void setSubstitutes(List<Player> substitutes) {
         this.substitutes = substitutes;
+    }
+
+    public void setSubstitutesFromDto(List<PlayerDTO> dtos) {
+        for(PlayerDTO each : dtos){
+            this.substitutes.add(new Player(each));
+        }
     }
 
     public void addGoal() {

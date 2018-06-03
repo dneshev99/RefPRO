@@ -1,5 +1,7 @@
 package com.elsys.refpro.refprowatch.models;
 
+import com.elsys.refpro.refprowatch.http.dto.PlayerDTO;
+
 public class Player {
 
     private int number;
@@ -9,6 +11,11 @@ public class Player {
     private int redCards;
     private int goals;
     private int minutesPlayed;
+
+    public Player(PlayerDTO dto){
+        this.number = dto.getShirtNumber();
+        this.name = dto.getShirtName();
+    }
 
     public Player(int number, String name) {
 

@@ -39,20 +39,10 @@ public class MenuHandler {
 
     public void addTokenForUser(final String jwtToken, final String fcmToken, final DeviceType deviceType) {
 
-        final OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
-                        .addHeader("Authorization", jwtToken)
-                        .addHeader("DeviceType", deviceType.toString())
-                        .build();
 
-                return chain.proceed(newRequest);
-            }
-        }).build();
 
         UserService service = retrofit.create(UserService.class);
-        service.addFcmTokenForUser(fcmToken).enqueue(new Callback<Void>() {
+        service.addFcmTokenForUser(DeviceType.MOBILE.toString(),fcmToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
 

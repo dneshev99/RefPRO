@@ -106,10 +106,6 @@ public class MenuActivity extends Fragment {
     }
 
     private void updateCurrentUserFcmToken(final String jwtToken,final String fcmToken,final DeviceType deviceType){
-
-        final SharedPreferences preferences;
-        preferences = getActivity().getSharedPreferences("RefPRO" , 0);
-
         menuHandler.addTokenForUser(jwtToken, fcmToken, deviceType);
     }
 }

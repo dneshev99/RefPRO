@@ -48,8 +48,8 @@ public class MessagingService extends FirebaseMessagingService {
         SharedPreferences preferences;
         preferences = getSharedPreferences("MyPref" , 0);
         SharedPreferences.Editor prefsEditor = preferences.edit();
-        prefsEditor.putString("matchId", String.valueOf(matchId.get(0)));
-
+        prefsEditor.putString("matchId", matchId.get("matchId"));
+        prefsEditor.apply();
 
         Log.d("MEssage",remoteMessage.getMessageId());
         Log.d("Message data",remoteMessage.getData().toString());
