@@ -3,16 +3,22 @@ package com.refpro.server.DBhandlers;
 import com.refpro.server.DTOs.*;
 import com.refpro.server.exception.InvalidInputException;
 import com.refpro.server.exception.MatchNotFoundException;
+import com.refpro.server.firebase.FirebaseClient;
 import com.refpro.server.models.*;
 import com.refpro.server.repositories.MatchInfoRepository;
 import com.refpro.server.repositories.PlayerRepository;
 import com.refpro.server.repositories.TeamRepository;
+import com.refpro.server.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class MatchInfoHandler implements MatchInfoService {
@@ -27,6 +33,12 @@ public class MatchInfoHandler implements MatchInfoService {
 
     @Autowired
     private PlayerHandler playerHandler;
+
+    @Autowired
+    private FirebaseClient firebaseClient;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MatchInfoHandler.class.getName());
     @Override
@@ -80,6 +92,16 @@ public class MatchInfoHandler implements MatchInfoService {
             entryToUpdate.setSubsAway(awaySubs);
 
             matchInfoRepository.save(entryToUpdate);
+
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+
+            User user = userRepository.getUserByUsername(username);
+            Map<String, String> data = new HashMap<>();
+            data.put("matchId",matchUpdateDTO.getMatchId());
+
+
+            firebaseClient.sendMessageToSingleDevice(user.getWatchFCMtoken(),data);
     }
 
     @Override
