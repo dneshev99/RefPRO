@@ -46,8 +46,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends WearableActivity implements View.OnClickListener {
 
-    Team homeTeam;
-    Team awayTeam;
+    Team homeTeam = new Team(true, "HomeTeam", "HTM");
+    Team awayTeam = new Team(false, "AwayTeam", "ATM");
 
     Match match = new Match("La liga", "Camp nou", "19:45", "2018-01-25", 45, 11, 7, homeTeam, awayTeam);
 
@@ -78,28 +78,10 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         clear.edit().clear().apply();               // CLEARS all information about yellow and red cards4
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         id = preferences.getString("matchId", "N/A");
+        String token = getIntent().getExtras().getString("token");
 
-        ArrayList<Player> homePlayer = new ArrayList<>();
-        ArrayList<Player> awayPlayer = new ArrayList<>();
-        ArrayList<Player> homeSubstitutes = new ArrayList<>();
-        ArrayList<Player> awaySubstitutes = new ArrayList<>();
 
-        for (int count = 0; count < 11; count++) {
-            Player defaultPlayer = new Player(1, "Alexander Verbovskiy" + count);
-            homePlayer.add(defaultPlayer);
-            Player defaultPlayer2 = new Player(2, "Dimitur Neshev" + count);
-            awayPlayer.add(defaultPlayer2);
-        }
-        for (int count = 0; count < 7; count++) {
-            Player defaultPlayer = new Player(3, "Valentin Varbanov" + count);
-            homeSubstitutes.add(defaultPlayer);
-            Player defaultPlayer2 = new Player(4, "Chikata" + count);
-            awaySubstitutes.add(defaultPlayer2);
-        }
-        match.getHome().setPlayers(homePlayer);
-        match.getHome().setSubstitutes(homeSubstitutes);
-        match.getAway().setPlayers(awayPlayer);
-        match.getAway().setSubstitutes(awaySubstitutes);
+        getMatchInformation(token, id, DeviceType.WEAR);
 
         initialize(); // Initialization of all TextViews, Buttons, Layout variables
 
@@ -146,19 +128,29 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 .build();
 
         UserService service = retrofit.create(UserService.class);
-        service.getMatchInformation(id).enqueue(new Callback<ResponseBody>() {
+        service.getMatchInformation(id).enqueue(new Callback<MatchInfoDTO>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<MatchInfoDTO> call, Response<MatchInfoDTO> response) {
 
                 if (response.isSuccessful()) {
 
-                    //MatchInfoDTO body = response.getClass();
+                    MatchInfoDTO body = response.body();
+                    homeTeam.setPlayers(body.getHomePlayers());
+                    homeTeam.setSubstitutes(body.getSubsHome());
+                    awayTeam.setPlayers(body.getAwayPlayers());
+                    awayTeam.setSubstitutes(body.getSubsAway());
+                    match = new Match(body.getCompetition(), body.getVenue(), body.getTime(), body.getDate(), body.getLength(), 11, 7, body.getHome(), body.getAway());
+                }
+                else {
+
+                    match = new Match("Default competition", "Default venue", "00:00", "2000-01-01", 45, 11, 7, homeTeam, awayTeam);
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<MatchInfoDTO> call, Throwable t) {
 
+                match = new Match("Default competition", "Default venue", "00:00", "2000-01-01", 45, 11, 7, homeTeam, awayTeam);
             }
         });
     }

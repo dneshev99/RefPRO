@@ -29,7 +29,7 @@ public class RetrofitJwtInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         this.jwtToken=sharedPreferences.getString("token", "N/A");
         Log.d("Interceptor",jwtToken);
-        Request newRequest = chain.request().newBuilder().addHeader("Authorization", jwtToken).build();
+        Request newRequest = chain.request().newBuilder().addHeader("Authorization", jwtToken).addHeader("DeviceType", "WEAR").build();
         return chain.proceed(newRequest);
     }
 }

@@ -75,7 +75,7 @@ public class Login extends WearableActivity {
                 } else {
 
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://10.19.9.30:8082")
+                            .baseUrl("http://api2.tues.dreamix.eu:80")
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
@@ -100,8 +100,7 @@ public class Login extends WearableActivity {
                                 updateCurrentUserFcmToken(jwtToken,fcmToken, DeviceType.WEAR);
 
                                 Intent app = new Intent(getApplicationContext(), MainActivity.class);
-                                app.putExtra("Username", userString);
-                                app.putExtra("Password", passString);
+                                app.putExtra("token", jwtToken);
                                 startActivity(app);
                             }
                             else {
@@ -145,7 +144,7 @@ public class Login extends WearableActivity {
         }).build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.19.9.30:8082")
+                .baseUrl("http://api2.tues.dreamix.eu:80")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

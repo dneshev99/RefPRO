@@ -1,5 +1,6 @@
 package com.elsys.refpro.refprowatch.http;
 
+import com.elsys.refpro.refprowatch.http.dto.MatchInfoDTO;
 import com.elsys.refpro.refprowatch.models.Match;
 
 import okhttp3.ResponseBody;
@@ -15,5 +16,5 @@ public interface UserService {
     Call<Void> addFcmTokenForUser(@Body String token);
 
     @GET("/MatchInfo/{id}")
-    Call<ResponseBody> getMatchInformation(@Path("id") String id);
+    Call<MatchInfoDTO> getMatchInformation(@Path("id") String id);
 }

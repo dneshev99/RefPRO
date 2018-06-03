@@ -23,8 +23,6 @@ import static com.elsys.refpro.refpromobile.http.HttpDetails.WRITE_TIMEOUT_MS;
 @Module
 public class RetrofitModule {
 
-
-
     //we create modules, because we have no control over okHttpClient constructor for example, but we need an instance
     @Provides
     @Singleton

@@ -3,6 +3,7 @@ package com.elsys.refpro.refprowatch.http.dto;
 import com.elsys.refpro.refprowatch.models.Player;
 import com.elsys.refpro.refprowatch.models.Team;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MatchInfoDTO {

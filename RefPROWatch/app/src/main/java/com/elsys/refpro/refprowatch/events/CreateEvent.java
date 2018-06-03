@@ -27,12 +27,13 @@ public class CreateEvent {
     private ArrayList<MatchEventDTO> events = new ArrayList<>();
     private String id;
     Context context;
-    SharedPreferences preferences = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+    SharedPreferences preferences;
 
     public CreateEvent(String id, Context context) {
 
         this.id = id;
         this.context = context;
+        preferences = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
     }
 
     public CreateEvent() {

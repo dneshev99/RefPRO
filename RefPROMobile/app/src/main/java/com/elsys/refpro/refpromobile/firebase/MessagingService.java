@@ -18,7 +18,7 @@ public class MessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d("FBase", "Message data payload: " + remoteMessage.getData());
-            Toast.makeText(getBaseContext(), "FCM message: "+remoteMessage.getData(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "FCM message: " + remoteMessage.getData(), Toast.LENGTH_LONG).show();
 //
 //            if (/* Check if data needs to be processed by long running job */ true) {
 //                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.

@@ -21,7 +21,9 @@ import com.elsys.refpro.refpromobile.R;
 import com.elsys.refpro.refpromobile.adapters.MatchItemAdapter;
 import com.elsys.refpro.refpromobile.application.DIApplication;
 import com.elsys.refpro.refpromobile.database.LocalDatabase;
+import com.elsys.refpro.refpromobile.http.handlers.LoginHandler;
 import com.elsys.refpro.refpromobile.http.handlers.MatchHandler;
+import com.elsys.refpro.refpromobile.http.handlers.MenuHandler;
 import com.elsys.refpro.refpromobile.models.Item;
 import com.elsys.refpro.refpromobile.services.DeleteService;
 import com.elsys.refpro.refpromobile.enums.DeviceType;
@@ -57,12 +59,17 @@ public class MenuActivity extends Fragment {
     @Inject
     MatchHandler matchHandler;
 
+    @Inject
+    SharedPreferences preferences;
+
+    @Inject
+    MenuHandler menuHandler;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         ((DIApplication) this.getActivity().getApplicationContext()).getApplicationComponent().inject(this);
-        final SharedPreferences preferences;
-        preferences = getActivity().getSharedPreferences("RefPRO" , 0);
+
         menuView = inflater.inflate(R.layout.activity_menu, container, false);
 
         final String jwtToken = preferences.getString("token", "N/A");
@@ -103,73 +110,6 @@ public class MenuActivity extends Fragment {
         final SharedPreferences preferences;
         preferences = getActivity().getSharedPreferences("RefPRO" , 0);
 
-        final OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
-                        .addHeader("Authorization", jwtToken)
-                        .addHeader("DeviceType", deviceType.toString())
-                        .build();
-
-                return chain.proceed(newRequest);
-            }
-        }).build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(HttpDetails.getRetrofitUrl())
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        UserService service = retrofit.create(UserService.class);
-        service.addFcmTokenForUser(fcmToken).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-
-                if (response.isSuccessful()) {
-
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(HttpDetails.getRetrofitUrl())
-                            .client(client)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    UserService service = retrofit.create(UserService.class);
-                    service.getFcmTokenForUser().enqueue(new Callback<UserDTO>() {
-                        @Override
-                        public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-
-                            if(response.isSuccessful()) {
-                                UserDTO userDto = response.body();
-                                if(userDto.getTokens()==null || userDto.getTokens().get(DeviceType.WEAR)==null){
-                                    return;
-                                }
-                                String WatchFCMToken = userDto.getTokens().get(DeviceType.WEAR);
-                                Toast.makeText(getActivity(), WatchFCMToken,
-                                        Toast.LENGTH_LONG).show();
-
-                                SharedPreferences.Editor prefsEditor = preferences.edit();
-                                prefsEditor.putString("WatchFCMToken", WatchFCMToken);
-                                prefsEditor.apply();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UserDTO> call, Throwable t) {
-
-                            Toast.makeText(getActivity(), "Failed to get Watch FCM Token",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-
-                Toast.makeText(getActivity(), R.string.fcmToken_error,
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+        menuHandler.addTokenForUser(jwtToken, fcmToken, deviceType);
     }
 }

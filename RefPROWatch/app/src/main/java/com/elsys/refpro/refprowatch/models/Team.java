@@ -2,6 +2,7 @@ package com.elsys.refpro.refprowatch.models;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Team {
 
@@ -13,8 +14,8 @@ public class Team {
     private int yellowCards;
     private int redCards;
 
-    private ArrayList<Player> players = new ArrayList<>();
-    private ArrayList<Player> substitutes = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
+    private List<Player> substitutes = new ArrayList<>();
 
     public Team(boolean isHome, String name, String abbreaviature , ArrayList<Player> players, ArrayList<Player> substitutes) {
 
@@ -23,6 +24,13 @@ public class Team {
         this.abbreaviature = abbreaviature;
         this.players = players;
         this.substitutes = substitutes;
+    }
+
+    public Team(boolean isHome, String name, String abbreaviature) {
+
+        this.isHome = isHome;
+        this.name = name;
+        this.abbreaviature = abbreaviature;
     }
 
     public boolean isHome() {
@@ -61,19 +69,19 @@ public class Team {
         this.redCards = redCards;
     }
 
-    public ArrayList<Player> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(ArrayList<Player> players) {
+    public void setPlayers(List<Player> players) {
         this.players = players;
     }
 
-    public ArrayList<Player> getSubstitutes() {
+    public List<Player> getSubstitutes() {
         return substitutes;
     }
 
-    public void setSubstitutes(ArrayList<Player> substitutes) {
+    public void setSubstitutes(List<Player> substitutes) {
         this.substitutes = substitutes;
     }
 

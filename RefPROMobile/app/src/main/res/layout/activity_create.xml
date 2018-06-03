@@ -31,7 +31,7 @@
         android:inputType="textPersonName"
         android:selectAllOnFocus="false"
         android:singleLine="false"
-        android:text="Premier League"/>
+        android:text="Premier League" />
 
     <EditText
         android:id="@+id/timeForm"
@@ -92,10 +92,13 @@
     <Button
         android:id="@+id/createMatchButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="58dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/create_match" />
+        android:background="@drawable/create_button"
+        android:scaleType="fitXY"
+        android:src="@drawable/create_button"
+        android:text="" />
 
     <EditText
         android:id="@+id/halfLengthForm"

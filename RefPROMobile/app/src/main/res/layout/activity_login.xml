@@ -76,12 +76,16 @@
 
     <Button
         android:id="@+id/signInButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/smallTitle"
-        android:layout_below="@+id/passwordField"
-        android:layout_marginTop="31dp"
-        android:text="@string/action_sign_in_short" />
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="127dp"
+        android:layout_height="49dp"
+        android:layout_alignEnd="@+id/logo"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/login_button"
+        android:scaleType="fitCenter"
+        android:src="@drawable/login_button"
+        android:text="" />
 
     <ProgressBar
         android:id="@+id/progressBar"

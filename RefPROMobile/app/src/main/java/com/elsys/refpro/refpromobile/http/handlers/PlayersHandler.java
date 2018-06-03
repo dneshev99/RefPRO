@@ -75,14 +75,18 @@ public class PlayersHandler {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
                     String filename = playerId;
-                    File file =null;
+                    File file = null;
                     FileOutputStream outStreamWriter=null;
                     try {
 
                         file = new File(context.getFilesDir(), filename);
                         if(!file.exists()){
+
+                            //create only if not exists
                             file.createNewFile();
+
                         }
+
                         outStreamWriter = new FileOutputStream(file);
                         outStreamWriter.write(response.body().bytes());
 
