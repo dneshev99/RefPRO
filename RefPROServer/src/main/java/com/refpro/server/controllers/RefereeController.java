@@ -1,8 +1,9 @@
 package com.refpro.server.controllers;
 
-import com.refpro.server.DBhandlers.RefereeHandler;
-import com.refpro.server.DTOs.ErrorDto;
-import com.refpro.server.DTOs.RefereeDTO;
+import com.refpro.server.dbhandlers.RefereeHandler;
+import com.refpro.server.dtos.ErrorDto;
+import com.refpro.server.dtos.MarkDTO;
+import com.refpro.server.dtos.RefereeDTO;
 import com.refpro.server.exception.AbstractRestException;
 import com.refpro.server.exception.RefereeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,9 +79,9 @@ public class RefereeController {
     }
 
     @RequestMapping(value = "/{refereeID}/addMarkToReferee",method = RequestMethod.POST)
-    public ResponseEntity addMarkToReferee(@PathVariable String refereeID, @RequestBody Double mark) {
+    public ResponseEntity addMarkToReferee(@PathVariable String refereeID, @RequestBody MarkDTO markDTO) {
         try {
-            refereeHandler.addMarkToReferee(refereeID,mark);
+            refereeHandler.addMarkToReferee(refereeID,markDTO.getMark());
         } catch (RefereeNotFoundException e) {
             ErrorDto errorDto = new ErrorDto(e.getMessage());
 

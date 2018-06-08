@@ -1,9 +1,7 @@
 package com.refpro.server.models;
 
-import com.refpro.server.DTOs.MatchEventDTO;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
 import java.util.List;

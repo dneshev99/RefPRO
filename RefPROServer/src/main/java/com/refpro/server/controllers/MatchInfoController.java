@@ -1,8 +1,8 @@
 package com.refpro.server.controllers;
 
-import com.refpro.server.DBhandlers.MatchInfoService;
-import com.refpro.server.DBhandlers.UserHandler;
-import com.refpro.server.DTOs.*;
+import com.refpro.server.dbhandlers.MatchInfoService;
+import com.refpro.server.dbhandlers.UserHandler;
+import com.refpro.server.dtos.*;
 import com.refpro.server.exception.MatchNotFoundException;
 import com.refpro.server.models.MatchInfo;
 import org.springframework.beans.factory.annotation.Autowired;
