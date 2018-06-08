@@ -1,8 +1,4 @@
-package com.refpro.server.DTOs;
-
-import com.refpro.server.enums.MatchEventTypes;
-import com.refpro.server.models.MatchEvent;
-import com.refpro.server.models.Player;
+package com.refpro.server.dtos;
 
 public class PlayerEventDTO extends MatchEventDTO {
     private String message;

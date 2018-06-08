@@ -1,9 +1,9 @@
-package com.refpro.server.DBhandlers;
+package com.refpro.server.dbhandlers;
 
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
-import com.refpro.server.DTOs.RefereeDTO;
+import com.refpro.server.dtos.RefereeDTO;
 import com.refpro.server.exception.AbstractRestException;
 import com.refpro.server.exception.InvalidInputException;
 import com.refpro.server.exception.RefereeNotFoundException;
@@ -103,6 +103,8 @@ public class RefereeHandler {
 
     public void addMarkToReferee(String id,Double mark) throws RefereeNotFoundException {
         Referee entry = refereeRepository.findOne(id);
+
+        System.out.print(mark);
 
         if (entry == null)
             throw new RefereeNotFoundException("Referee not found.");

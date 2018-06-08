@@ -1,7 +1,6 @@
-package com.refpro.server.DTOs;
+package com.refpro.server.dtos;
 
 import com.refpro.server.models.Player;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;

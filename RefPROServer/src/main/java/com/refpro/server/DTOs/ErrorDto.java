@@ -1,4 +1,4 @@
-package com.refpro.server.DTOs;
+package com.refpro.server.dtos;
 
 public class ErrorDto {
     private String errorMessage;

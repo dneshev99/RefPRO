@@ -1,10 +1,10 @@
-package com.refpro.server.DBhandlers;
+package com.refpro.server.dbhandlers;
 
 
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
-import com.refpro.server.DTOs.PlayerDTO;
+import com.refpro.server.dtos.PlayerDTO;
 import com.refpro.server.exception.AbstractRestException;
 import com.refpro.server.exception.InvalidInputException;
 import com.refpro.server.exception.PlayerNotFoundException;

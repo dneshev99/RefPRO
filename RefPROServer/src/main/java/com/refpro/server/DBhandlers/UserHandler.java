@@ -1,12 +1,11 @@
-package com.refpro.server.DBhandlers;
+package com.refpro.server.dbhandlers;
 
-import com.refpro.server.DTOs.UserDTO;
+import com.refpro.server.dtos.UserDTO;
 import com.refpro.server.enums.DeviceType;
 import com.refpro.server.models.User;
 import com.refpro.server.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.userdetails.UserDetails;

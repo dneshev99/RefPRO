@@ -1,6 +1,6 @@
-package com.refpro.server.DBhandlers;
+package com.refpro.server.dbhandlers;
 
-import com.refpro.server.DTOs.*;
+import com.refpro.server.dtos.*;
 import com.refpro.server.exception.InvalidInputException;
 import com.refpro.server.exception.MatchNotFoundException;
 import com.refpro.server.firebase.FirebaseClient;

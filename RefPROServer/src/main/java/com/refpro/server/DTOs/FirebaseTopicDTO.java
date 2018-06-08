@@ -1,4 +1,4 @@
-package com.refpro.server.DTOs;
+package com.refpro.server.dtos;
 
 
 import com.refpro.server.models.FirbaseTopics;
