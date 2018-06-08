@@ -7,10 +7,10 @@
       <img src="assets/images/logo.png" id="logo">
     </div>
 
-    <div class="login">
-      <input type="text" placeholder="username" name="user"><br>
-      <input type="password" placeholder="password" name="password"><br>
-      <button id="login-button" type="button">Log In</button><br>
+    <div class="login" >
+      <input type="text" placeholder="username" name="user" [(ngModel)]="username"><br>
+      <input type="password" placeholder="password" name="password" [(ngModel)]="password"><br>
+      <button id="login-button" type="button" (click)="attemptLogin()" >Log In</button><br>
     </div>
 
   </div>

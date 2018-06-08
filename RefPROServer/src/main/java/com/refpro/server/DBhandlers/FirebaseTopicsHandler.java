@@ -1,15 +1,14 @@
-package com.refpro.server.DBhandlers;
+package com.refpro.server.dbhandlers;
 
 
-import com.refpro.server.DTOs.FirebaseTopicDTO;
-import com.refpro.server.DTOs.UserDTO;
+import com.refpro.server.dtos.FirebaseTopicDTO;
+import com.refpro.server.dtos.UserDTO;
 import com.refpro.server.models.FirbaseTopics;
 import com.refpro.server.models.User;
 import com.refpro.server.repositories.FirebaseTopicRepository;
 import com.refpro.server.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;

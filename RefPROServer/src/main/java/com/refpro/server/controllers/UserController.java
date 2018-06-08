@@ -1,12 +1,11 @@
 package com.refpro.server.controllers;
 
-import com.refpro.server.DBhandlers.FirebaseTopicsHandler;
-import com.refpro.server.DBhandlers.UserHandler;
-import com.refpro.server.DTOs.ErrorDto;
-import com.refpro.server.DTOs.FirebaseTopicDTO;
-import com.refpro.server.DTOs.UserDTO;
+import com.refpro.server.dbhandlers.FirebaseTopicsHandler;
+import com.refpro.server.dbhandlers.UserHandler;
+import com.refpro.server.dtos.ErrorDto;
+import com.refpro.server.dtos.FirebaseTopicDTO;
+import com.refpro.server.dtos.UserDTO;
 import com.refpro.server.enums.DeviceType;
-import com.refpro.server.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;

@@ -12,6 +12,16 @@ public class Timer {
 
     private boolean isExtraTimerStarted;
 
+    public Timer(int minutes, int seconds) {
+
+        this.mainTimerMinutes = minutes;
+        this.extraTimerMinutes = 0;
+        this.extraTimerSeconds = 0;
+        this.mainTimerSeconds = seconds;
+        this.setTime = "00:00";
+        this.isExtraTimerStarted = false;
+    }
+
     public Timer() {
 
         this.mainTimerMinutes = 0;
@@ -40,6 +50,7 @@ public class Timer {
             else
                 setTime = mainTimerMinutes + ":" + mainTimerSeconds;
         }
+
 
         mainTimerSeconds++;
 

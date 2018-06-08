@@ -1,7 +1,7 @@
 package com.refpro.server.controllers;
 
 
-import com.refpro.server.DTOs.ErrorDto;
+import com.refpro.server.dtos.ErrorDto;
 import com.refpro.server.exception.AbstractRestException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

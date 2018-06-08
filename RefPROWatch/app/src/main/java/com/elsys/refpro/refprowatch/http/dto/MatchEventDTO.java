@@ -1,25 +1,18 @@
 package com.elsys.refpro.refprowatch.http.dto;
 
 
+import com.elsys.refpro.refprowatch.enums.MatchEventTypes;
+
 public class MatchEventDTO {
 
-    private String id;
     private String time;
-    private String eventType;
-    private String team;
-    private String player;
+    private MatchEventTypes eventType;
+    private String message;
 
-    public MatchEventDTO(String id, String time, String eventType, String team, String player) {
-
-        this.id = id;
+    public MatchEventDTO(String time, MatchEventTypes eventType, String message) {
         this.time = time;
         this.eventType = eventType;
-        this.team = team;
-        this.player = player;
-    }
-
-    public String getId() {
-        return id;
+        this.message = message;
     }
 
     public String getTime() {
@@ -30,34 +23,26 @@ public class MatchEventDTO {
         this.time = time;
     }
 
-    public String getEventType() {
+    public MatchEventTypes getEventType() {
         return eventType;
     }
 
-    public void setEventType(String eventType) {
+    public void setEventType(MatchEventTypes eventType) {
         this.eventType = eventType;
     }
 
-    public String getTeam() {
-        return team;
+    public String getMessage() {
+        return message;
     }
 
-    public void setTeam(String team) {
-        this.team = team;
+    public void setMessage(String message) {
+        this.message = message;
     }
-
-    public String getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(String message) {
-        this.player = message;
-    }
-
 
     @Override
     public String toString() {
-
-        return time + eventType + team + player;
+        return    "time='" + time + '\'' +
+                ", eventType=" + eventType +
+                ", message='" + message + '\'';
     }
 }

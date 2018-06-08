@@ -2,9 +2,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <ul>
     <li><a class="active"><img src="assets/images/logo.png" (click)="openHome()" alt="Logo" height="60" width="80"></a></li>
-    <li><a (click)="openRanking()">Ranking</a></li>
-    <li><a (click)="openArchive()">Archive</a></li>
-    <li id="sign"><a (click)="openLogin()" style="float:right">Sign in</a></li>
+    <li *ngIf="checkToken()"><a (click)="openRanking()" style="float:left">Ranking</a></li>
+    <li *ngIf="checkToken()"><a (click)="openArchive()"  style="float:left">Archive</a></li>
+    <li id="sign" *ngIf="!checkToken()"><a (click)="openLogin()" style="float:right">Sign in</a></li>
+    <li *ngIf="checkToken()"><a (click)="logout()" style="float:right">Log out</a></li>
   </ul>
 
 

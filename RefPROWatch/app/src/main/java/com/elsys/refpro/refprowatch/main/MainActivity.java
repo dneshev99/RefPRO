@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.elsys.refpro.refprowatch.enums.MatchEventTypes;
 import com.elsys.refpro.refprowatch.http.DeviceType;
 import com.elsys.refpro.refprowatch.http.UserService;
 import com.elsys.refpro.refprowatch.http.dto.MatchInfoDTO;
@@ -27,18 +28,15 @@ import com.elsys.refpro.refprowatch.R;
 import com.elsys.refpro.refprowatch.models.Team;
 import com.elsys.refpro.refprowatch.events.CreateEvent;
 import com.elsys.refpro.refprowatch.http.dto.MatchEventDTO;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.stream.Collectors;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,6 +63,9 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     ArrayList<MatchEventDTO> events = new ArrayList<>();
     String id = "";
     CreateEvent newEvent;
+
+    public MainActivity() {
+    }
 
     //endregion
 
@@ -102,12 +103,10 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         listPlayers();
         listSubs();
 
-        newEvent = new CreateEvent(id, getApplicationContext());
-        events = newEvent.addEvent("", "", "", match.getCompetition() + "\n" + match.getVenue() + "\n" + match.getDate()
-                + "\n" + match.getTime() + "\n" + match.getHome().getName() + " vs. " + match.getAway().getName() + "\n\n", true);
-
-        SharedPreferences clear = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        clear.edit().clear().apply();               // CLEARS all information about yellow and red cards4
+        preferences = getSharedPreferences("MyPref" , 0);
+        SharedPreferences.Editor prefsEditor = preferences.edit();
+        prefsEditor.putString("matchId", id);
+        prefsEditor.apply();
     }
 
     private void getMatchInformation(final String jwtToken, final String id, final DeviceType deviceType){
@@ -138,12 +137,12 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 if (response.isSuccessful()) {
 
                     MatchInfoDTO body = response.body();
+
+                    setTeams(body);
                     homeTeam.setPlayersFromDto(body.getHomePlayers());
                     homeTeam.setSubstitutesFromDto(body.getSubsHome());
                     awayTeam.setPlayersFromDto(body.getAwayPlayers());
                     awayTeam.setSubstitutesFromDto(body.getSubsAway());
-                    match = new Match(body.getCompetition(), body.getVenue(), body.getTime(), body.getDate(), body.getLength(), 11, 7, homeTeam, awayTeam);
-
                 }
                 else {
 
@@ -159,9 +158,48 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         });
     }
 
+    private void setTeams(MatchInfoDTO body) {
+
+        homeTeam.setName(body.getHome().getName());
+        homeTeam.setAbbreaviature(body.getHome().getAbbreaviature());
+        awayTeam.setName(body.getAway().getName());
+        awayTeam.setAbbreaviature(body.getAway().getAbbreaviature());
+        awayAbbr.setText(match.getAway().getAbbreaviature());
+        homeAbbr.setText(match.getHome().getAbbreaviature());
+
+        match.setCompetition(body.getCompetition());
+        match.setVenue(body.getVenue());
+        match.setDate(body.getDate());
+        match.setTime(body.getTime());
+
+        newEvent = new CreateEvent(id, getApplicationContext());
+        events = newEvent.addEvent("", MatchEventTypes.FIRSTHALF, match.getCompetition() + "\n" + match.getVenue() + "\n" + match.getDate() + "\n" +
+                 match.getTime() + "\n" + match.getHome().getName() + " vs. " + match.getAway().getName() + "\n", "", true);
+    }
+
     private void createTimers() {
 
-        Timer timer = new Timer();
+        SharedPreferences preferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        int isNewMatch = preferences.getInt("new", 2);
+        Log.d("ClearTimerOut", String.valueOf(isNewMatch));
+
+        if (isNewMatch == 1) {
+
+            timers.setMainTimerMinutes(0);
+            timers.setMainTimerSeconds(0);
+            SharedPreferences.Editor prefsEditor = preferences.edit();
+            isNewMatch = 2;
+            prefsEditor.putInt("new", isNewMatch);
+            prefsEditor.apply();
+            Log.d("ClearTimerIn", String.valueOf(preferences.getInt("new", 2)));
+        }
+        else {
+
+            timers.setMainTimerMinutes(preferences.getInt("minutes", 0));
+            timers.setMainTimerSeconds(preferences.getInt("seconds", 0));
+        }
+
+        final Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
@@ -172,6 +210,13 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                         if (match.isStarted()) { // STARTS if CurrentMatch is started
 
                             timers.MainTimerFormat();
+
+                            SharedPreferences preferences;
+                            preferences = getSharedPreferences("MyPref" , Context.MODE_PRIVATE);
+                            SharedPreferences.Editor prefsEditor = preferences.edit();
+                            prefsEditor.putInt("minutes", timers.getMainTimerMinutes());
+                            prefsEditor.putInt("seconds", timers.getMainTimerSeconds());
+                            prefsEditor.apply();
 
                             if (timers.getMainTimerMinutes() == match.getHalfLength() && !vibrator) {  //VIBRATES if bigMinutes == HalfLength
 
@@ -237,7 +282,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     subsLayout.setEnabled(false);
                     mainLayout.setEnabled(true);
 
-                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), getResources().getString(R.string.substitutionEvent), team, match.getPlayerForSubstitution().getName() + "/" + playerName.getName(), false);
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.SUBSTITUTION, team, match.getPlayerForSubstitution().getName() + "/" + playerName.getName(), false);
                     //addEvent(bigMinutes + ":" + bigSeconds, getResources().getString(R.string.substitutionEvent), team, playerToSub + "/" + playerName, false);
 
                     subsLayout.setVisibility(View.INVISIBLE);
@@ -296,7 +341,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                                         playerNameString.setGoals(playerNameString.getGoals() + 1);
                                         match.setOwnGoal(false);
                                         changeResult(match.isOwnGoal());
-                                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), Event.GOAL.toString(), team, playerNameString.getName(), false);
+                                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), MatchEventTypes.GOAL, team, playerNameString.getName(), false);
                                     }
                                 })
                                 .setNegativeButton("OWN GOAL", new DialogInterface.OnClickListener() {
@@ -305,7 +350,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                                         match.setOwnGoal(true);
                                         changeResult(match.isOwnGoal());
-                                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), Event.OWNGOAL.toString(), team, playerNameString.getName(), false);
+                                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), MatchEventTypes.OWNGOAL, team, playerNameString.getName(), false);
                                     }
                                 });
 
@@ -328,7 +373,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     }
                     else if (match.getEventType() == 2){ // IF YELLOW CARD Button is clicked
 
-                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(),  getResources().getString(R.string.yellowCardEvent), team, playerName.getName(), false);
+                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(),  MatchEventTypes.YELLOW_CARD, team, playerName.getName(), false);
                         playerName.setYellowCards(playerName.getYellowCards() + 1);
                         Log.d("Yellow cards:" , String.valueOf(playerName.getYellowCards()));
 
@@ -341,7 +386,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                         if (playerName.getYellowCards() == 2 || playerName.getRedCards() == 1) { // IF player has 2 Yellow or 1 Red Card => Disable his button
 
-                            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), getResources().getString(R.string.redCardEvent), team, playerName.getName(), false);
+                            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.RED_CARD, team, playerName.getName(), false);
                             newPlayer.setEnabled(false);
 
                             if (isHome)
@@ -357,7 +402,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                     }
                     else { // IF RED CARD Button is clicked
 
-                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), getResources().getString(R.string.redCardEvent), team, playerName.getName(), false);
+                        events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.RED_CARD, team, playerName.getName(), false);
                         playerName.setRedCards(playerName.getRedCards() + 1);
                         Log.d("Red cards:" , String.valueOf(playerName.getRedCards()));
 
@@ -464,7 +509,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
 
                 Toast.makeText(this, getResources().getString(R.string.matchStartedText),
                         Toast.LENGTH_SHORT).show();
-                events = newEvent.addEvent(clock.getText().toString(), "", "",  " - " +  "MATCH STARTED", true);
+                events = newEvent.addEvent(clock.getText().toString(), MatchEventTypes.FIRSTHALF, "",  " - " +  "MATCH STARTED", true);
                 break;
 
             case R.id.teamLayoutBackButton:
@@ -513,7 +558,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 if (match.getHalf() < 3) {
                     match.setHalf(3);
                     match.setStarted(false);
-                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.TERMINATED, true);
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.TERMINATED, "", " - " + Event.TERMINATED, true);
                     Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.matchTerminatedText),
                             Toast.LENGTH_SHORT).show();
                 }
@@ -590,23 +635,23 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                         awayResultField.setText(Integer.toString(match.getAway().getGoals()));
                     }
 
-                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), "", "", " - " + getResources().getString(R.string.goalEvent) + getResources().getString(R.string.canceledEvent), true);
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds() + " / " + match.getHome().getGoals() + ":" + match.getAway().getGoals(), MatchEventTypes.TERMINATED, "", " - " + getResources().getString(R.string.goalEvent) + getResources().getString(R.string.canceledEvent), true);
                 }
                 else if (match.getUndoType() == 2){
 
-                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + getResources().getString(R.string.substitutionEvent) + getResources().getString(R.string.canceledEvent), true);
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.TERMINATED, "", " - " + getResources().getString(R.string.substitutionEvent) + getResources().getString(R.string.canceledEvent), true);
 
                     match.replace(match.getSubstituteName(), match.getPlayerForSubstitution());
                 }
                 else if (match.getUndoType() == 3) {
 
-                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + getResources().getString(R.string.yellowCardEvent) + getResources().getString(R.string.canceledEvent), true);
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.TERMINATED, "", " - " + getResources().getString(R.string.yellowCardEvent) + getResources().getString(R.string.canceledEvent), true);
 
                     match.undoYellowCard();
                 }
                 else if (match.getUndoType() == 4) {
 
-                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + getResources().getString(R.string.redCardEvent) + getResources().getString(R.string.canceledEvent), true);
+                    events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.TERMINATED, "", " - " + getResources().getString(R.string.redCardEvent) + getResources().getString(R.string.canceledEvent), true);
 
                     match.undoRedCard();
                 }
@@ -640,7 +685,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             buttonManager.endHalf.setText(getResources().getString(R.string.secondHalfText));
 
             match.setStarted(false);
-            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.HALFTIME, true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.HALFTIME, "", " - " + Event.HALFTIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.firstHalfEnd),
                     Toast.LENGTH_SHORT).show();
         } else if (match.getHalf() == 2) { // IF it's HALF TIME
@@ -654,7 +699,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             timers.setExtraTimerMinutes(0);
             timers.setExtraTimerSeconds(0);
 
-            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.SECONDHALF, true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.SECONDHALF, "", " - " + Event.SECONDHALF, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.secondHalfStart),
                     Toast.LENGTH_SHORT).show();
 
@@ -662,7 +707,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         } else if (match.getHalf() == 3 && match.isStarted()) { // IF it's SECOND HALF
 
             match.setStarted(false);
-            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.FULLTIME, true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.FULLTIME, "", " - " + Event.FULLTIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.fullTimeText),
                     Toast.LENGTH_SHORT).show();
 
@@ -690,7 +735,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             match.setStarted(true);
             buttonManager.extraTimeButton.setText(getResources().getString(R.string.endExtraTimeButton));
 
-            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.EXTRATIME, true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.EXTRATIME, "", " - " + Event.EXTRATIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.extraTimeButton),
                     Toast.LENGTH_SHORT).show();
         }
@@ -699,7 +744,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             buttonManager.extraTimeButton.setText(getResources().getString(R.string.secondExtraTimeButton));
             match.setStarted(false);
 
-            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.EXTRATIME, true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.EXTRATIME, "", " - " + Event.EXTRATIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.endExtraTimeButton),
                     Toast.LENGTH_SHORT).show();
         }
@@ -713,7 +758,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             buttonManager.extraTimeButton.setText(getResources().getString(R.string.penaltiesButton));
             buttonManager.endHalf.setEnabled(true);
 
-            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.EXTRATIME, true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.EXTRATIME, "", " - " + Event.EXTRATIME, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.secondExtraTimeButton),
                     Toast.LENGTH_SHORT).show();
         }
@@ -724,7 +769,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
             timers.setExtraTimerMinutes(0);
             timers.setExtraTimerSeconds(0);
 
-            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), "", "", " - " + Event.PENALTIES, true);
+            events = newEvent.addEvent(timers.getMainTimerMinutes() + ":" + timers.getMainTimerSeconds(), MatchEventTypes.PENALTIES, "", " - " + Event.PENALTIES, true);
             Toast.makeText(settingsLayout.getContext(), getResources().getString(R.string.penaltiesButton),
                     Toast.LENGTH_SHORT).show();
 
@@ -795,9 +840,9 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         for (int counter = 0; counter < match.getSubstitutesNumber(); counter++) {
 
             if (match.isHomeTeamPressed()) {
-                buttonManager.subsButtons.get(counter).setText(match.getHome().getSubstitutes().get(counter).getNumberAndName()); // SETS Text for every Home Substitute
+                buttonManager.subsButtons.get(counter).setText(match.getHome().getPlayers().get(counter).getNumberAndName()); // SETS Text for every Home Substitute
             } else
-                buttonManager.subsButtons.get(counter).setText(match.getAway().getSubstitutes().get(counter).getNumberAndName()); // SETS Text for every Away Substitute
+                buttonManager.subsButtons.get(counter).setText(match.getAway().getPlayers().get(counter).getNumberAndName()); // SETS Text for every Away Substitute
         }
     } // SETS names of all substitutes
 

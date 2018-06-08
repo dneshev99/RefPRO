@@ -18,5 +18,4 @@ public class DIApplication extends Application {
     public ApplicationComponent getApplicationComponent() {
         return applicationComponent;
     }
-
 }

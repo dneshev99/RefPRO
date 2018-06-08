@@ -1,11 +1,10 @@
 package com.refpro.server.controllers;
 
 
-import com.refpro.server.DBhandlers.PlayerService;
-import com.refpro.server.DTOs.ErrorDto;
-import com.refpro.server.DTOs.PlayerDTO;
+import com.refpro.server.dbhandlers.PlayerService;
+import com.refpro.server.dtos.ErrorDto;
+import com.refpro.server.dtos.PlayerDTO;
 import com.refpro.server.exception.AbstractRestException;
-import com.refpro.server.exception.PlayerNotFoundException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

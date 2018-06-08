@@ -1,10 +1,9 @@
 package com.refpro.server.controllers;
 
 
-import com.refpro.server.DBhandlers.TeamHandler;
-import com.refpro.server.DTOs.ErrorDto;
-import com.refpro.server.DTOs.NewMatchInfoDTO;
-import com.refpro.server.DTOs.TeamDto;
+import com.refpro.server.dbhandlers.TeamHandler;
+import com.refpro.server.dtos.ErrorDto;
+import com.refpro.server.dtos.TeamDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
-import java.util.logging.Level;
 
 @Controller
 @RequestMapping("/team")

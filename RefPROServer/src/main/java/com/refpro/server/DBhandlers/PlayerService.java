@@ -1,6 +1,6 @@
-package com.refpro.server.DBhandlers;
+package com.refpro.server.dbhandlers;
 
-import com.refpro.server.DTOs.PlayerDTO;
+import com.refpro.server.dtos.PlayerDTO;
 import com.refpro.server.exception.AbstractRestException;
 import com.refpro.server.exception.PlayerNotFoundException;
 import org.springframework.core.io.ByteArrayResource;

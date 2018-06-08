@@ -1,6 +1,6 @@
-package com.refpro.server.DBhandlers;
+package com.refpro.server.dbhandlers;
 
-import com.refpro.server.DTOs.TeamDto;
+import com.refpro.server.dtos.TeamDto;
 import com.refpro.server.models.Team;
 import com.refpro.server.repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;

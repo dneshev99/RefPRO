@@ -1,7 +1,4 @@
-package com.refpro.server.DTOs;
-
-import com.refpro.server.models.Player;
-import com.refpro.server.models.Team;
+package com.refpro.server.dtos;
 
 import java.util.List;
 

@@ -62,19 +62,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class MatchInfoActivity extends Fragment {
 
     View createView;
-    TextView competition, date, time, teams, player_title;
-    EditText number, name;
-    int match_id;
+
     String homeTeamName, awayTeamName, mongoId;
     LocalDatabase db;
     List<PlayerDTO> homePlayers = new ArrayList<>();
     List<PlayerDTO> awayPlayers = new ArrayList<>();
     List<PlayerDTO> homeSubs = new ArrayList<>();
     List<PlayerDTO> awaySubs = new ArrayList<>();
-
-    int counter = 0;
-
-    ProgressBar loading;
 
     @Inject
     PlayersHandler playersHandler;
@@ -83,13 +77,8 @@ public class MatchInfoActivity extends Fragment {
     @Inject
     MatchHandler matchHandler;
 
-    final ArrayList<PlayerDTO> homePlayersAssignedDtos = new ArrayList<>();
-    final ArrayList<PlayerDTO> allPlayersForDrawer = new ArrayList<PlayerDTO>();
-
-
     private ConstraintLayout awayTeamLayout = null;
     private ConstraintLayout homeTeamLayout = null;
-
 
     @Override
     public void onAttach(Context context) {
@@ -128,10 +117,9 @@ public class MatchInfoActivity extends Fragment {
 
     private void setDragListenerToIcons(ViewGroup viewGroup) {
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            viewGroup.getChildAt(i).setOnDragListener(new PlayerHeadDragListener());
-            //viewGroup.getChildAt(i).setOnTouchListener(new TerrainHeadTouchListener());
-        }
 
+            viewGroup.getChildAt(i).setOnDragListener(new PlayerHeadDragListener());
+        }
     }
 
     @Override
@@ -146,16 +134,13 @@ public class MatchInfoActivity extends Fragment {
         GridView playersDrawerAway = (GridView) createView.findViewById(R.id.right_drawer_away);
         awayTeamLayout = (ConstraintLayout) createView.findViewById(R.id.awayTeam);
         homeTeamLayout = (ConstraintLayout) createView.findViewById(R.id.homeTeam);
-        // homeTeamLayout.setTag();
+
         int matchId = this.getArguments().getInt("matchId");
         getHomeAndAwayTeamNames(matchId);
 
         matchHandler.getMatchInfoById(mongoId, homeTeamLayout, awayTeamLayout);
 
 
-//        //String mongoId=data.getString(10);
-//        private static final String COL4 = "home";
-//        private static final String COL5 = "away";
         PlayerHeadAdapter adapter = new PlayerHeadAdapter(this.getActivity(), homePlayers);
         playersDrawer.setAdapter(adapter);
 

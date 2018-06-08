@@ -45,11 +45,16 @@ public class MessagingService extends FirebaseMessagingService {
 
         Map<String, String> matchId = remoteMessage.getData();
 
+        SharedPreferences clear = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        clear.edit().clear().apply();               // CLEARS all information about yellow and red cards
+
         SharedPreferences preferences;
-        preferences = getSharedPreferences("MyPref" , 0);
+        preferences = getSharedPreferences("MyPref" , Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = preferences.edit();
         prefsEditor.putString("matchId", matchId.get("matchId"));
+        prefsEditor.putInt("new", 1);
         prefsEditor.apply();
+        Log.d("ClearMessage", String.valueOf( preferences.getInt("new", 2)));
 
         Log.d("MEssage",remoteMessage.getMessageId());
         Log.d("Message data",remoteMessage.getData().toString());

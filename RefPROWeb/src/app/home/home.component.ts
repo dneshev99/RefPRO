@@ -8,7 +8,9 @@ import { ActivatedRoute, Router} from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private route: Router) { }
+  constructor(private route: Router) {
+
+  }
 
   static isLoginVisible: boolean;
 
@@ -33,7 +35,22 @@ export class HomeComponent implements OnInit {
   }
 
   isOpen() {
+
     return HomeComponent.isLoginVisible;
+  }
+
+  checkToken(): boolean {
+    const token: string = localStorage.getItem('AuthToken');
+
+    if (token === null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  logout() {
+    localStorage.removeItem('AuthToken');
   }
 
 }

@@ -1,11 +1,9 @@
 package com.refpro.server.firebase;
 
-import com.refpro.server.DTOs.FirebaseSingleDeviceMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.refpro.server.dtos.FirebaseSingleDeviceMessage;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 

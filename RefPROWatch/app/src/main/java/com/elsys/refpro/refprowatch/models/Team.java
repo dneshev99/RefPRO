@@ -43,6 +43,14 @@ public class Team {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAbbreaviature(String abbreaviature) {
+        this.abbreaviature = abbreaviature;
+    }
+
     public String getAbbreaviature() {
         return abbreaviature;
     }

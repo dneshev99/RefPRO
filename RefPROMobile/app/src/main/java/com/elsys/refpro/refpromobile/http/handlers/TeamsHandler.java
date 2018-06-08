@@ -24,30 +24,7 @@ import retrofit2.Retrofit;
 @Singleton
 public class TeamsHandler {
 
-    //private final String token ;
-   // OkHttpClient client;
-
     Retrofit retrofit ;
-//    public TeamsHandler(final String token){
-//        this.token=token;
-//        client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-//            @Override
-//            public okhttp3.Response intercept(Chain chain) throws IOException {
-//                Request newRequest = chain.request().newBuilder()
-//                        .addHeader("Authorization",token)
-//                        .build();
-//                Log.d("Na sasho tokena",token);
-//                return chain.proceed(newRequest);
-//            }
-//        }).build();
-//
-//        retrofit = new Retrofit.Builder()
-//                .client(client)
-//                .baseUrl(HttpDetails.getRetrofitUrl())
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//    }
-
 
     //When we can create singletons we`ll have to use @Inject on a constructor
     @Inject
@@ -55,7 +32,6 @@ public class TeamsHandler {
         this.retrofit=retrofit;
     }
     private static final Logger log = Logger.getLogger(TeamsHandler.class.getName());
-
 
 
     public List<TeamDTO> getAllTeams(final AutoCompleteTextView home,final AutoCompleteTextView away,final Context context){
