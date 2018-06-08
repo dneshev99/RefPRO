@@ -53,7 +53,7 @@ public class Login extends WearableActivity {
         final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         loading = (ProgressBar) findViewById(R.id.progressBar);
 
-        preferences = getSharedPreferences("RefPRO" , 0);
+        preferences = getSharedPreferences("MyPref" , 0);
 
 
         signButton.setOnClickListener(new View.OnClickListener() {

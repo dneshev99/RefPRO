@@ -135,6 +135,7 @@ public class MatchItemAdapter extends RecyclerView.Adapter<MatchItemAdapter.Matc
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
+
                         }
                     });
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.elsys.refpro.refprowatch.enums.MatchEventTypes;
 import com.elsys.refpro.refprowatch.http.EventService;
 import com.elsys.refpro.refprowatch.http.StateService;
 import com.elsys.refpro.refprowatch.http.dto.MatchEventDTO;
@@ -40,17 +41,17 @@ public class CreateEvent {
     }
 
 
-    public ArrayList<MatchEventDTO> addEvent(String time, String eventType, String team, String player, boolean escape) {
+    public ArrayList<MatchEventDTO> addEvent(String time, MatchEventTypes eventType, String team, String player, boolean escape) {
 
         MatchEventDTO newEvent;
 
         if (!escape) {
 
-            newEvent = new MatchEventDTO(id, time + "   ", eventType + " - ", team + "  - ", player);
+            newEvent = new MatchEventDTO(time, eventType, team);
         }
         else {
 
-            newEvent = new MatchEventDTO(id, time, eventType, team, player);
+            newEvent = new MatchEventDTO(time, eventType, team);
         }
 
         events.add(newEvent);
@@ -86,7 +87,7 @@ public class CreateEvent {
 
         EventService service = retrofit.create(EventService.class);
 
-        service.send(newEvent).enqueue(new Callback<ResponseBody>() {
+        service.send(newEvent, id).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 

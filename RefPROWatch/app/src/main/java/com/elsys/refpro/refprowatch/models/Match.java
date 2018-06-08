@@ -38,6 +38,22 @@ public class Match {
         this.isOwnGoal = false;
     }
 
+    public void setCompetition(String competition) {
+        this.competition = competition;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public String getCompetition() {
         return competition;
     }
