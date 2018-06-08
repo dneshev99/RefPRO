@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Referee} from '../models/Referee';
+import {IdService} from '../services/id.service';
 
 @Component({
   selector: 'app-ranking',
@@ -8,7 +11,13 @@ import { ActivatedRoute, Router} from '@angular/router';
 })
 export class RankingComponent implements OnInit {
 
-  constructor(private route: Router) { }
+  referees: Referee[];
+
+  constructor(private httpClient: HttpClient, private route: Router, private idService: IdService) {
+    this.httpClient.get<Referee[]>('http://api2.tues.dreamix.eu:80/referee/',
+      {observe: 'response'}).subscribe(response => this.referees = response.body,
+      error => alert(error.toString()));
+  }
 
   openHome() {
     this.route.navigate(['']);
@@ -22,12 +31,10 @@ export class RankingComponent implements OnInit {
     this.route.navigate(['archive']);
   }
 
-  Name = "Alexander Alexandrov Verbovskiy";
-  Mark = 9.8;
-  Date = "18-06-1999";
-  Height = "190";
-  Weight = "77";
-  Experience = "3";
+  openReferee(id: string) {
+    this.idService.refereeId = id;
+    this.route.navigate(['referee']);
+  }
 
   ngOnInit() {
   }

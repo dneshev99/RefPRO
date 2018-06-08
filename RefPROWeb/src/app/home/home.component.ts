@@ -8,7 +8,9 @@ import { ActivatedRoute, Router} from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private route: Router) { }
+  constructor(private route: Router) {
+
+  }
 
   static isLoginVisible: boolean;
 
@@ -33,6 +35,7 @@ export class HomeComponent implements OnInit {
   }
 
   isOpen() {
+
     return HomeComponent.isLoginVisible;
   }
 

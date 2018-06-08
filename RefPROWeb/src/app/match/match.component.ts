@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {IdService} from '../services/id.service';
+import {MatchInfo} from '../models/MatchInfo';
 
 @Component({
   selector: 'app-match',
@@ -8,7 +11,23 @@ import { ActivatedRoute, Router} from '@angular/router';
 })
 export class MatchComponent implements OnInit {
 
-  constructor(private route: Router) { }
+  match: MatchInfo;
+
+  constructor(private httpClient: HttpClient, private route: Router, private idService: IdService) {
+
+    const id = this.idService.matchId;
+
+    if (id === null) {
+      alert('Invalid match id!');
+      this.openHome();
+    }
+
+    this.httpClient.get<MatchInfo>('http://api2.tues.dreamix.eu:80/matchInfo/getMatchById',
+      {params : {
+          id : id
+        }, observe: 'response'}).subscribe(response => this.match = response.body,
+      error => alert());
+  }
 
   openHome() {
     this.route.navigate(['']);

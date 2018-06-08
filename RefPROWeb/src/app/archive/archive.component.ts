@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {MatchInfo} from '../models/MatchInfo';
+import {IdService} from '../services/id.service';
+
 
 @Component({
   selector: 'app-archive',
@@ -8,7 +12,14 @@ import { ActivatedRoute, Router} from '@angular/router';
 })
 export class ArchiveComponent implements OnInit {
 
-  constructor(private route: Router) { }
+  data: MatchInfo[];
+
+  constructor(private httpClient: HttpClient, private route: Router, private idService: IdService) {
+
+    this.httpClient.get<MatchInfo[]>('http://api2.tues.dreamix.eu:80/matchInfo/get',
+      {observe: 'response'}).subscribe(response => this.data = response.body,
+      error => alert(error.toString()));
+  }
 
   openHome() {
     this.route.navigate(['']);
@@ -22,7 +33,14 @@ export class ArchiveComponent implements OnInit {
     this.route.navigate(['archive']);
   }
 
+  openMatchInfo(id: string) {
+    this.idService.matchId = id;
+    this.route.navigate(['match']);
+  }
+
+
   ngOnInit() {
+
   }
 
 }
