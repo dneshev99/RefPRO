@@ -63,7 +63,7 @@ public class RefereeHandler {
             OptionalDouble marksResult;
 
             RefereeDTO entry = new RefereeDTO();
-
+            entry.setId(referee.getId());
             entry.setFullName(referee.getFullName());
             entry.setHeight(referee.getHeight());
             entry.setWeight(referee.getWeight());

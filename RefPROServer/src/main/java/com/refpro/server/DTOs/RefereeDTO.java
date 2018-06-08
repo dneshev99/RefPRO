@@ -7,6 +7,7 @@ public class RefereeDTO {
     private int experience;
     private String birthday;
     private double avaregeMark;
+    private String id;
 
     public RefereeDTO(String fullName, int height, int weight, int experience, String birthday, double avaregeMark) {
         this.fullName = fullName;
@@ -67,4 +68,8 @@ public class RefereeDTO {
     public void setAvaregeMark(double avaregeMark) {
         this.avaregeMark = avaregeMark;
     }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
 }
