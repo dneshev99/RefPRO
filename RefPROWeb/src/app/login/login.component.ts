@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {HomeComponent} from '../home/home.component';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  login() {
+  attemptLogin() {
     if (this.username === '' || this.password === '') {
       alert('Username and password cannot be blank!');
       this.username = '';
@@ -32,7 +33,6 @@ export class LoginComponent implements OnInit {
       { username : this.username,
               password: this.password},
       {observe: 'response', headers: headers}).subscribe(response => {
-        alert(response.headers.get('Authorization'));
           if (response.ok) {
             localStorage.setItem('AuthToken', response.headers.get('Authorization'));
            HomeComponent.isLoginVisible = !HomeComponent.isLoginVisible;

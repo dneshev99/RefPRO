@@ -39,4 +39,18 @@ export class HomeComponent implements OnInit {
     return HomeComponent.isLoginVisible;
   }
 
+  checkToken(): boolean {
+    const token: string = localStorage.getItem('AuthToken');
+
+    if (token === null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  logout() {
+    localStorage.removeItem('AuthToken');
+  }
+
 }

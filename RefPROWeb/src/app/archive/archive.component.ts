@@ -18,7 +18,7 @@ export class ArchiveComponent implements OnInit {
 
     this.httpClient.get<MatchInfo[]>('http://api2.tues.dreamix.eu:80/matchInfo/get',
       {observe: 'response'}).subscribe(response => this.data = response.body,
-      error => alert(error.toString()));
+      error => alert('Error occurred try again later!'));
   }
 
   openHome() {

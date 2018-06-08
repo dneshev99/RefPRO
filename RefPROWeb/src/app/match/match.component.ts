@@ -26,7 +26,7 @@ export class MatchComponent implements OnInit {
       {params : {
           id : id
         }, observe: 'response'}).subscribe(response => this.match = response.body,
-      error => alert());
+      error => alert('Error occurred try again later!'));
   }
 
   openHome() {

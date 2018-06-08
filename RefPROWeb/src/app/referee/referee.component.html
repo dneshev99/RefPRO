@@ -2,7 +2,6 @@
   <li><a class="active"><img src="assets/images/logo.png" (click)="openHome()" alt="Logo" height="60" width="80"></a></li>
   <li><a (click)="openRanking()">Ranking</a></li>
   <li><a (click)="openArchive()">Archive</a></li>
-  <li id="sign"><a (click)="openLogInForm()" style="float:right">Sign in/Sign up</a></li>
 </ul>
 
 
@@ -52,7 +51,7 @@
         <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-pencil"></i></div>
         <div class="w3-rest">
           <input class="w3-input w3-border" [(ngModel)] = "mark" name="message" type="text"
-                 placeholder="add mark" type="number" step="0.1">
+                 placeholder="add mark" type="number" step="0.1" min="0.0" max="10.0">
         </div>
       </div>
 

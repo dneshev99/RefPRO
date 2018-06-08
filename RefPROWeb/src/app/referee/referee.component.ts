@@ -26,13 +26,16 @@ export class RefereeComponent implements OnInit {
     if (this.id === null) {
       alert('Invalid referee id!');
       this.openHome();
+    } else {
+      this.httpClient.get<Referee>('http://api2.tues.dreamix.eu:80/referee/' + this.id,
+        {observe: 'response'}).subscribe(response => this.referee = response.body,
+        error => alert('Error occurred try again later!'));
     }
 
 
-    this.httpClient.get<Referee>('http://api2.tues.dreamix.eu:80/referee/' + this.id,
-      {observe: 'response'}).subscribe(response => this.referee = response.body,
-      error => alert(error.toString()));
+
   }
+
 
   openHome() {
     this.route.navigate(['']);
@@ -47,7 +50,16 @@ export class RefereeComponent implements OnInit {
   }
 
   sendMark() {
-    alert(this.mark);
+    if (this.mark < 0.0 || this.mark > 10.0) {
+      alert('Invalid mark');
+      return;
+    }
+
+    this.httpClient.post('http://api2.tues.dreamix.eu:80/referee/' + this.id + '/addMarkToReferee',
+      {
+        mark: this.mark
+      }, {observe: 'response'}).subscribe(response => alert('Successfully voted.'),
+      error1 => alert('Error occurred try to vote again later'));
   }
 
   ngOnInit() {

@@ -4,6 +4,8 @@ import { AppRoutingModule } from './app-routing.module';
 import {HttpClient, HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
+
+
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { RankingComponent } from './ranking/ranking.component';

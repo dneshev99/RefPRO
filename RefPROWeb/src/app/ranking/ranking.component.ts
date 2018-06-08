@@ -16,7 +16,7 @@ export class RankingComponent implements OnInit {
   constructor(private httpClient: HttpClient, private route: Router, private idService: IdService) {
     this.httpClient.get<Referee[]>('http://api2.tues.dreamix.eu:80/referee/',
       {observe: 'response'}).subscribe(response => this.referees = response.body,
-      error => alert(error.toString()));
+      error => alert('Error occurred try again later!'));
   }
 
   openHome() {

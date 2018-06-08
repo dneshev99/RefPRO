@@ -8,6 +8,10 @@ export class TokenInterceptorService implements HttpInterceptor{
   constructor() { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (req.url.toString() === 'http://api2.tues.dreamix.eu:80/login') {
+      return next.handle(req);
+    }
+
     const tokenizedReq = req.clone({
         setHeaders: {
           Authorization: localStorage.getItem('AuthToken')
