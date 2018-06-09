@@ -21,7 +21,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity buildResponseEntity(AbstractRestException exception) {
-        ErrorDto errorDto = new ErrorDto(exception.getDisplayErrorMessage());
+        ErrorDto errorDto = new ErrorDto(exception);
         return new ResponseEntity(errorDto, exception.getStatus()==null? HttpStatus.INTERNAL_SERVER_ERROR:exception.getStatus());
     }
+
+
 }

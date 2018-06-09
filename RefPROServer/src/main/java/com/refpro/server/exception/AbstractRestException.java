@@ -10,6 +10,12 @@ public abstract class AbstractRestException extends Exception{
         super(message);
         this.displayErrorMessage = endUserVisibleMessage;
     }
+    public AbstractRestException(String message, String endUserVisibleMessage,HttpStatus httpStatus) {
+        super(message);
+        this.displayErrorMessage = endUserVisibleMessage;
+        this.errorCode = httpStatus.value();
+        this.status = httpStatus;
+    }
     protected Integer errorCode;
     protected String displayErrorMessage;
     protected HttpStatus status;

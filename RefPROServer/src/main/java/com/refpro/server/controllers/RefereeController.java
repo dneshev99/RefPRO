@@ -33,13 +33,8 @@ public class RefereeController {
     }
 
     @RequestMapping("/{refereeID}")
-    public ResponseEntity getRefereeByID(@PathVariable String refereeID) {
-        try {
-            return new ResponseEntity<>(refereeHandler.getRefereeByID(refereeID),HttpStatus.OK);
-        } catch (RefereeNotFoundException e) {
-            ErrorDto errorDto = new ErrorDto(e.getMessage());
-            return new ResponseEntity<>(errorDto,HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity getRefereeByID(@PathVariable String refereeID) throws RefereeNotFoundException {
+        return new ResponseEntity<>(refereeHandler.getRefereeByID(refereeID),HttpStatus.OK);
     }
 
 
@@ -79,15 +74,9 @@ public class RefereeController {
     }
 
     @RequestMapping(value = "/{refereeID}/addMarkToReferee",method = RequestMethod.POST)
-    public ResponseEntity addMarkToReferee(@PathVariable String refereeID, @RequestBody MarkDTO markDTO) {
-        try {
-            refereeHandler.addMarkToReferee(refereeID,markDTO.getMark());
-        } catch (RefereeNotFoundException e) {
-            ErrorDto errorDto = new ErrorDto(e.getMessage());
+    public ResponseEntity addMarkToReferee(@PathVariable String refereeID, @RequestBody MarkDTO markDTO) throws RefereeNotFoundException {
 
-            return new ResponseEntity<>(errorDto,HttpStatus.NOT_FOUND);
-        }
-
+        refereeHandler.addMarkToReferee(refereeID,markDTO.getMark());
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
